@@ -5,6 +5,11 @@
 npm install
 ```
 
+## Run tests
+```
+ ./node_modules/jest/bin/jest.js
+```
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
