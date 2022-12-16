@@ -24,6 +24,8 @@
 <script>
 import Input from "../components/Input";
 import ButtonWithProgress from "../components/ButtonWithProgress";
+import { login } from "../api/apiCalls";
+
 export default {
     name: "LoginPage",
     components: {
@@ -48,22 +50,21 @@ export default {
         this.apiProgress = true;
         try {
             console.log('________submit____');
-            /*
+            
             const response = await login({
-            email: this.email,
-            password: this.password,
+                email: this.email,
+                password: this.password,
             });
             this.$router.push("/");
 
-            const data = {
-            ...response.data,
-            header: `Bearer ${response.data.token}`,
+            const data = {        
+                header: `Bearer ${response.data.token}`,
             };
 
             this.$store.commit("loginSuccess", data);
-            */
+            
         } catch (error) {
-            this.failMessage = error.response.data.message;
+            this.failMessage = 'Invalid login credentials';
         }
         this.apiProgress = false;
         },

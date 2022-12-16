@@ -3,7 +3,6 @@
 </template>
 
 <script>
-//import HelloWorld from './pages/HelloWorld.vue'
 import LoginPage from './pages/LoginPage.vue'
 
 export default {
