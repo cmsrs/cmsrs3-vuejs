@@ -7,7 +7,7 @@ npm install
 
 ## Run tests
 ```
- ./node_modules/jest/bin/jest.js
+./node_modules/jest/bin/jest.js  --verbose
 ```
 
 ### Compiles and hot-reloads for development
