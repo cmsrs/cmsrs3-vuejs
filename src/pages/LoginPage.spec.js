@@ -1,6 +1,7 @@
 import {
   render, 
   screen, 
+  waitFor,
   waitForElementToBeRemoved
 } from "@testing-library/vue";
 import LoginPage from "./LoginPage.vue";
@@ -20,7 +21,7 @@ const server = setupServer(
     return res(
       ctx.status(404), //TODO it sould be 401
       ctx.json({
-        success: true,
+        success: false,
         error: "some error text"
         })
     );
@@ -112,7 +113,7 @@ describe("Login page", () => {
       const setupFilled = async () => {
         await setup();
         await userEvent.type(emailInput, "user100@mail.com");
-        await userEvent.type(passwordInput, "wrongPass");
+        await userEvent.type(passwordInput, "PasswordRs");
       };
 
       it("enables the button when email and password inputs are filled", async () => {
@@ -120,6 +121,65 @@ describe("Login page", () => {
         expect(button).toBeEnabled();
       });
 
+      it("displays spinner after clicking the button", async () => {
+        await setupFilled();
+        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+        await userEvent.click(button);
+        expect(screen.queryByRole("status")).toBeInTheDocument();
+      });
+
+      it("hides spinner after api call finishes with fail response", async () => {
+        await setupFilled();
+        await userEvent.click(button);
+        const spinner = screen.queryByRole("status");
+        await waitFor(() => {
+          expect(spinner).not.toBeInTheDocument();
+        });
+      });
+
+      it("sends email and password to backend after clicking the button", async () => {
+        await setupFilled();
+        await userEvent.click(button);
+        const spinner = screen.queryByRole("status");
+        await waitForElementToBeRemoved(spinner);
+        expect(requestBody).toEqual({
+          email: "user100@mail.com",
+          password: "PasswordRs",
+        });
+      });
+
+      it("disables the button when there is an api call", async () => {
+        await setupFilled();
+        await userEvent.click(button);
+        await userEvent.click(button);
+        const spinner = screen.queryByRole("status");
+        await waitForElementToBeRemoved(spinner);
+        expect(counter).toBe(1);
+      });
+
+      it("displays authentication fail message", async () => {
+        await setupFilled();
+        await userEvent.click(button);
+        const errorMessage = await screen.findByText("Invalid login credentials");
+        expect(errorMessage).toBeInTheDocument();
+      });
+
+      it("clears authentication fail message when email field is changed", async () => {
+        await setupFilled();
+        await userEvent.click(button);
+        const errorMessage = await screen.findByText("Invalid login credentials");
+        await userEvent.type(emailInput, "new@mail.com");
+        expect(errorMessage).not.toBeInTheDocument();
+      });
+
+      it("clears authentication fail message when password field is changed", async () => {
+        await setupFilled();
+        await userEvent.click(button);
+        const errorMessage = await screen.findByText("Invalid login credentials");
+        await userEvent.type(passwordInput, "Newpassword");
+        expect(errorMessage).not.toBeInTheDocument();
+      });
+  
       it("stores authorization header value in storage", async () => {
         server.use(loginSuccess);
         await setupFilled();

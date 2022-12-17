@@ -54,13 +54,21 @@ export default {
                 email: this.email,
                 password: this.password,
             });
-            this.$router.push("/");
 
-            const data = {        
-                header: `Bearer ${response.data.data.token}`,
-            };
+            if(response.data.success){
+                this.$router.push("/pages");
 
-            this.$store.commit("loginSuccess", data);
+                const data = {        
+                    header: `Bearer ${response.data.data.token}`,
+                };
+
+                
+                this.$store.commit("loginSuccess", data);
+
+            }else{
+                console.log('_____test_pass_ok____');
+                this.failMessage = 'Invalid login credentials';    
+            }        
             
         } catch (error) {
             this.failMessage = 'Invalid login credentials';
