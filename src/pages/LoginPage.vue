@@ -49,7 +49,6 @@ export default {
         async submit() {
         this.apiProgress = true;
         try {
-            console.log('________submit____');
             
             const response = await login({
                 email: this.email,
@@ -58,7 +57,7 @@ export default {
             this.$router.push("/");
 
             const data = {        
-                header: `Bearer ${response.data.token}`,
+                header: `Bearer ${response.data.data.token}`,
             };
 
             this.$store.commit("loginSuccess", data);
@@ -79,4 +78,3 @@ export default {
     }
 }
 </script>
-
