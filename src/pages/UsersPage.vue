@@ -4,6 +4,11 @@
     </div>
   </template>
   <script>
-  export default {
+  export default {    
+    mounted() {
+        if(!this.$store.state.isLoggedIn){
+            this.$router.push("/");
+        }
+    }
   };
   </script>
