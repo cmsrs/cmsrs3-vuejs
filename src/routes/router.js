@@ -1,31 +1,27 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "../pages/PagesPage";
-//import SignUpPage from "../pages/SignUpPage";
 import LoginPage from "../pages/LoginPage";
+import PagesPage from "../pages/PagesPage";
+import UsersPage from "../pages/UsersPage";
 //import UserPage from "../pages/UserPage";
 //import AccountActivationPage from "../pages/AccountActivationPage";
 
 const routes = [
   {
-    path: "/pages",
-    component: HomePage,
-  },
-//   {
-//     path: "/signup",
-//     component: SignUpPage,
-//   },
-  {
-    path: "/login",
+    path: "/",
     component: LoginPage,
-  }
-//   {
-//     path: "/user/:id",
-//     component: UserPage,
-//   },
-//   {
-//     path: "/activate/:token",
-//     component: AccountActivationPage,
-//   },
+  },
+  {
+    path: "/pages",
+    component: PagesPage,
+  },
+  {
+    path: "/users",
+    component: UsersPage,
+  },
+  // {
+  //   path: "/users",
+  //   component: SignUpPage,
+  // },  
 ];
 
 const router = createRouter({ routes, history: createWebHistory() });

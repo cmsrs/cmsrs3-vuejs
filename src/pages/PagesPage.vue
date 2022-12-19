@@ -1,5 +1,6 @@
 <template>
     <div data-testid="pages-page">
+      <h3>Pages</h3>
       <PageList />
     </div>
   </template>

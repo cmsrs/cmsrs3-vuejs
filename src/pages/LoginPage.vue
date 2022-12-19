@@ -55,20 +55,15 @@ export default {
                 password: this.password,
             });
 
-            if(response.data.success){
-                this.$router.push("/pages");
+            //if(!response.data.success) ...
 
-                const data = {        
-                    header: `Bearer ${response.data.data.token}`,
-                };
+            this.$router.push("/pages");
 
+            const data = {        
+                header: `Bearer ${response.data.data.token}`,
+            };
                 
-                this.$store.commit("loginSuccess", data);
-
-            }else{
-                console.log('_____test_pass_ok____');
-                this.failMessage = 'Invalid login credentials';    
-            }        
+            this.$store.commit("loginSuccess", data);
             
         } catch (error) {
             this.failMessage = 'Invalid login credentials';
@@ -83,6 +78,11 @@ export default {
         password() {
             this.failMessage = undefined;
         },
+    },
+    mounted() {
+        if(this.$store.state.isLoggedIn){
+            this.$router.push("/pages");
+        }
     }
 }
 </script>

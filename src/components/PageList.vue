@@ -1,5 +1,7 @@
 <template>
-    <h3>Pages</h3>
+    <div>
+      Page List
+    </div>
 </template>
 <script>
   export default {
