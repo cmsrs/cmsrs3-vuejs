@@ -9,6 +9,10 @@ npm install
 ```
 ./node_modules/jest/bin/jest.js  --verbose
 ```
+or
+```
+npm test a
+```
 
 ### Compiles and hot-reloads for development
 ```
