@@ -40,7 +40,6 @@ afterAll(() => server.close());
 
 let emailInput, passwordInput, button;
 const setup = async () => {
-    //render(LoginPage);
     
     render(LoginPage, {
       global: {
@@ -58,9 +57,6 @@ const setup = async () => {
     button = screen.queryByRole("button", { name: "Login" });
 };
 
-
-
-
 const loginSuccess = rest.post("/api/login", (req, res, ctx) => {
   return res(
     ctx.status(200),
@@ -72,7 +68,6 @@ const loginSuccess = rest.post("/api/login", (req, res, ctx) => {
     })
   );
 });
-
 
 describe("Login page", () => {
     describe("Layout", () => {
@@ -112,7 +107,7 @@ describe("Login page", () => {
     describe("Interactions", () => {
       const setupFilled = async () => {
         await setup();
-        await userEvent.type(emailInput, "user100@mail.com");
+        await userEvent.type(emailInput, "user_rs@mail.com");
         await userEvent.type(passwordInput, "PasswordRs");
       };
 
@@ -137,13 +132,13 @@ describe("Login page", () => {
         });
       });
 
-      it("sends email and password to backend after clicking the button", async () => {
+      it("send token from backend after clicking the button", async () => {
         await setupFilled();
         await userEvent.click(button);
         const spinner = screen.queryByRole("status");
         await waitForElementToBeRemoved(spinner);
         expect(requestBody).toEqual({
-          email: "user100@mail.com",
+          email: "user_rs@mail.com",
           password: "PasswordRs",
         });
       });

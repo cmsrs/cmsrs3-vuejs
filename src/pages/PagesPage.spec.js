@@ -64,10 +64,13 @@ describe("Pages page", () => {
         const header = screen.queryByRole("heading", { name: "Pages" });
         expect(header).toBeInTheDocument();  //bez zalogowania widzimy header - nie wiem czy to jest dobry test.
     });
-    describe("Interactions", () => {
 
-    });      
   });
+
+  describe("Interactions", () => {
+
+  });      
+
 
   
 });
