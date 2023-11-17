@@ -24,7 +24,7 @@
 <script>
 import Input from "../components/Input";
 import ButtonWithProgress from "../components/ButtonWithProgress";
-import { login } from "../api/apiCalls";
+import { login, config } from "../api/apiCalls";
 
 export default {
     name: "LoginPage",
@@ -49,24 +49,36 @@ export default {
         async submit() {
         this.apiProgress = true;
         try {
-            
-            const response = await login({
+
+            const post = {
                 email: this.email,
                 password: this.password,
-            });
-
-            //if(!response.data.success) ...
-
-            this.$router.push("/pages");
-
-            const data = {        
-                header: `Bearer ${response.data.data.token}`,
             };
+            
+            const response = await login(post);
+
+            //console.log('response__', response.data);
+            //if(!response.data.success) ... //The response headers from server are different, so it doesn't make sense
+
+            const token = response.data.data.token;
+
+            const data = {    
+                ...post,  
+                token
+            };            
                 
             this.$store.commit("loginSuccess", data);
+
+            if(token){
+                const responseConfig = await config(token);
+                this.$store.commit("setConfig", responseConfig.data.data);
+            }
+            
+            this.$router.push("/pages");
             
         } catch (error) {
             this.failMessage = 'Invalid login credentials';
+            //console.log('_is_error__', error);
         }
         this.apiProgress = false;
         },
@@ -80,7 +92,7 @@ export default {
         },
     },
     mounted() {
-        if(this.$store.state.isLoggedIn){
+        if(this.$store.state.auth.isLoggedIn){
             this.$router.push("/pages");
         }
     }

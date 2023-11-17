@@ -5,14 +5,14 @@
           <ul class="navbar-nav ml-auto">
             <router-link
               class="nav-link"
-              to="/pages"    
-              v-if="$store.state.isLoggedIn"          
+              to="/pages"
+              v-if="$store.state.auth.isLoggedIn"
               >Pages
             </router-link>
             <router-link
               class="nav-link"
               to="/users"
-              v-if="$store.state.isLoggedIn"
+              v-if="$store.state.auth.isLoggedIn"
               >Users
             </router-link>
           </ul>

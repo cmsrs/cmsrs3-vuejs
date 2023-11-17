@@ -1,12 +1,12 @@
 <template>
-  <NavBar v-if="$store.state.isLoggedIn" />
+  <NavBar v-if="$store.state.auth.isLoggedIn" />
   <div class="container">
     <router-view />
   </div>
 </template>
 
 <script>
-import NavBar from "./components/NavBar";  
+import NavBar from "./components/NavBar";
 
 export default {
   name: 'App',

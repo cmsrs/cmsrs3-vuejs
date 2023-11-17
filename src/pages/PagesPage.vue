@@ -24,7 +24,7 @@
       PageList,
     },
     mounted() {
-        if(!this.$store.state.isLoggedIn){
+        if(!this.$store.state.auth.isLoggedIn){
             this.$router.push("/");
         }
     }

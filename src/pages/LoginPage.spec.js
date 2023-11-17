@@ -1,6 +1,6 @@
 import {
-  render, 
-  screen, 
+  render,
+  screen,
   waitFor,
   waitForElementToBeRemoved
 } from "@testing-library/vue";
@@ -40,7 +40,7 @@ afterAll(() => server.close());
 
 let emailInput, passwordInput, button;
 const setup = async () => {
-    
+
     render(LoginPage, {
       global: {
         plugins: [store],
@@ -51,7 +51,7 @@ const setup = async () => {
         },
       },
     });
-    
+
     emailInput = screen.queryByLabelText("E-mail");
     passwordInput = screen.queryByLabelText("Password");
     button = screen.queryByRole("button", { name: "Login" });
@@ -69,6 +69,23 @@ const loginSuccess = rest.post("/api/login", (req, res, ctx) => {
   );
 });
 
+const configJson = {
+  page_types: ['cms', 'gallery'],
+  langs: ['en'],
+  cache_enable: 1
+};
+
+//?token=abcde12345
+const configSuccess = rest.get("/api/config", (req, res, ctx) => {
+  return res(
+    ctx.status(200),
+    ctx.json({
+      success: true,
+      data: configJson
+    })
+  );
+});
+
 describe("Login page", () => {
     describe("Layout", () => {
         it( 'has login header', async ()  => {
@@ -76,7 +93,7 @@ describe("Login page", () => {
             const header = screen.queryByRole("heading", { name: "Login" });
             expect(header).toBeInTheDocument();
         });
-        
+
         it("has email input", async () => {
             await setup();
             const input = screen.queryByLabelText("E-mail");
@@ -101,14 +118,17 @@ describe("Login page", () => {
           await setup();
           const button = screen.queryByRole("button", { name: "Login" });
           expect(button).toBeDisabled();
-        });        
+        });
     });
 
     describe("Interactions", () => {
+      const emailOk = "user_rs@mail.com";
+      const passwordOk = "PasswordRs";
+
       const setupFilled = async () => {
         await setup();
-        await userEvent.type(emailInput, "user_rs@mail.com");
-        await userEvent.type(passwordInput, "PasswordRs");
+        await userEvent.type(emailInput, emailOk);
+        await userEvent.type(passwordInput, passwordOk);
       };
 
       it("enables the button when email and password inputs are filled", async () => {
@@ -174,17 +194,37 @@ describe("Login page", () => {
         await userEvent.type(passwordInput, "Newpassword");
         expect(errorMessage).not.toBeInTheDocument();
       });
-  
-      it("stores authorization header value in storage", async () => {
+
+      it("stores authorization values in storage", async () => {
         server.use(loginSuccess);
+        server.use(configSuccess);
         await setupFilled();
+        expect(store.state.config).toBeFalsy();
         await userEvent.click(button);
         const spinner = screen.queryByRole("status");
         await waitForElementToBeRemoved(spinner);
         const storedState = storage.getItem("auth");
-        expect(storedState.header).toBe("Bearer abcde12345");
+        expect(storedState.token).toBe("abcde12345");
+        expect(storedState.email).toBe(emailOk);
+        expect(storedState.password).toBe(passwordOk);
+        expect(store.state.config).toMatchObject(configJson);        
       });
-  
+
+      /*
+       * it is not working propobly user is still login - todo
+      it("stores config in storage", async () => {        
+        server.use(loginSuccess);
+        server.use(configSuccess);
+        await setupFilled();
+        expect(store.state.config).toBeFalsy();
+        await userEvent.click(button);
+        const spinner = screen.queryByRole("status");
+        await waitForElementToBeRemoved(spinner);
+        expect(store.state.config).toMatchObject(configJson);
+      });
+      */
+
+
     });
 
 });
