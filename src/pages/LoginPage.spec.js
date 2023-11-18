@@ -9,6 +9,7 @@ import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 import store from "../state/store";
+import { resetAuthState } from "../state/store";
 import storage from "../state/storage";
 
 
@@ -207,11 +208,14 @@ describe("Login page", () => {
         expect(storedState.token).toBe("abcde12345");
         expect(storedState.email).toBe(emailOk);
         expect(storedState.password).toBe(passwordOk);
-        expect(store.state.config).toMatchObject(configJson);        
+        //expect(store.state.config).toMatchObject(configJson);    
+
+        //Sign Out
+        storage.clear();
+        resetAuthState();
       });
 
-      /*
-       * it is not working propobly user is still login - todo
+      // * it is not working propobly user is still login - todo
       it("stores config in storage", async () => {        
         server.use(loginSuccess);
         server.use(configSuccess);
@@ -221,8 +225,10 @@ describe("Login page", () => {
         const spinner = screen.queryByRole("status");
         await waitForElementToBeRemoved(spinner);
         expect(store.state.config).toMatchObject(configJson);
+
+        storage.clear();
+        resetAuthState();
       });
-      */
 
 
     });

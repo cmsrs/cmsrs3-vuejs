@@ -23,6 +23,7 @@ const store = createStore({
       for (let key in initialState) {
         state.auth[key] = initialState[key];
       }
+      state.config = false;
     },
     setConfig(state, config) {
       state.config = {};
