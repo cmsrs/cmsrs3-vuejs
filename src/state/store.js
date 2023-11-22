@@ -4,9 +4,10 @@ import storage from "./storage";
 const store = createStore({
   state() {
     const auth = storage.getItem("auth") || false;
+    const config = storage.getItem("config") || false;
     return {   
       'auth' : auth,
-      'config' : false
+      'config' : config
     };
   },
   mutations: {
@@ -32,6 +33,8 @@ const store = createStore({
       for (let key in config.langs) {
         state.config.langs[key] = config.langs[key];
       }
+      state.config.defaultLang = config.langs ? config.langs[0] : '';
+
       state.config.page_types = [];
       for (let key in config.page_types) {
         state.config.page_types[key] = config.page_types[key];
@@ -42,6 +45,7 @@ const store = createStore({
 
 store.subscribe((mutation, state) => {
   storage.setItem("auth", state.auth);
+  storage.setItem("config", state.config);
 });
 
 export const resetAuthState = () => {

@@ -72,7 +72,7 @@ const loginSuccess = rest.post("/api/login", (req, res, ctx) => {
 
 const configJson = {
   page_types: ['cms', 'gallery'],
-  langs: ['en'],
+  langs: ['en', 'pl'],
   cache_enable: 1
 };
 
@@ -215,6 +215,7 @@ describe("Login page", () => {
         resetAuthState();
       });
 
+
       // * it is not working propobly user is still login - todo
       it("stores config in storage", async () => {        
         server.use(loginSuccess);
@@ -224,7 +225,18 @@ describe("Login page", () => {
         await userEvent.click(button);
         const spinner = screen.queryByRole("status");
         await waitForElementToBeRemoved(spinner);
-        expect(store.state.config).toMatchObject(configJson);
+        //expect(store.state.config).toMatchObject(configJson);
+        expect(store.state.config.page_types).toMatchObject(configJson.page_types);
+        expect(store.state.config.langs).toMatchObject(configJson.langs);
+        expect(store.state.config.cache_enable).toBe(1);
+        expect(store.state.config.defaultLang).toBe('en');
+
+        const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disaapear
+        expect(storedStateConfig.page_types).toMatchObject(configJson.page_types);
+        expect(storedStateConfig.langs).toMatchObject(configJson.langs);
+        expect(storedStateConfig.cache_enable).toBe(1);
+        expect(storedStateConfig.defaultLang).toBe('en');
+        
 
         storage.clear();
         resetAuthState();

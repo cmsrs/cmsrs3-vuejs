@@ -49,7 +49,7 @@ describe("Pages page", () => {
   describe("Layout", () => {
     it( 'has pages header', async ()  => {
         await setup();
-        const header = screen.queryByRole("heading", { name: "Pages" });
+        const header = screen.queryByRole("heading", { name: "CMS - menus and pages" });
         expect(header).toBeInTheDocument();  //bez zalogowania widzimy header - nie wiem czy to jest dobry test.
     });
 
