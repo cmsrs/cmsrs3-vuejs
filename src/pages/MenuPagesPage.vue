@@ -1,34 +1,114 @@
 <template>
-    <div data-testid="pages-page">
-      <h3>CMS - menus and pages</h3>
+    <div class="mb-3" data-testid="pages-page">
+
+      <!-- change lang and h1 -->
+      <div class="container">
+        <div class="row mt-3 mb-3">
+          <h3 class="col-10">CMS - menus and pages</h3>
+          <div class="col-1" v-for="l in langs" :key="l">
+            <span 
+              :class="{ 'mr-1 cursor-pointer  text-primary': lang === l, 'mr-1 cursor-pointer text-secondary': lang !== l }"
+              @click="changeLang(l)" 
+              :placeholder="`title ${l}`" >{{l}}
+            </span>
+          </div>
+        </div>
+      </div>
 
       <div class="container">
         <div class="row">
           <!-- Menu  -->
           <div class="col-5">
 
+            <button class="btn btn-primary mt-2 mb-2" ><i class="fas fa-plus"></i> Add menu</button>
+            <br>
             Menu testtt.
           </div>
 
           <!-- Pages  -->
           <div class="col-7">
 
-              Pages testttt.
-              <div class="container">
-                <div class="row mt-1">
-                  <div  v-for="lang in langs" :key="lang">
-                    <span @click="changeLang('title')" :placeholder="`title ${lang}`" >{{lang}}</span>
-                  </div>
+              <button type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2" :disabled="pre_loader">
+                <i v-if="!pre_loader" class="fas fa-plus"></i>
+                <span  v-if="!pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                Edit/Add
+              </button>
+              <button class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
+        
+              <form>
+                <div class="form-group mt-3 ">              
+                  <input class="form-control" v-model="title[lang]" :placeholder="`title ${lang}`">
                 </div>
-              </div>
 
-              <div v-for="lang in langs" :key="lang" >
-                <input v-model="title[lang]" :placeholder="`title ${lang}`">
-              </div>
+                <div class="form-group mt-3 ">              
+                  <input  class="form-control"  v-model="short_title[lang]" :placeholder="`short_title ${lang}`">
+                </div>              
+
+                <div class="form-group mt-3 ">                            
+                  <textarea  class="form-control"  rows="4" cols="50" v-model="description[lang]" :placeholder="`description ${lang}`"></textarea>
+                </div>
+
+
+                <div className="form-check row mt-2">
+                  <input
+                      className="col-1"
+                      name="published"
+                      type="checkbox"
+                      />
+                  <label>Published</label>
+                </div>
+
+                <div className="form-check row">
+                    <input
+                        className="col-1"
+                        name="commented"
+                        type="checkbox"
+                        />
+                    <label>Commented</label>
+                </div>
+
+                <div className="form-check row">
+                    <input
+                        className="col-1"
+                        name="after_login"
+                        type="checkbox"
+                        />
+                    <label>Available after log in</label>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="pageType">Page Type:</label>
+                  <select class="rs-select form-control" id="pageType" v-model="page_type">
+                    <option v-for="pageType in page_types" :key="pageType" :value="pageType">
+                      {{ pageType }}
+                    </option>
+                  </select>
+                </div>    
+                
+                <div class="form-group mt-3" v-if="page_type !== 'main_page'">
+                  <br>
+                  tu bedzie wyswierlac sie dla innych stron niz main_page: <br>
+                  1. menus<br>
+                  2. parent_page                  
+                </div>
+
+                <div class="form-group mt-3" v-if="(page_type === 'cms') || (page_type === 'inner') || (page_type === 'privacy_policy' )">
+                  <br>
+                  tu bedzie contentCKE: CKEditor (dla: 'cms', 'inner', 'privacy_policy' )
+                </div>
+                <div class="form-group mt-3" v-else>
+                  <textarea  class="form-control"  rows="20" cols="50" v-model="content[lang]" :placeholder="`content ${lang}`" style="fontSize:'10pt'"></textarea>
+                </div>      
+                
+                <div className="form-group mt-3">
+                  <input type="file" name="images"  multiple/>
+                </div>              
+
+              </form>
 
           </div>
         </div>
-      </div>
+      </div><!-- container -->
 
     </div>
   </template>
@@ -38,26 +118,32 @@
 
     data() {
         const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disaapear
-        let configLangs = false;
-        let configDefaultLang = false;
+        let configLangs = [];
+        let configDefaultLang = '';
+        let pageTypes = [];
+
 
         if(storedStateConfig){
           configLangs = storedStateConfig.langs;
           configDefaultLang = storedStateConfig.defaultLang;
+          pageTypes = storedStateConfig.page_types;
         }
 
         return {
           langs: this.$store.state.config.langs || configLangs,
-          defaultLang: this.$store.state.config.defaultLang || configDefaultLang,
-          title: [''],
-          password: "",
-          apiProgress: false,
-          failMessage: undefined,
+          lang: this.$store.state.config.defaultLang || configDefaultLang,
+          page_types : this.$store.state.config.page_types || pageTypes,
+          page_type: 'cms',          
+          title: [],
+          short_title: [],
+          description: [],
+          content: [],          
+          pre_loader: true
         };
     },
     methods: {
-      changeLang( element  ){
-        alert('aaaaa' + element);
+      changeLang(lang){
+        this.lang = lang;
       }
     },    
     mounted() {
