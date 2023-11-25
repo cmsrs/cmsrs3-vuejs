@@ -29,9 +29,9 @@
           <div class="col-7">
 
               <!-- !to moze byc takze edit page -->
-              <button type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2" :disabled="pre_loader">
+              <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
-                <span  v-if="!pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
                 Add page
               </button>
               <button class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
@@ -115,14 +115,16 @@
   </template>
   <script>
   import storage from "../state/storage";
+  import { postPages } from "../api/apiCalls";
+
   export default {
 
     data() {
+
         const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disaapear
         let configLangs = [];
         let configDefaultLang = '';
         let pageTypes = [];
-
 
         if(storedStateConfig){
           configLangs = storedStateConfig.langs;
@@ -130,19 +132,47 @@
           pageTypes = storedStateConfig.page_types;
         }
 
+        const storedState = storage.getItem("auth");
+        let token = '';
+        if(storedState){
+          token = storedState.token;
+        }
+
         return {
           langs: this.$store.state.config.langs || configLangs,
           lang: this.$store.state.config.defaultLang || configDefaultLang,
           page_types : this.$store.state.config.page_types || pageTypes,
-          page_type: 'cms',          
+          token: this.$store.state.auth.token || token,
+          page_type: 'cms',                    
           title: [],
           short_title: [],
           description: [],
           content: [],          
-          pre_loader: true
+          pre_loader: false
         };
     },
     methods: {
+      async saveEditPage() {
+        this.pre_loader = true;
+        try {
+
+            const post = {
+                title: this.title,
+                short_title: this.short_title,
+                description: this.description,
+                page_type: this.page_type,
+                content: this.content,
+            };
+
+            const response = await postPages(post, this.token);
+            console.log('response__', response);
+            
+        } catch (error) {
+            this.failMessage = 'Invalid login credentials';
+            //console.log('_is_error__', error);
+        }
+        this.pre_loader = false;
+      },
       changeLang(lang){
         this.lang = lang;
       }

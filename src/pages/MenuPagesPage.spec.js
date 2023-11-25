@@ -12,6 +12,24 @@ import { rest } from "msw";
 //import store from "../state/store";
 import { createStore } from "vuex";
 
+let requestBody;
+let counter = 0;
+const server = setupServer(
+  rest.post("/api/pages", (req, res, ctx) => {
+    requestBody = req.body;
+    counter += 1;
+    return res(ctx.status(200));
+  })
+);
+
+beforeAll(() => server.listen());
+
+beforeEach(() => {
+  counter = 0;
+  server.resetHandlers();
+});
+
+
 const jsonStore = {
   auth: {
     isLoggedIn: true,
@@ -30,7 +48,6 @@ const jsonStore = {
 const store = createStore({
   state: jsonStore,
 });
-
 
 const setup = async () => {
   render(MenuPagesPage, {
@@ -86,16 +103,18 @@ describe("Pages page", () => {
       const content = screen.queryByPlaceholderText("content en");
       await userEvent.type(content, 'main page content');
 
+      const spinnerBeforClick = screen.queryByRole("pre_loader_save_edit_page");
+      expect(spinnerBeforClick).toBeNull();
 
+      const button = screen.queryByRole("button_save_edit_page" );
+      await userEvent.click(button);
 
-      //const button = screen.queryByRole("button", { name: "Add page" });
-      //console.log(button);
-      //await userEvent.click(button);
+      const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
+      expect(spinnerAfterClick).not.toBeNull();
 
+      await waitForElementToBeRemoved(spinnerAfterClick);
       
     });
-
-
 
   });
   

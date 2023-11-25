@@ -9,6 +9,10 @@ export const config = (token) => {
 };
 
 
+export const postPages = (post, token) => {
+    return axios.post("/api/pages?token="+token, post);
+};
+
 /*
 export const signUp = (body) => {
     return axios.post("/api/1.0/users", body);
