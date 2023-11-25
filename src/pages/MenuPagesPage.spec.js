@@ -20,8 +20,9 @@ const jsonStore = {
     password: "PasswordRs"
   },
   config: {
-    page_types: ['cms', 'gallery'],
-    langs: ['en'],
+    page_types: ['cms', 'gallery', 'main_page'],
+    langs: ['en'], //!!
+    defaultLang: 'en', //!!
     cache_enable: 1
   }
 };
@@ -61,7 +62,40 @@ describe("Pages page", () => {
       await setup();
       expect(store.state.auth.isLoggedIn).toBeTruthy();
       expect(store.state.config.langs[0]).toEqual('en');
+      expect(store.state.config.defaultLang).toEqual(store.state.config.langs[0]);
     });
+
+    it( 'create main_page', async ()  => {
+      await setup();
+      //const title =  screen.findByTestId("title_en");
+      //console.log(title); //null ?
+
+      const title = screen.queryByPlaceholderText("title en");
+      //console.log(title); //HTMLInputElement { [Symbol(_assign)]: [Function (anonymous)] }
+      await userEvent.type(title, 'main page title');
+
+      const shortTitle = screen.queryByPlaceholderText("short title en");
+      await userEvent.type(shortTitle, 'main page short title');
+
+      const description = screen.queryByPlaceholderText("description en");
+      await userEvent.type(description, 'main page description to google');
+
+      const pageTypeDropdown = screen.queryByLabelText("Page type:");
+      await userEvent.selectOptions(pageTypeDropdown, "main_page");
+
+      const content = screen.queryByPlaceholderText("content en");
+      await userEvent.type(content, 'main page content');
+
+
+
+      //const button = screen.queryByRole("button", { name: "Add page" });
+      //console.log(button);
+      //await userEvent.click(button);
+
+      
+    });
+
+
 
   });
   

@@ -8,8 +8,8 @@
           <div class="col-1" v-for="l in langs" :key="l">
             <span 
               :class="{ 'mr-1 cursor-pointer  text-primary': lang === l, 'mr-1 cursor-pointer text-secondary': lang !== l }"
-              @click="changeLang(l)" 
-              :placeholder="`title ${l}`" >{{l}}
+              @click="changeLang(l)"             
+              >{{l}}
             </span>
           </div>
         </div>
@@ -28,10 +28,11 @@
           <!-- Pages  -->
           <div class="col-7">
 
+              <!-- !to moze byc takze edit page -->
               <button type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span  v-if="!pre_loader" class="spinner-grow spinner-grow-sm"></span>
-                Edit/Add
+                Add page
               </button>
               <button class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
         
@@ -41,7 +42,7 @@
                 </div>
 
                 <div class="form-group mt-3 ">              
-                  <input  class="form-control"  v-model="short_title[lang]" :placeholder="`short_title ${lang}`">
+                  <input  class="form-control"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
                 </div>              
 
                 <div class="form-group mt-3 ">                            
@@ -77,7 +78,7 @@
                 </div>
 
                 <div class="form-group mt-3">
-                  <label for="pageType">Page Type:</label>
+                  <label for="pageType">Page type:</label>
                   <select class="rs-select form-control" id="pageType" v-model="page_type">
                     <option v-for="pageType in page_types" :key="pageType" :value="pageType">
                       {{ pageType }}
