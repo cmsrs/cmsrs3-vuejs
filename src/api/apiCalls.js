@@ -9,9 +9,14 @@ export const config = (token) => {
 };
 
 
-export const postPages = (post, token) => {
+export const postPage = (post, token) => {
     return axios.post("/api/pages?token="+token, post);
 };
+
+export const getPages = (token) => {
+    return axios.get("/api/pages?token="+token);
+};
+
 
 /*
 export const signUp = (body) => {

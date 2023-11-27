@@ -23,6 +23,13 @@
             <button class="btn btn-primary mt-2 mb-2" ><i class="fas fa-plus"></i> Add menu</button>
             <br>
             Menu testtt.
+
+            <div class="container">
+              <div class="row"  v-if="notRelatedPages" >
+                <h5 class="mt-4">Pages not related to menu</h5>
+              </div>
+            </div>
+
           </div>
 
           <!-- Pages  -->
@@ -115,7 +122,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPages } from "../api/apiCalls";
+  import { postPage, getPages } from "../api/apiCalls";
 
   export default {
 
@@ -139,6 +146,7 @@
         }
 
         return {
+          notRelatedPages: false,
           langs: this.$store.state.config.langs || configLangs,
           lang: this.$store.state.config.defaultLang || configDefaultLang,
           page_types : this.$store.state.config.page_types || pageTypes,
@@ -164,23 +172,41 @@
                 content: this.content,
             };
 
-            const response = await postPages(post, this.token);
-            console.log('response__', response);
+            await postPage(post, this.token);
             
         } catch (error) {
-            this.failMessage = 'Invalid login credentials';
-            //console.log('_is_error__', error);
+            //this.failMessage = 'Invalid save page';
+            console.log('_is_error__', error);
         }
         this.pre_loader = false;
       },
       changeLang(lang){
         this.lang = lang;
+      },
+      getNotRelatedPages( pages ) {
+        let out = [];
+        for(let page of pages){
+          if( !page.menu_id && ('inner' !== page.type ) ){
+            out.push(page);
+          }
+        }
+        return out;
       }
     },    
-    mounted() {
+    async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn ){
             this.$router.push("/");
         }
+        
+        try {
+            const response = await getPages(this.token);
+            this.notRelatedPages = this.getNotRelatedPages( response.data.data);
+
+        } catch (error) {
+            console.log(error);
+            //this.failResponse = error.response.data.message;
+        }
+        //this.pendingApiCall = false;        
     }
   };
   </script>
