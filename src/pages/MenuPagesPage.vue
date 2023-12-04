@@ -27,6 +27,9 @@
             <div class="container">
               <div class="row"  v-if="notRelatedPages" >
                 <h5 class="mt-4">Pages not related to menu</h5>
+                  <div class="row" v-for="(p, index) in notRelatedPages" :key="index">                  
+                    {{ p.short_title[defaultLang] }}
+                  </div>
               </div>
             </div>
 
@@ -145,10 +148,13 @@
           token = storedState.token;
         }
 
+        const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;
+
         return {
           notRelatedPages: false,
           langs: this.$store.state.config.langs || configLangs,
-          lang: this.$store.state.config.defaultLang || configDefaultLang,
+          lang: defaultLang, //it is changeable
+          defaultLang: defaultLang,
           page_types : this.$store.state.config.page_types || pageTypes,
           token: this.$store.state.auth.token || token,
           page_type: 'cms',                    
@@ -201,7 +207,6 @@
         try {
             const response = await getPages(this.token);
             this.notRelatedPages = this.getNotRelatedPages( response.data.data);
-
         } catch (error) {
             console.log(error);
             //this.failResponse = error.response.data.message;

@@ -13,7 +13,6 @@ import { rest } from "msw";
 import { createStore } from "vuex";
 
 
-
 const pages  = [
   {
     id: 1,
@@ -38,7 +37,6 @@ const pages  = [
     }   
   }
 ];  
-
 
 let requestBody;
 let counter = 0;
@@ -66,8 +64,6 @@ const server = setupServer(
 );
 
 
-
-
 const getPages = rest.get("/api/pages", (req, res, ctx) => {
   return res(
     ctx.status(200),
@@ -77,9 +73,6 @@ const getPages = rest.get("/api/pages", (req, res, ctx) => {
     })
   );
 });
-
-
-
 
 beforeAll(() => {
   server.listen();
@@ -185,6 +178,10 @@ describe("Pages page", () => {
         "Pages not related to menu"
       );
 
+      //console.log(shortTitle);
+      await screen.findByText(
+        pages[0]['short_title']['en']
+      );
       
     });
 
