@@ -158,10 +158,10 @@
           page_types : this.$store.state.config.page_types || pageTypes,
           token: this.$store.state.auth.token || token,
           page_type: 'cms',                    
-          title: [],
-          short_title: [],
-          description: [],
-          content: [],          
+          title: {},
+          short_title: {},
+          description: {},
+          content: {},
           pre_loader: false
         };
     },
@@ -178,7 +178,12 @@
                 content: this.content,
             };
 
+            //console.log('post', post);
+
             await postPage(post, this.token);
+
+            const response = await getPages(this.token);
+            this.notRelatedPages = this.getNotRelatedPages( response.data.data);
             
         } catch (error) {
             //this.failMessage = 'Invalid save page';
