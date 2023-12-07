@@ -31,6 +31,12 @@
                     {{ p.short_title[defaultLang] }}
                   </div>
               </div>
+              <div class="row"  v-if="innerPages" >
+                <h5 class="mt-4">Inner boxes</h5>
+                  <div class="row" v-for="(p, index) in innerPages" :key="index">                  
+                    {{ p.short_title[defaultLang]+" ("+ p.id +")" }}
+                  </div>
+              </div>
             </div>
 
           </div>
@@ -65,6 +71,7 @@
                       className="col-1"
                       name="published"
                       type="checkbox"
+                      v-model="published"
                       />
                   <label>Published</label>
                 </div>
@@ -95,7 +102,7 @@
                     </option>
                   </select>
                 </div>    
-                
+
                 <div class="form-group mt-3" v-if="page_type !== 'main_page'">
                   <br>
                   tu bedzie wyswierlac sie dla innych stron niz main_page: <br>
@@ -152,6 +159,7 @@
 
         return {
           notRelatedPages: false,
+          innerPages: false,
           langs: this.$store.state.config.langs || configLangs,
           lang: defaultLang, //it is changeable
           defaultLang: defaultLang,
@@ -162,7 +170,8 @@
           short_title: {},
           description: {},
           content: {},
-          pre_loader: false
+          pre_loader: false,
+          published: false
         };
     },
     methods: {
@@ -174,16 +183,17 @@
                 title: this.title,
                 short_title: this.short_title,
                 description: this.description,
-                page_type: this.page_type,
+                type: this.page_type, //!
                 content: this.content,
+                published: this.published
             };
 
             //console.log('post', post);
-
             await postPage(post, this.token);
 
             const response = await getPages(this.token);
             this.notRelatedPages = this.getNotRelatedPages( response.data.data);
+            this.innerPages = this.getInnerPages( response.data.data);
             
         } catch (error) {
             //this.failMessage = 'Invalid save page';
@@ -202,7 +212,16 @@
           }
         }
         return out;
-      }
+      },
+      getInnerPages( pages ) {
+        let out = [];
+        for(let page of pages){
+          if( 'inner' === page.type ){
+            out.push(page);
+          }
+        }
+        return out;
+      }      
     },    
     async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn ){
@@ -212,6 +231,7 @@
         try {
             const response = await getPages(this.token);
             this.notRelatedPages = this.getNotRelatedPages( response.data.data);
+            this.innerPages = this.getInnerPages( response.data.data);
         } catch (error) {
             console.log(error);
             //this.failResponse = error.response.data.message;

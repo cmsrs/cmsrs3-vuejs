@@ -35,6 +35,28 @@ const pages  = [
     content: {
         en: 'lorem ipsum'
     }   
+  },
+  {
+    id: 2,
+    published: 0,
+    commented: 0,
+    after_login: 0,
+    position: 1,
+    type: 'inner',
+    menu_id: null, 
+    page_id: null, 
+    title:{
+        en: 'inner test p2'
+    },
+    short_title: {
+        en:  'inner p22'
+    },
+    description:{
+        en: 'inner test1234'
+    },
+    content: {
+        en: 'inner lorem ipsum'
+    }   
   }
 ];  
 
@@ -143,13 +165,23 @@ describe("Pages page", () => {
       //console.log(title); //null ?
 
       //console.log(pages[0]['title']['en']);
+      await screen.findByText(
+        "Pages not related to menu"
+      );
+
+      //console.log(shortTitle);
+      await screen.findByText(
+        pages[0]['short_title']['en']
+      );
 
       const title = screen.queryByPlaceholderText("title en");
       //console.log(title); //HTMLInputElement { [Symbol(_assign)]: [Function (anonymous)] }
       await userEvent.type(title, pages[0]['title']['en']);
 
+      //const shortTitle2 = 'short Title 2';
       const shortTitle = screen.queryByPlaceholderText("short title en");
       await userEvent.type(shortTitle, pages[0]['short_title']['en']);
+      //await userEvent.type(shortTitle, shortTitle2);
 
       const description = screen.queryByPlaceholderText("description en");
       await userEvent.type(description, pages[0]['description']['en']);
@@ -178,12 +210,22 @@ describe("Pages page", () => {
         "Pages not related to menu"
       );
 
-      //console.log(shortTitle);
       await screen.findByText(
         pages[0]['short_title']['en']
       );
       
     });
+
+    it( 'show Inner boxes', async ()  => {
+      await setup();
+      await screen.findByText(
+        "Inner boxes"
+      );
+    
+      await screen.findByText(
+        pages[1]['short_title']['en']+' (2)'
+      );
+      });
 
   });
   
