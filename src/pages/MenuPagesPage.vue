@@ -5,12 +5,14 @@
       <div class="container">
         <div class="row mt-3 mb-3">
           <h3 class="col-10">CMS - menus and pages</h3>
-          <div class="col-1" v-for="l in langs" :key="l">
-            <span 
-              :class="{ 'mr-1 cursor-pointer  text-primary': lang === l, 'mr-1 cursor-pointer text-secondary': lang !== l }"
-              @click="changeLang(l)"             
-              >{{l}}
-            </span>
+          <div role="change_lang" class="col-2" v-if="langs.length > 1">
+            <div v-for="l in langs" :key="l">
+              <span 
+                :class="{ 'mr-1 cursor-pointer text-primary': lang === l, 'mr-1 cursor-pointer text-secondary': lang !== l }"
+                @click="changeLang(l)"             
+                >{{l}}
+              </span>
+            </div>
           </div>
         </div>
       </div>

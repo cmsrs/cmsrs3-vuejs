@@ -225,8 +225,57 @@ describe("Pages page", () => {
       await screen.findByText(
         pages[1]['short_title']['en']+' (2)'
       );
-      });
+    });
+
+    it( 'not show langs because one lang exist', async ()  => {
+      await setup();
+
+      const changeLang = screen.queryByRole("change_lang");
+      expect(changeLang).toBeNull();
+
+    });
 
   });
+
+  describe("Interactions many langs", () => {
+    const jsonStore2 = {
+      auth: {
+        isLoggedIn: true,
+        token:  "abcde12345",
+        email: "user_rs@mail.com",
+        password: "PasswordRs"
+      },
+      config: {
+        page_types: ['cms', 'gallery', 'main_page'],
+        langs: ['pl', 'en'], //!!
+        defaultLang: 'pl', //!!
+        cache_enable: 1
+      }
+    };
+    
+    const store2 = createStore({
+      state: jsonStore2,
+    });
+    
+    const setup2 = async () => {
+      render(MenuPagesPage, {
+        global: {
+          plugins: [store2],
+          mocks: {
+            $router: {
+              push: () => {},
+            },
+          },
+        },
+      });
+    };
+
+    it( 'show langs', async ()  => {
+      await setup2();
+      const changeLang = screen.queryByRole("change_lang");
+      expect(changeLang).toBeInTheDocument();      
+    });
+    
+  });  
   
 });
