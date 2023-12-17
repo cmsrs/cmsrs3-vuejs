@@ -28,7 +28,13 @@
               Add menu
             </button>
 
-            Menu testtt.
+            <div class="container">
+              <div class="row"  v-if="isAddMenu" >
+                <div class="form-group mt-3 ">              
+                  <input  class="form-control"  v-model="menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                </div>
+              </div>
+            </div>
 
             <div class="container">
               <div class="row"  v-if="notRelatedPages" >
@@ -177,7 +183,9 @@
           description: {},
           content: {},
           pre_loader: false,
-          published: false
+          published: false,
+          isAddMenu: false,
+          menu_name: {}
         };
     },
     methods: {
@@ -229,7 +237,7 @@
         return out;
       },
       addMenu(){
-        this.pre_loader = true;
+        this.isAddMenu = true;
       }
     },    
     async mounted() {
