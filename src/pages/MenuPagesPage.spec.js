@@ -232,7 +232,20 @@ describe("Pages page", () => {
 
       const changeLang = screen.queryByRole("change_lang");
       expect(changeLang).toBeNull();
+    });
 
+    it( 'add new menu', async ()  => {
+      await setup();
+
+      const spinnerBeforClick = screen.queryByRole("pre_loader_add_menu");
+      expect(spinnerBeforClick).toBeNull();      
+
+      const button = screen.queryByRole("button_add_menu" );
+      await userEvent.click(button);
+
+      const spinnerAfterClick = screen.queryByRole("pre_loader_add_menu");
+      expect(spinnerAfterClick).not.toBeNull();
+      
     });
 
   });

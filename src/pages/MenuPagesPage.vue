@@ -22,8 +22,12 @@
           <!-- Menu  -->
           <div class="col-5">
 
-            <button class="btn btn-primary mt-2 mb-2" ><i class="fas fa-plus"></i> Add menu</button>
-            <br>
+            <button role="button_add_menu"  @click.prevent="addMenu" class="btn btn-primary mt-2 mb-2" >
+              <i v-if="!pre_loader" class="fas fa-plus"></i>
+              <span role="pre_loader_add_menu" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>              
+              Add menu
+            </button>
+
             Menu testtt.
 
             <div class="container">
@@ -223,7 +227,10 @@
           }
         }
         return out;
-      }      
+      },
+      addMenu(){
+        this.pre_loader = true;
+      }
     },    
     async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn ){
