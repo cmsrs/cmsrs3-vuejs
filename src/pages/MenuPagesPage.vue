@@ -31,7 +31,9 @@
             <div class="container">
               <div class="row"  v-if="isAddMenu" >
                 <div class="form-group mt-3 ">              
-                  <input  class="form-control"  v-model="menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <input role="new_menu"  class="form-control"  v-model="menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <div role="save_menu_0" class="ml-2"  @click="saveMenu(0)"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu(0)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>                  
                 </div>
               </div>
             </div>
@@ -238,7 +240,17 @@
       },
       addMenu(){
         this.isAddMenu = true;
-      }
+      },
+      saveMenu(id){
+        if(0 === id ){
+          console.log('save_new_menu 0 todo');
+        }
+      },
+      delMenu(id){
+        if(0 === id ){        
+          this.isAddMenu = false;
+        }
+      }      
     },    
     async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn ){

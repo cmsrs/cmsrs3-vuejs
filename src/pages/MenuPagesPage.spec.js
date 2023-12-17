@@ -241,7 +241,44 @@ describe("Pages page", () => {
       await userEvent.click(button);
 
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
-      expect(addMenuPlaceholder).not.toBe(null);
+      expect(addMenuPlaceholder).not.toBe(null);      
+    });
+
+    it( 'del new menu', async ()  => {
+      await setup();
+
+      const button = screen.queryByRole("button_add_menu" );
+      await userEvent.click(button);
+
+      const newMenu = screen.queryByRole("new_menu");
+      expect(newMenu).not.toBe(null);      
+
+      const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
+      await userEvent.type(addMenuPlaceholder, 'New menu name');
+      //expect(addMenuPlaceholder).not.toBe(null);      
+
+      const icon = screen.queryByRole("del_menu_0");
+      await userEvent.click(icon);
+
+      const newMenuAfterClick = screen.queryByRole("new_menu");
+      expect(newMenuAfterClick).toBe(null);      
+
+    });
+
+    it( 'save new menu', async ()  => {
+      await setup();
+
+      const button = screen.queryByRole("button_add_menu" );
+      await userEvent.click(button);
+
+      const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
+      await userEvent.type(addMenuPlaceholder, 'New menu name');
+      //expect(addMenuPlaceholder).not.toBe(null);      
+
+      const icon = screen.queryByRole("save_menu_0");
+      await userEvent.click(icon);
+
+      //TODO!!!
     });
 
   });
