@@ -265,7 +265,34 @@ describe("Pages page", () => {
 
     });
 
-    it( 'save new menu', async ()  => {
+    it( 'save new menu - display error', async ()  => {
+      await setup();
+
+      const button = screen.queryByRole("button_add_menu" );
+      await userEvent.click(button);
+
+      //const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
+      //await userEvent.type(addMenuPlaceholder, 'New menu name');
+      const alertDangerBefor = screen.queryByRole("alert_danger");
+      expect( alertDangerBefor ).not.toBeInTheDocument();
+
+      const icon = screen.queryByRole("save_menu_0");
+      await userEvent.click(icon);
+
+      //await waitFor(() => {  //is it needed?
+      const alertDangerAfter = screen.queryByRole("alert_danger");
+      expect( alertDangerAfter ).toBeInTheDocument();
+
+      const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
+      await userEvent.type(addMenuPlaceholder, 'N');
+
+      const alertDangerAfter2 = screen.queryByRole("alert_danger");
+      expect( alertDangerAfter2 ).not.toBeInTheDocument();
+
+      //});      
+    });
+
+    it( 'save new menu - display good message', async ()  => {
       await setup();
 
       const button = screen.queryByRole("button_add_menu" );
@@ -273,13 +300,26 @@ describe("Pages page", () => {
 
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
       await userEvent.type(addMenuPlaceholder, 'New menu name');
-      //expect(addMenuPlaceholder).not.toBe(null);      
+
+      const alertSuccessBefor = screen.queryByRole("alert_success");
+      expect( alertSuccessBefor ).not.toBeInTheDocument();
 
       const icon = screen.queryByRole("save_menu_0");
       await userEvent.click(icon);
 
-      //TODO!!!
+      //await waitFor(() => {  //is it needed?
+      const alertSuccessAfter = screen.queryByRole("alert_danger");
+      expect( alertSuccessAfter ).toBeInTheDocument();
+
+      //const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
+      //await userEvent.type(addMenuPlaceholder, 'N');
+
+      //const alertDangerAfter2 = screen.queryByRole("alert_danger");
+      //expect( alertDangerAfter2 ).not.toBeInTheDocument();
+
+      //});      
     });
+
 
   });
 

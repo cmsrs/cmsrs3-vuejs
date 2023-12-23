@@ -18,6 +18,17 @@
       </div>
 
       <div class="container">
+        <div class="row mt-3 mb-3">
+          <div v-if="msgGood" class="alert alert-primary" role="alert_success">
+            {{ msgGood }}
+          </div>
+          <div v-if="msgWrong" class="alert alert-danger" role="alert_danger">
+            {{ msgWrong }}
+          </div>      
+        </div>
+      </div>
+
+      <div class="container">
         <div class="row">
           <!-- Menu  -->
           <div class="col-5">
@@ -31,7 +42,7 @@
             <div class="container">
               <div class="row"  v-if="isAddMenu" >
                 <div class="form-group mt-3 ">              
-                  <input role="new_menu"  class="form-control"  v-model="menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <input role="new_menu"  class="form-control"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
                   <div role="save_menu_0" class="ml-2"  @click="saveMenu(0)"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu(0)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>                  
                 </div>
@@ -187,7 +198,9 @@
           pre_loader: false,
           published: false,
           isAddMenu: false,
-          menu_name: {}
+          new_menu_name: {},
+          msgWrong: '',
+          msgGood: ''
         };
     },
     methods: {
@@ -243,7 +256,15 @@
       },
       saveMenu(id){
         if(0 === id ){
-          console.log('save_new_menu 0 todo');
+          for(let lang of this.langs){
+            if ( !this.new_menu_name[lang] ){
+              this.msgWrong = 'Add menu name for '+lang+' lang';
+              break;
+            }
+          }
+          if(!this.msgWrong){
+            console.log('no error todo');
+          }
         }
       },
       delMenu(id){
