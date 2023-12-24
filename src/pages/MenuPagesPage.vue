@@ -287,6 +287,16 @@
             //this.failResponse = error.response.data.message;
         }
         //this.pendingApiCall = false;        
+    },
+    watch: {
+      new_menu_name: {
+        handler: function () {
+          this.msgWrong = '';
+          this.msgGood = '';
+        },
+        deep: true
+      }
     }
+
   };
   </script>
