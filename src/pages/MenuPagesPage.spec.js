@@ -308,7 +308,7 @@ describe("Pages page", () => {
       await userEvent.click(icon);
 
       //await waitFor(() => {  //is it needed?
-      const alertSuccessAfter = screen.queryByRole("alert_danger");
+      const alertSuccessAfter = screen.queryByRole("alert_success");
       expect( alertSuccessAfter ).toBeInTheDocument();
 
       //const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
