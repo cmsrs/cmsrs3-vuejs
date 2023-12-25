@@ -62,11 +62,17 @@ const pages  = [
 
 let requestBody;
 let counter = 0;
+let counterMenu = 0;
 const server = setupServer(
   //?token=abcde12345
   rest.post("/api/pages", (req, res, ctx) => {
     requestBody = req.body;
     counter += 1;
+    return res(ctx.status(200));
+  }),
+  rest.post("/api/menus", (req, res, ctx) => {
+    requestBody = req.body;
+    counterMenu += 1;
     return res(ctx.status(200));
   }),
   rest.get("/api/pages", (req, res, ctx) => {
@@ -102,6 +108,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   counter = 0;
+  counterMenu = 0;  
   server.resetHandlers();
 });
 
@@ -265,9 +272,7 @@ describe("Pages page", () => {
 
     });
 
-    it( 'save new menu - display error', async ()  => {
-      await setup();
-
+    const setup_display_message_err = async () => {
       const button = screen.queryByRole("button_add_menu" );
       await userEvent.click(button);
 
@@ -279,20 +284,46 @@ describe("Pages page", () => {
       const icon = screen.queryByRole("save_menu_0");
       await userEvent.click(icon);
 
-      //await waitFor(() => {  //is it needed?
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect( alertDangerAfter ).toBeInTheDocument();
+    };
+
+
+    it( 'save new menu - display error and clear msg after change menu name', async ()  => {
+      await setup();
+      await setup_display_message_err();
 
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
       await userEvent.type(addMenuPlaceholder, 'N');
 
       const alertDangerAfter2 = screen.queryByRole("alert_danger");
       expect( alertDangerAfter2 ).not.toBeInTheDocument();
-
-      //});      
     });
 
-    it( 'save new menu - display good message', async ()  => {
+    it( 'save new menu - display error and clear msg after delete menu', async ()  => {
+      await setup();
+      await setup_display_message_err();
+
+      const icon = screen.queryByRole("del_menu_0");
+      await userEvent.click(icon);
+
+      const alertDangerAfter2 = screen.queryByRole("alert_danger");
+      expect( alertDangerAfter2 ).not.toBeInTheDocument();
+    });
+
+    it( 'save new menu - display error and clear msg after save menu again', async ()  => {
+      await setup();
+      await setup_display_message_err();
+
+      const icon = screen.queryByRole("save_menu_0");
+      await userEvent.click(icon);
+
+      const alertDangerAfter2 = screen.queryByRole("alert_danger");
+      expect( alertDangerAfter2 ).toBeInTheDocument();
+    });
+
+
+    it( 'save new menu - display good message and click add menu button', async ()  => {
       await setup();
 
       const button = screen.queryByRole("button_add_menu" );
@@ -304,20 +335,28 @@ describe("Pages page", () => {
       const alertSuccessBefor = screen.queryByRole("alert_success");
       expect( alertSuccessBefor ).not.toBeInTheDocument();
 
+      expect(counterMenu).toBe(0);      
+      const spinnerBeforClick = screen.queryByRole("pre_loader_add_menu");
+      expect(spinnerBeforClick).toBeNull();
+
       const icon = screen.queryByRole("save_menu_0");
       await userEvent.click(icon);
 
-      //await waitFor(() => {  //is it needed?
+      const spinnerAfterClick = screen.queryByRole("pre_loader_add_menu");
+      expect(spinnerAfterClick).not.toBeNull();
+
+      await waitForElementToBeRemoved(spinnerAfterClick);
+
+      expect(counterMenu).toBe(1);      
       const alertSuccessAfter = screen.queryByRole("alert_success");
       expect( alertSuccessAfter ).toBeInTheDocument();
 
-      //const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
-      //await userEvent.type(addMenuPlaceholder, 'N');
+      //and again we click add menu and alert_success should be dissapeared
+      const button2 = screen.queryByRole("button_add_menu" );
+      await userEvent.click(button2);
+      const alertSuccessAfter2 = screen.queryByRole("alert_success");
+      expect( alertSuccessAfter2 ).not.toBeInTheDocument();
 
-      //const alertDangerAfter2 = screen.queryByRole("alert_danger");
-      //expect( alertDangerAfter2 ).not.toBeInTheDocument();
-
-      //});      
     });
 
 

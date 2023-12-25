@@ -157,7 +157,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages } from "../api/apiCalls";
+  import { postPage, getPages, postMenu } from "../api/apiCalls";
 
   export default {
 
@@ -252,9 +252,11 @@
         return out;
       },
       addMenu(){
+        this.clearMsg();
         this.isAddMenu = true;
       },
-      saveMenu(id){
+      async saveMenu(id){
+        this.clearMsg();
         if(0 === id ){
           for(let lang of this.langs){
             if ( !this.new_menu_name[lang] ){
@@ -263,15 +265,31 @@
             }
           }
           if(!this.msgWrong){
-            console.log('no error todo');
+            this.pre_loader = true;
+            try {
+              const post = {
+                name: this.new_menu_name
+              };
+              await postMenu(post, this.token);
+              this.msgGood = 'Menu has been added';
+            } catch (error) {
+              console.log('_is_error__', error);
+              this.msgWrong = 'Add menu problem = ' + error;
+            }
+            this.pre_loader = false;
           }
         }
       },
       delMenu(id){
+        this.clearMsg();
         if(0 === id ){        
           this.isAddMenu = false;
         }
-      }      
+      },
+      clearMsg(){
+        this.msgWrong = '';
+        this.msgGood = '';
+      }
     },    
     async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn ){
@@ -291,8 +309,7 @@
     watch: {
       new_menu_name: {
         handler: function () {
-          this.msgWrong = '';
-          this.msgGood = '';
+          this.clearMsg();
         },
         deep: true
       }

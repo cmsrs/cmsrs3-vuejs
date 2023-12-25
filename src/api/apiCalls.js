@@ -17,6 +17,9 @@ export const getPages = (token) => {
     return axios.get("/api/pages?token="+token);
 };
 
+export const postMenu = (post, token) => {
+    return axios.post("/api/menus?token="+token, post);
+};
 
 /*
 export const signUp = (body) => {
