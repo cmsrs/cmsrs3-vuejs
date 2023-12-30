@@ -60,10 +60,27 @@ const pages  = [
   }
 ];  
 
+const menus  = [
+  {
+    id: 1,
+    position: 1,
+    name: {
+      en: 'test menu1'
+    }
+  },
+  {
+    id: 2,
+    position: 2,
+    name: {
+      en: 'test menu2'
+    }
+  }  
+];
+
 let requestBody;
 let counter = 0;
 let counterMenu = 0;
-const server = setupServer(
+let server = setupServer(
   //?token=abcde12345
   rest.post("/api/pages", (req, res, ctx) => {
     requestBody = req.body;
@@ -87,11 +104,26 @@ const server = setupServer(
     );
   
     //return res(ctx.status(200));
-  })
+  }),
+    
+  rest.get("/api/menus", (req, res, ctx) => {
+    requestBody = req.body;
+    //counter2 += 1;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: menus
+      })
+    );
+  
+    //return res(ctx.status(200));
+  }),
+  
 
 );
 
-
+/*
 const getPages = rest.get("/api/pages", (req, res, ctx) => {
   return res(
     ctx.status(200),
@@ -101,6 +133,18 @@ const getPages = rest.get("/api/pages", (req, res, ctx) => {
     })
   );
 });
+
+//don't use
+const getMenus = rest.get("/api/menus", (req, res, ctx) => {
+  return res(
+    ctx.status(200),
+    ctx.json({
+      success: true,
+      data: menus
+    })
+  );
+});
+*/
 
 beforeAll(() => {
   server.listen();
@@ -145,11 +189,17 @@ const setup = async () => {
   });
 };
 
-    
+const waitForAjaxes = async () => {
+  const spinner = screen.queryByRole("pre_loader_save_edit_page");
+  expect(spinner).not.toBeNull();
+  await waitForElementToBeRemoved(spinner);
+};
+
 describe("Pages page", () => {
   describe("Layout", () => {
     it( 'has pages header', async ()  => {
         await setup();
+        await waitForAjaxes();        
         const header = screen.queryByRole("heading", { name: "CMS - menus and pages" });
         expect(header).toBeInTheDocument();  //bez zalogowania widzimy header - nie wiem czy to jest dobry test.
     });
@@ -160,6 +210,7 @@ describe("Pages page", () => {
 
     it( 'has user login in order to see pages and get access to config', async ()  => {
       await setup();
+      await waitForAjaxes();      
       expect(store.state.auth.isLoggedIn).toBeTruthy();
       expect(store.state.config.langs[0]).toEqual('en');
       expect(store.state.config.defaultLang).toEqual(store.state.config.langs[0]);
@@ -167,6 +218,7 @@ describe("Pages page", () => {
 
     it( 'create main_page', async ()  => {
       await setup();
+      await waitForAjaxes();      
       //server.use(getPages);
       //const title =  screen.findByTestId("title_en");
       //console.log(title); //null ?
@@ -225,6 +277,7 @@ describe("Pages page", () => {
 
     it( 'show Inner boxes', async ()  => {
       await setup();
+      await waitForAjaxes();      
       await screen.findByText(
         "Inner boxes"
       );
@@ -236,6 +289,7 @@ describe("Pages page", () => {
 
     it( 'not show langs because one lang exist', async ()  => {
       await setup();
+      await waitForAjaxes();      
 
       const changeLang = screen.queryByRole("change_lang");
       expect(changeLang).toBeNull();
@@ -243,6 +297,7 @@ describe("Pages page", () => {
 
     it( 'add new menu', async ()  => {
       await setup();
+      await waitForAjaxes();      
 
       const button = screen.queryByRole("button_add_menu" );
       await userEvent.click(button);
@@ -253,6 +308,7 @@ describe("Pages page", () => {
 
     it( 'del new menu', async ()  => {
       await setup();
+      await waitForAjaxes();      
 
       const button = screen.queryByRole("button_add_menu" );
       await userEvent.click(button);
@@ -291,6 +347,8 @@ describe("Pages page", () => {
 
     it( 'save new menu - display error and clear msg after change menu name', async ()  => {
       await setup();
+      await waitForAjaxes();
+
       await setup_display_message_err();
 
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
@@ -302,6 +360,8 @@ describe("Pages page", () => {
 
     it( 'save new menu - display error and clear msg after delete menu', async ()  => {
       await setup();
+      await waitForAjaxes();
+
       await setup_display_message_err();
 
       const icon = screen.queryByRole("del_menu_0");
@@ -313,6 +373,8 @@ describe("Pages page", () => {
 
     it( 'save new menu - display error and clear msg after save menu again', async ()  => {
       await setup();
+      await waitForAjaxes();
+
       await setup_display_message_err();
 
       const icon = screen.queryByRole("save_menu_0");
@@ -325,6 +387,11 @@ describe("Pages page", () => {
 
     it( 'save new menu - display good message and click add menu button', async ()  => {
       await setup();
+      await waitForAjaxes();
+      //const spinner = screen.queryByRole("pre_loader_save_edit_page");
+      //expect(spinner).not.toBeNull();
+      //await waitForElementToBeRemoved(spinner);
+    
 
       const button = screen.queryByRole("button_add_menu" );
       await userEvent.click(button);
@@ -357,6 +424,20 @@ describe("Pages page", () => {
       const alertSuccessAfter2 = screen.queryByRole("alert_success");
       expect( alertSuccessAfter2 ).not.toBeInTheDocument();
 
+    });
+
+
+    it( 'show saved two menus', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      await waitFor(() => {
+        const menus = screen.queryAllByRole("menu");
+        expect(menus.length).toBe(2);
+        menus.forEach((menu, index) => {
+          expect(menu).toBeInTheDocument();
+        });
+      });    
     });
 
 
@@ -397,6 +478,8 @@ describe("Pages page", () => {
 
     it( 'show langs', async ()  => {
       await setup2();
+      await waitForAjaxes();
+            
       const changeLang = screen.queryByRole("change_lang");
       expect(changeLang).toBeInTheDocument();      
     });

@@ -44,15 +44,27 @@
                 <div class="form-group mt-3 ">              
                   <input role="new_menu"  class="form-control"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
                   <div role="save_menu_0" class="ml-2"  @click="saveMenu(0)"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu(0)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>                  
+                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu(0)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
                 </div>
               </div>
             </div>
 
+
+            <div class="container">
+              <div class="row" v-for="(m, index) in menus" :key="m.id">
+                <div class="form-group mt-3 ">              
+                  <input role="menu"  class="form-control"  v-model="menus[index]['name'][lang]" >
+                  <div role="save_menu" class="ml-2"  @click="saveMenu(m.id)"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+                </div>
+              </div>
+            </div>
+
+
             <div class="container">
               <div class="row"  v-if="notRelatedPages" >
                 <h5 class="mt-4">Pages not related to menu</h5>
-                  <div class="row" v-for="(p, index) in notRelatedPages" :key="index">                  
+                  <div class="row" v-for="(p, index) in notRelatedPages" :key="index">
                     {{ p.short_title[defaultLang] }}
                   </div>
               </div>
@@ -157,7 +169,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages, postMenu } from "../api/apiCalls";
+  import { postPage, getPages, postMenu, getMenus } from "../api/apiCalls";
 
   export default {
 
@@ -183,6 +195,8 @@
         const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;
 
         return {
+          msgWrong: '',
+          msgGood: '',
           notRelatedPages: false,
           innerPages: false,
           langs: this.$store.state.config.langs || configLangs,
@@ -199,8 +213,7 @@
           published: false,
           isAddMenu: false,
           new_menu_name: {},
-          msgWrong: '',
-          msgGood: ''
+          menus: []
         };
     },
     methods: {
@@ -289,22 +302,37 @@
       clearMsg(){
         this.msgWrong = '';
         this.msgGood = '';
-      }
+      },
+      //getAllMenus( menus ){
+        //console.log(menus);
+        //return menus;
+      //}
     },    
     async mounted() {
-        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn ){
+        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token ){
+            console.log('_________przekierowanie___');
             this.$router.push("/");
         }
         
+        this.pre_loader = true;
         try {
-            const response = await getPages(this.token);
-            this.notRelatedPages = this.getNotRelatedPages( response.data.data);
-            this.innerPages = this.getInnerPages( response.data.data);
+            const responseM = await getMenus(this.token);            
+            this.menus = responseM.data.data;
         } catch (error) {
-            console.log(error);
-            //this.failResponse = error.response.data.message;
+            console.log( 'error get menu=', error);
         }
+                
+        try {
+            const responseP = await getPages(this.token);
+            this.notRelatedPages = this.getNotRelatedPages( responseP.data.data);
+            this.innerPages = this.getInnerPages( responseP.data.data);
+        } catch (error) {
+            console.log( 'error get pages=', error);
+        }
+
+        this.pre_loader = false;
         //this.pendingApiCall = false;        
+        
     },
     watch: {
       new_menu_name: {

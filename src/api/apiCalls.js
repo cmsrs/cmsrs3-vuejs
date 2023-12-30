@@ -21,8 +21,6 @@ export const postMenu = (post, token) => {
     return axios.post("/api/menus?token="+token, post);
 };
 
-/*
-export const signUp = (body) => {
-    return axios.post("/api/1.0/users", body);
+export const getMenus = (token) => {
+    return axios.get("/api/menus?token="+token);
 };
-*/
