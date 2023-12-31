@@ -437,7 +437,25 @@ describe("Pages page", () => {
         menus.forEach((menu, index) => {
           expect(menu).toBeInTheDocument();
         });
-      });    
+
+        const downMenu = screen.queryAllByRole("down_menu");
+        expect(downMenu.length).toBe(2);
+        downMenu.forEach((dMenu, index) => {
+          expect(dMenu).toBeInTheDocument();
+        });
+
+        const upMenu = screen.queryAllByRole("up_menu");
+        expect(upMenu.length).toBe(2);
+        upMenu.forEach((uMenu, index) => {
+          expect(uMenu).toBeInTheDocument();
+        });
+
+      }); 
+      
+      
+
+
+
     });
 
 
@@ -485,5 +503,72 @@ describe("Pages page", () => {
     });
     
   });  
+
+  describe("Interactions one menu", () => {
+
+    it( 'not display positions in one menu', async ()  => {
+  
+      const menus2  = [
+        {
+          id: 1,
+          position: 1,
+          name: {
+            en: 'test menu1'
+          }
+        },
+      ];
+  
+      server.resetHandlers();
+      let server2 = setupServer(
+        rest.get("/api/pages", (req, res, ctx) => {
+          requestBody = req.body;
+          //counter2 += 1;
+          return res(
+            ctx.status(200),
+            ctx.json({
+              success: true,
+              data: pages
+            })
+          );
+        }),
+        rest.get("/api/menus", (req, res, ctx) => {
+          requestBody = req.body;
+          return res(
+            ctx.status(200),
+            ctx.json({
+              success: true,
+              data: menus2
+            })
+          );
+        }),
+        
+      
+      );
+      server2.listen();
+    
+  
+      await setup();
+      await waitForAjaxes();
+  
+      await waitFor(() => {
+        const menus = screen.queryAllByRole("menu");
+        expect(menus.length).toBe(1);
+        menus.forEach((menu, index) => {
+          expect(menu).toBeInTheDocument();
+        });
+
+        const downMenu = screen.queryByRole("down_menu");
+        expect( downMenu ).not.toBeInTheDocument();
+            
+        const upMenu = screen.queryByRole("up_menu");
+        expect( upMenu ).not.toBeInTheDocument();
+          
+      });    
+  
+  
+      server2.resetHandlers();
+    });
+        
+  });
   
 });

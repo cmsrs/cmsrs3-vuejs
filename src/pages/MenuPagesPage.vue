@@ -56,6 +56,10 @@
                   <input role="menu"  class="form-control"  v-model="menus[index]['name'][lang]" >
                   <div role="save_menu" class="ml-2"  @click="saveMenu(m.id)"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+
+                  <div v-if="menus.length > 1" role="down_menu"  class="ml-2"  @click="downMenu(m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                  <div v-if="menus.length > 1" role="up_menu"  class="ml-2"  @click="upMenu(m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+
                 </div>
               </div>
             </div>
@@ -303,14 +307,17 @@
         this.msgWrong = '';
         this.msgGood = '';
       },
-      //getAllMenus( menus ){
-        //console.log(menus);
-        //return menus;
-      //}
+
+      downMenu(){
+        console.log('click downMenu');
+      },
+      upMenu(){
+        console.log('click upMenu');
+      },
     },    
     async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token ){
-            console.log('_________przekierowanie___');
+            //console.log('_________przekierowanie___');
             this.$router.push("/");
         }
         
@@ -330,9 +337,7 @@
             console.log( 'error get pages=', error);
         }
 
-        this.pre_loader = false;
-        //this.pendingApiCall = false;        
-        
+        this.pre_loader = false;      
     },
     watch: {
       new_menu_name: {
