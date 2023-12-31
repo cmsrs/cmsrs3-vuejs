@@ -57,8 +57,8 @@
                   <div role="save_menu" class="ml-2"  @click="saveMenu(m.id)"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
-                  <div v-if="menus.length > 1" role="down_menu"  class="ml-2"  @click="downMenu(m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-                  <div v-if="menus.length > 1" role="up_menu"  class="ml-2"  @click="upMenu(m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                  <div v-if="menus.length > 1" role="down_menu"  class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                  <div v-if="menus.length > 1" role="up_menu"  class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
 
                 </div>
               </div>
@@ -173,7 +173,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages, postMenu, getMenus } from "../api/apiCalls";
+  import { postPage, getPages, postMenu, getMenus, setMenuPosition } from "../api/apiCalls";
 
   export default {
 
@@ -307,16 +307,34 @@
         this.msgWrong = '';
         this.msgGood = '';
       },
+      async startLoading() {        
+        this.clearMsg();
+        if (this.pre_loader) {
+            return false;
+        }    
+        console.log('czyszcze info');
+        this.pre_loader = true;
+        return true;
+      },
+      async positionMenu(direction, menuId){
+        if (this.startLoading()) {
+          try {
+            await setMenuPosition( direction, menuId, this.token);
+            this.msgGood = 'Position menu has been changed';
+            console.log('wstawiam info');
+          } catch (error) {
+            console.log('_is_error__', error);
+            this.msgWrong = 'Position menu problem = ' + error;
+          }
+          this.pre_loader = false;
+        }
+      }
 
-      downMenu(){
-        console.log('click downMenu');
-      },
-      upMenu(){
-        console.log('click upMenu');
-      },
+
+
     },    
     async mounted() {
-        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token ){
+        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
             //console.log('_________przekierowanie___');
             this.$router.push("/");
         }

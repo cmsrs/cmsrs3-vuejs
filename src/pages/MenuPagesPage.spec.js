@@ -120,6 +120,24 @@ let server = setupServer(
     //return res(ctx.status(200));
   }),
   
+  rest.get("/api/menus/position/down/1", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+      })
+    );
+  }),
+
+  rest.get("/api/menus/position/up/2", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+      })
+    );
+  }),
+
 
 );
 
@@ -444,19 +462,78 @@ describe("Pages page", () => {
           expect(dMenu).toBeInTheDocument();
         });
 
+        //const firstDownMenu = downMenu[0];
+        //userEvent.click(firstDownMenu);        
+
         const upMenu = screen.queryAllByRole("up_menu");
         expect(upMenu.length).toBe(2);
         upMenu.forEach((uMenu, index) => {
           expect(uMenu).toBeInTheDocument();
         });
 
-      }); 
-      
-      
-
-
-
+        //const secondDownMenu = upMenu[1];
+        //userEvent.click(secondDownMenu);        
+      });             
     });
+
+
+    it( 'menu change position down', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      await waitFor(() => {
+
+        const downMenu = screen.queryAllByRole("down_menu");
+        const firstDownMenu = downMenu[0];
+        userEvent.click(firstDownMenu);    
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();
+        
+      });             
+    });
+
+    it( 'many request - menu change position down', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      await waitFor(() => {
+
+        const downMenu = screen.queryAllByRole("down_menu");
+        const firstDownMenu = downMenu[0];
+        userEvent.click(firstDownMenu);    
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();
+
+        userEvent.click(firstDownMenu);
+        const alertSuccessAfter2 = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter2 ).not.toBeInTheDocument();
+
+
+        // userEvent.click(firstDownMenu);
+        // userEvent.click(firstDownMenu);
+        // userEvent.click(firstDownMenu);
+        // userEvent.click(firstDownMenu);
+        // userEvent.click(firstDownMenu);
+      });             
+    });
+
+
+    it( 'menu change position up', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      await waitFor(() => {
+
+        const upMenu = screen.queryAllByRole("up_menu");
+        const secondDownMenu = upMenu[1];
+        userEvent.click(secondDownMenu);        
+
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();
+        
+      });             
+    });
+
 
 
   });

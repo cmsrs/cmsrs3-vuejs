@@ -24,3 +24,7 @@ export const postMenu = (post, token) => {
 export const getMenus = (token) => {
     return axios.get("/api/menus?token="+token);
 };
+
+export const setMenuPosition = (direction, id, token) => {
+    return axios.get("/api/menus/position/"+direction+"/"+id+"?token="+token);
+};
