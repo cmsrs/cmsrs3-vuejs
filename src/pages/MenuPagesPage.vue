@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div class="container">
+      <div class="container msg-info mt-3 mb-3">
         <div class="row mt-3 mb-3">
           <div v-if="msgGood" class="alert alert-primary" role="alert_success">
             {{ msgGood }}
@@ -57,7 +57,7 @@
                   <div role="save_menu" class="ml-2"  @click="saveMenu(m.id)"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
-                  <div v-if="menus.length > 1" role="down_menu"  class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                  <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
                   <div v-if="menus.length > 1" role="up_menu"  class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
 
                 </div>
@@ -312,26 +312,34 @@
         if (this.pre_loader) {
             return false;
         }    
-        console.log('czyszcze info');
+        //console.log('czyszcze info');
         this.pre_loader = true;
         return true;
       },
       async positionMenu(direction, menuId){
-        if (this.startLoading()) {
-          try {
-            await setMenuPosition( direction, menuId, this.token);
-            this.msgGood = 'Position menu has been changed';
-            console.log('wstawiam info');
-          } catch (error) {
-            console.log('_is_error__', error);
-            this.msgWrong = 'Position menu problem = ' + error;
-          }
-          this.pre_loader = false;
+        if (!this.startLoading()) {
+            return false;
         }
+        try {
+            const pos = await setMenuPosition( direction, menuId, this.token);
+          
+            if(!pos.data.success){
+              console.log( 'position not change - todo');
+            }
+
+
+            //TODO - dry
+            const responseM = await getMenus(this.token);            
+            this.menus = responseM.data.data;
+
+            this.msgGood = 'Position menu has been changed';
+            //console.log('wstawiam info');
+        } catch (error) {
+          console.log('_is_error__', error);
+          this.msgWrong = 'Position menu problem = ' + error;
+        }
+        this.pre_loader = false;
       }
-
-
-
     },    
     async mounted() {
         if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){

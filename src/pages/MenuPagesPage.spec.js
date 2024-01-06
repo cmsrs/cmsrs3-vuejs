@@ -477,15 +477,15 @@ describe("Pages page", () => {
     });
 
 
-    it( 'menu change position down', async ()  => {
+    it( 'one request - menu change position down', async ()  => {
       await setup();
       await waitForAjaxes();
 
-      await waitFor(() => {
+      const downMenu = screen.queryAllByRole("down_menu");
+      const firstDownMenu = downMenu[0];
+      await userEvent.click(firstDownMenu);    
 
-        const downMenu = screen.queryAllByRole("down_menu");
-        const firstDownMenu = downMenu[0];
-        userEvent.click(firstDownMenu);    
+      await waitFor(() => {        
         const alertSuccessAfter = screen.queryByRole("alert_success");
         expect( alertSuccessAfter ).toBeInTheDocument();
         
@@ -495,26 +495,22 @@ describe("Pages page", () => {
     it( 'many request - menu change position down', async ()  => {
       await setup();
       await waitForAjaxes();
-
-      await waitFor(() => {
-
-        const downMenu = screen.queryAllByRole("down_menu");
-        const firstDownMenu = downMenu[0];
-        userEvent.click(firstDownMenu);    
+    
+      const downMenu = screen.queryAllByRole("down_menu");
+      const firstDownMenu = downMenu[0];
+      await  userEvent.click(firstDownMenu);    
+      await waitFor(() => {        
         const alertSuccessAfter = screen.queryByRole("alert_success");
         expect( alertSuccessAfter ).toBeInTheDocument();
+      });
 
-        userEvent.click(firstDownMenu);
+      const downMenu2 = screen.queryAllByRole("down_menu");
+      const firstDownMenu2 = downMenu2[0];
+      await userEvent.click(firstDownMenu2);
+      await waitFor(() => {        
         const alertSuccessAfter2 = screen.queryByRole("alert_success");
-        expect( alertSuccessAfter2 ).not.toBeInTheDocument();
-
-
-        // userEvent.click(firstDownMenu);
-        // userEvent.click(firstDownMenu);
-        // userEvent.click(firstDownMenu);
-        // userEvent.click(firstDownMenu);
-        // userEvent.click(firstDownMenu);
-      });             
+        expect( alertSuccessAfter2 ).toBeInTheDocument();
+      });
     });
 
 

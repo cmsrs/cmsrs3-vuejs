@@ -1,4 +1,13 @@
 select.rs-select {
     appearance: auto;
-  }
-  
+}
+
+.disabled-if-loader {
+    pointer-events: none; /* Wyłącza możliwość interakcji, np. klikania */
+    opacity: 0.1; /* Możesz dostosować przezroczystość, aby zaznaczyć, że element jest wyłączony */
+    cursor: not-allowed; /* Zmienia kursor na "not-allowed" dla lepszej sygnalizacji */
+} 
+
+.msg-info {
+  height: 50px;
+}
