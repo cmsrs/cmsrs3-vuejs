@@ -173,7 +173,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages, postMenu, getMenus, setMenuPosition } from "../api/apiCalls";
+  import { postPage, getPages, postMenu, getMenus, putMenu, setMenuPosition } from "../api/apiCalls";
 
   export default {
 
@@ -282,13 +282,50 @@
             }
           }
           if(!this.msgWrong){
-            this.pre_loader = true;
+            //this.pre_loader = true;
+            if (!this.startLoading()) {
+              return false;
+            }
+
             try {
               const post = {
                 name: this.new_menu_name
               };
               await postMenu(post, this.token);
               this.msgGood = 'Menu has been added';
+            } catch (error) {
+              console.log('_is_error__', error);
+              this.msgWrong = 'Add menu problem = ' + error;
+            }
+            this.pre_loader = false;
+          }
+        }else{
+          if( !this.menus[id]['name'] ){
+            console.log('sth wrong i cant find menu with id='+ id);
+            return false;
+          }
+          const menuByLangs = this.menus[id]['name'];
+          console.log('po zmianie i tu jest blad w testach i w przegladarce jak sie reczenie testuje', menuByLangs); //not change, why
+          for(let lang of this.langs){
+            if ( !menuByLangs[lang] ){
+              this.msgWrong = 'Add menu name for '+lang+' lang';
+              break;
+            }
+          }
+
+          if(!this.msgWrong){
+            //this.pre_loader = true;
+            if (!this.startLoading()) {
+              return false;
+            }
+
+            try {
+              const post = {
+                id: id,
+                name: menuByLangs
+              };
+              await putMenu(post, this.token);
+              this.msgGood = 'Menu has been changed';
             } catch (error) {
               console.log('_is_error__', error);
               this.msgWrong = 'Add menu problem = ' + error;

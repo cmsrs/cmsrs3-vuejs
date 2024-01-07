@@ -2,7 +2,8 @@ import {
   render, 
   screen, 
   waitFor,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  fireEvent
 } from "@testing-library/vue";
 import MenuPagesPage from "./MenuPagesPage.vue";
 
@@ -119,6 +120,21 @@ let server = setupServer(
   
     //return res(ctx.status(200));
   }),
+
+  rest.put("/api/menus/1", (req, res, ctx) => {
+    requestBody = req.body;
+    //counter2 += 1;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: menus
+      })
+    );
+  
+    //return res(ctx.status(200));
+  }),
+
   
   rest.get("/api/menus/position/down/1", (req, res, ctx) => {
     return res(
@@ -551,31 +567,68 @@ describe("Pages page", () => {
       });             
     });
     
-    it( 'edit menu name the msg should be apear', async ()  => {
+    it( 'edit menu name the success msg should be apear', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const menu = screen.queryAllByRole("menu");
+
+      //console.log(menu);
+
+      const firstMenu = menu[0];
+      //console.log('Before typing:', firstMenu);
+      await userEvent.type(firstMenu, 'some change1');
+      //await userEvent.type(firstMenu,  'some change' ); //czemu nie zmiania na to?
+
+
+      //await fireEvent.input(firstMenu, { target: { value: 'some change' } });
+
+      //firstMenu.value =  'some change';
+      //await fireEvent.update(firstMenu  );
+
+      //await userEvent.input(firstMenu, { target: { value: 'some change' } });      
+      //await fireEvent.input(firstMenu, { target: { value: 'some change' } });
+      //menus[0]['name']['en'] = 'some change';
+
+      //console.log('After typing:', firstMenu ); //w tym miejscu jest stara wartosc zamiast nowej, czemu?
+
+      //await waitFor(() => {
+
+
+
+      const menuSave = await screen.queryAllByRole("save_menu");
+      const firstMenuSave = menuSave[0];
+      //userEvent.type(firstMenuSave,  'some change' );
+      userEvent.click(firstMenuSave);
+
+
+      await waitFor(() => {        
+        //const alertSuccessAfter = screen.findByRole("alert_success");
+        const alertSuccessAfter = screen.queryByRole("alert_success");        
+        expect( alertSuccessAfter ).toBeInTheDocument();        
+      });             
+        //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
+        //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
+
+      //});             
+    
+    });
+
+    it( 'edit menu name the failed msg should be apear', async ()  => {
       await setup();
       await waitForAjaxes();
 
       const menu = screen.queryAllByRole("menu");
       const firstMenu = menu[0];
-      userEvent.type(firstMenu,  'some change' );
-
+      userEvent.type(firstMenu,  ' ' ); //empty
       
       const menuSave = screen.queryAllByRole("save_menu");
       const firstMenuSave = menuSave[0];
-      //userEvent.type(firstMenuSave,  'some change' );
       await userEvent.click(firstMenuSave);
 
-
-      //await waitFor(() => {        
       const alertSuccessAfter = await screen.findByRole("alert_success");
       expect( alertSuccessAfter ).toBeInTheDocument();        
-
-        //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
-        //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
-
-      //});             
     });
-
 
   });
 

@@ -21,6 +21,12 @@ export const postMenu = (post, token) => {
     return axios.post("/api/menus?token="+token, post);
 };
 
+export const putMenu = (post, token) => {
+    const id = post['id'];
+    return axios.put("/api/menus/"+id+"?token="+token, post);
+};
+
+
 export const getMenus = (token) => {
     return axios.get("/api/menus?token="+token);
 };
