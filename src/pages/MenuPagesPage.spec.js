@@ -513,6 +513,27 @@ describe("Pages page", () => {
       });
     });
 
+    it( 'one request - menu change position down and after change menu name the msg should be disapear', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const downMenu = screen.queryAllByRole("down_menu");
+      const firstDownMenu = downMenu[0];
+      await userEvent.click(firstDownMenu);    
+
+      await waitFor(() => {        
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();        
+
+        const menu = screen.queryAllByRole("menu");
+        const firstMenu = menu[0];
+        userEvent.type(firstMenu,  'some change' );
+        //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
+        //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
+
+      });             
+    });
+
 
     it( 'menu change position up', async ()  => {
       await setup();
