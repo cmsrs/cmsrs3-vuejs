@@ -323,8 +323,10 @@
             const pos = await setMenuPosition( direction, menuId, this.token);
           
             if(pos.data.success){
-              this.refreshMenuAndPages();
-              this.msgGood = 'Position menu has been changed';
+              const ret = await this.refreshMenuAndPages();
+              if(ret){
+                this.msgGood = 'Position menu has been changed';
+              }            
             }
 
         } catch (error) {
@@ -337,9 +339,11 @@
         try {
             const responseM = await getMenus(this.token);            
             this.menus = responseM.data.data;
+            return true;
         } catch (error) {
             console.log( 'error get menu=', error);
         }
+        return false;
       }
 
     },    
@@ -367,7 +371,14 @@
           this.clearMsg();
         },
         deep: true
+      },
+      menus: {
+        handler: function () {
+          this.clearMsg();
+        },
+        deep: true
       }
+
     }
 
   };

@@ -521,17 +521,17 @@ describe("Pages page", () => {
       const firstDownMenu = downMenu[0];
       await userEvent.click(firstDownMenu);    
 
-      await waitFor(() => {        
-        const alertSuccessAfter = screen.queryByRole("alert_success");
-        expect( alertSuccessAfter ).toBeInTheDocument();        
+      //await waitFor(() => {        
+      const alertSuccessAfter = await screen.findByRole("alert_success"); //!!!!
+      expect( alertSuccessAfter ).toBeInTheDocument();        
 
-        const menu = screen.queryAllByRole("menu");
-        const firstMenu = menu[0];
-        userEvent.type(firstMenu,  'some change' );
-        //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
-        //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
+      const menu = screen.queryAllByRole("menu");
+      const firstMenu = menu[0];
+      userEvent.type(firstMenu,  'some change' );
+      const alertSuccessAfterAfter = await screen.findByRole("alert_success"); 
+      expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
 
-      });             
+      //});             
     });
 
 
@@ -551,6 +551,26 @@ describe("Pages page", () => {
       });             
     });
 
+    /*
+    it( 'edit menu name the msg should be apear', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const menu = screen.queryAllByRole("menu");
+      const firstMenu = menu[0];
+      userEvent.type(firstMenu,  'some change' );
+
+
+      await waitFor(() => {        
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();        
+
+        //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
+        //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
+
+      });             
+    });
+    */
 
 
   });
