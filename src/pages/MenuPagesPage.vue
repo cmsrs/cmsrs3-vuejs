@@ -353,7 +353,7 @@
         }
         
         this.pre_loader = true;
-        this.refreshMenuAndPages();
+        await this.refreshMenuAndPages();
                 
         try {
             const responseP = await getPages(this.token);
