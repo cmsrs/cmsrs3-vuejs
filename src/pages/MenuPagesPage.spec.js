@@ -550,8 +550,7 @@ describe("Pages page", () => {
         
       });             
     });
-
-    /*
+    
     it( 'edit menu name the msg should be apear', async ()  => {
       await setup();
       await waitForAjaxes();
@@ -560,17 +559,22 @@ describe("Pages page", () => {
       const firstMenu = menu[0];
       userEvent.type(firstMenu,  'some change' );
 
+      
+      const menuSave = screen.queryAllByRole("save_menu");
+      const firstMenuSave = menuSave[0];
+      //userEvent.type(firstMenuSave,  'some change' );
+      await userEvent.click(firstMenuSave);
 
-      await waitFor(() => {        
-        const alertSuccessAfter = screen.queryByRole("alert_success");
-        expect( alertSuccessAfter ).toBeInTheDocument();        
+
+      //await waitFor(() => {        
+      const alertSuccessAfter = await screen.findByRole("alert_success");
+      expect( alertSuccessAfter ).toBeInTheDocument();        
 
         //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
         //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
 
-      });             
+      //});             
     });
-    */
 
 
   });
