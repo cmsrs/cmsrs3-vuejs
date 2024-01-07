@@ -58,7 +58,7 @@
                   <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-                  <div v-if="menus.length > 1" role="up_menu"  class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                  <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
 
                 </div>
               </div>
@@ -311,8 +311,7 @@
         this.clearMsg();
         if (this.pre_loader) {
             return false;
-        }    
-        //console.log('czyszcze info');
+        }
         this.pre_loader = true;
         return true;
       },
@@ -323,37 +322,34 @@
         try {
             const pos = await setMenuPosition( direction, menuId, this.token);
           
-            if(!pos.data.success){
-              console.log( 'position not change - todo');
+            if(pos.data.success){
+              this.refreshMenuAndPages();
+              this.msgGood = 'Position menu has been changed';
             }
 
-
-            //TODO - dry
-            const responseM = await getMenus(this.token);            
-            this.menus = responseM.data.data;
-
-            this.msgGood = 'Position menu has been changed';
-            //console.log('wstawiam info');
         } catch (error) {
           console.log('_is_error__', error);
           this.msgWrong = 'Position menu problem = ' + error;
         }
         this.pre_loader = false;
-      }
-    },    
-    async mounted() {
-        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
-            //console.log('_________przekierowanie___');
-            this.$router.push("/");
-        }
-        
-        this.pre_loader = true;
+      },
+      async refreshMenuAndPages(){
         try {
             const responseM = await getMenus(this.token);            
             this.menus = responseM.data.data;
         } catch (error) {
             console.log( 'error get menu=', error);
         }
+      }
+
+    },    
+    async mounted() {
+        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
+            this.$router.push("/");
+        }
+        
+        this.pre_loader = true;
+        this.refreshMenuAndPages();
                 
         try {
             const responseP = await getPages(this.token);
