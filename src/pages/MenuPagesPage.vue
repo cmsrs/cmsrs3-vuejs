@@ -43,8 +43,8 @@
               <div class="row"  v-if="isAddMenu" >
                 <div class="form-group mt-3 ">              
                   <input role="new_menu"  class="form-control"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
-                  <div role="save_menu_0" class="ml-2"  @click="saveMenu(0)"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu(0)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+                  <div role="save_menu_0" class="ml-2"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@
               <div class="row" v-for="(m, index) in menus" :key="m.id">
                 <div class="form-group mt-3 ">              
                   <input role="menu"  class="form-control"  v-model="menus[index]['name'][lang]" >
-                  <div role="save_menu" class="ml-2"  @click="saveMenu(m.id)"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="save_menu" class="ml-2"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
@@ -272,9 +272,9 @@
         this.clearMsg();
         this.isAddMenu = true;
       },
-      async saveMenu(id){
+      async saveMenu(index){
         this.clearMsg();
-        if(0 === id ){
+        if('new' === index ){
           for(let lang of this.langs){
             if ( !this.new_menu_name[lang] ){
               this.msgWrong = 'Add menu name for '+lang+' lang';
@@ -300,12 +300,12 @@
             this.pre_loader = false;
           }
         }else{
-          if( !this.menus[id]['name'] ){
-            console.log('sth wrong i cant find menu with id='+ id);
+          if( !this.menus[index]['name'] ){
+            console.log('sth wrong i cant find menu with index='+ index);
             return false;
           }
-          const menuByLangs = this.menus[id]['name'];
-          console.log('po zmianie i tu jest blad w testach i w przegladarce jak sie reczenie testuje', menuByLangs); //not change, why
+          const menuByLangs = this.menus[index]['name'];
+          //console.log('po zmianie i tu jest blad w testach i w przegladarce jak sie reczenie testuje', menuByLangs); //not change, why
           for(let lang of this.langs){
             if ( !menuByLangs[lang] ){
               this.msgWrong = 'Add menu name for '+lang+' lang';
@@ -321,7 +321,7 @@
 
             try {
               const post = {
-                id: id,
+                id: this.menus[index]['id'],
                 name: menuByLangs
               };
               await putMenu(post, this.token);
@@ -334,9 +334,9 @@
           }
         }
       },
-      delMenu(id){
+      delMenu(index){
         this.clearMsg();
-        if(0 === id ){        
+        if('new' === index ){        
           this.isAddMenu = false;
         }
       },

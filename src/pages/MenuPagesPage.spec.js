@@ -573,45 +573,18 @@ describe("Pages page", () => {
 
       const menu = screen.queryAllByRole("menu");
 
-      //console.log(menu);
-
       const firstMenu = menu[0];
-      //console.log('Before typing:', firstMenu);
       await userEvent.type(firstMenu, 'some change1');
-      //await userEvent.type(firstMenu,  'some change' ); //czemu nie zmiania na to?
-
-
-      //await fireEvent.input(firstMenu, { target: { value: 'some change' } });
-
-      //firstMenu.value =  'some change';
-      //await fireEvent.update(firstMenu  );
-
-      //await userEvent.input(firstMenu, { target: { value: 'some change' } });      
-      //await fireEvent.input(firstMenu, { target: { value: 'some change' } });
-      //menus[0]['name']['en'] = 'some change';
-
-      //console.log('After typing:', firstMenu ); //w tym miejscu jest stara wartosc zamiast nowej, czemu?
-
-      //await waitFor(() => {
-
-
 
       const menuSave = await screen.queryAllByRole("save_menu");
       const firstMenuSave = menuSave[0];
-      //userEvent.type(firstMenuSave,  'some change' );
       userEvent.click(firstMenuSave);
 
 
       await waitFor(() => {        
-        //const alertSuccessAfter = screen.findByRole("alert_success");
         const alertSuccessAfter = screen.queryByRole("alert_success");        
         expect( alertSuccessAfter ).toBeInTheDocument();        
-      });             
-        //const alertSuccessAfterAfter = screen.queryByRole("alert_success"); 
-        //expect( alertSuccessAfterAfter ).not.toBeInTheDocument();   //TODO in the future
-
-      //});             
-    
+      });                 
     });
 
     it( 'edit menu name the failed msg should be apear', async ()  => {
@@ -620,14 +593,29 @@ describe("Pages page", () => {
 
       const menu = screen.queryAllByRole("menu");
       const firstMenu = menu[0];
-      userEvent.type(firstMenu,  ' ' ); //empty
+      firstMenu.value =  'some change';
+      await fireEvent.update(firstMenu, '' );
+      //await fireEvent.update(firstMenu, { target: { value: 'some change1' } });
+
+      //await fireEvent.input(firstMenu, { target: { value: 'some change' } });
+      //await userEvent.input(firstMenu, { target: { value: 'some change' } }); 
       
-      const menuSave = screen.queryAllByRole("save_menu");
+      //firstMenu.value = '';
+      //await userEvent.update(firstMenu, '');            
+      //await userEvent.type(firstMenu, 'some change1', { selectOptions: { all: true } });
+
+      
+
+      //userEvent.type(firstMenu,  ' ' ); //empty
+      
+      const menuSave = await screen.queryAllByRole("save_menu");
       const firstMenuSave = menuSave[0];
       await userEvent.click(firstMenuSave);
 
-      const alertSuccessAfter = await screen.findByRole("alert_success");
-      expect( alertSuccessAfter ).toBeInTheDocument();        
+      await waitFor(() => {        
+        const alertAfter =  screen.queryByRole("alert_danger");
+        expect( alertAfter ).toBeInTheDocument();        
+      });
     });
 
   });
