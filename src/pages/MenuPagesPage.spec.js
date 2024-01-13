@@ -381,6 +381,10 @@ describe("Pages page", () => {
 
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect( alertDangerAfter ).toBeInTheDocument();
+
+      const inputNewMenu  = screen.queryByRole("new_menu");
+      expect(inputNewMenu).toHaveClass('is-invalid');
+
     };
 
 
