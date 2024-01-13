@@ -91,7 +91,13 @@ let server = setupServer(
   rest.post("/api/menus", (req, res, ctx) => {
     requestBody = req.body;
     counterMenu += 1;
-    return res(ctx.status(200));
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
+    //return res(ctx.status(200));
   }),
   rest.get("/api/pages", (req, res, ctx) => {
     requestBody = req.body;
@@ -127,8 +133,7 @@ let server = setupServer(
     return res(
       ctx.status(200),
       ctx.json({
-        success: true,
-        data: menus
+        success: true
       })
     );
   
@@ -451,6 +456,9 @@ describe("Pages page", () => {
       expect(counterMenu).toBe(1);      
       const alertSuccessAfter = screen.queryByRole("alert_success");
       expect( alertSuccessAfter ).toBeInTheDocument();
+
+      const addMenuPlaceholderAfter = screen.queryByPlaceholderText("Menu name en");
+      expect(addMenuPlaceholderAfter).toBeNull();
 
       //and again we click add menu and alert_success should be dissapeared
       const button2 = screen.queryByRole("button_add_menu" );

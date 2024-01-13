@@ -40,17 +40,6 @@
             </button>
 
             <div class="container">
-              <div class="row"  v-if="isAddMenu" >
-                <div class="form-group mt-3 ">              
-                  <input role="new_menu"  class="form-control"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
-                  <div role="save_menu_0" class="ml-2"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="container">
               <div class="row" v-for="(m, index) in menus" :key="m.id">
                 <div class="form-group mt-3 ">              
                   <input role="menu"  class="form-control"  v-model="menus[index]['name'][lang]" >
@@ -64,6 +53,15 @@
               </div>
             </div>
 
+            <div class="container">
+              <div class="row"  v-if="isAddMenu" >
+                <div class="form-group mt-3 ">              
+                  <input role="new_menu"  class="form-control"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <div role="save_menu_0" class="ml-2"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+                </div>
+              </div>
+            </div>
 
             <div class="container">
               <div class="row"  v-if="notRelatedPages" >
@@ -291,8 +289,12 @@
               const post = {
                 name: this.new_menu_name
               };
-              await postMenu(post, this.token);
-              this.msgGood = 'Menu has been added';
+              const addMenu = await postMenu(post, this.token);
+              if( addMenu.data.success ){
+                await this.refreshMenuAndPages();
+                this.isAddMenu = false;
+                this.msgGood = 'Menu has been added';
+              }            
             } catch (error) {
               console.log('_is_error__', error);
               this.msgWrong = 'Add menu problem = ' + error;
@@ -324,8 +326,11 @@
                 id: this.menus[index]['id'],
                 name: menuByLangs
               };
-              await putMenu(post, this.token);
-              this.msgGood = 'Menu has been changed';
+              const updateMenu = await putMenu(post, this.token);
+              if(updateMenu.data.success){
+                //await this.refreshMenuAndPages();
+                this.msgGood = 'Menu has been changed';                
+              }
             } catch (error) {
               console.log('_is_error__', error);
               this.msgWrong = 'Add menu problem = ' + error;
