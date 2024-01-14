@@ -13,6 +13,8 @@ import { rest } from "msw";
 //import store from "../state/store";
 import { createStore } from "vuex";
 
+// Mock the window.confirm method
+global.window.confirm = jest.fn(() => true);
 
 const pages  = [
   {
@@ -140,6 +142,15 @@ let server = setupServer(
     //return res(ctx.status(200));
   }),
 
+  rest.delete("/api/menus/1", (req, res, ctx) => {
+    requestBody = req.body;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
+  }),
   
   rest.get("/api/menus/position/down/1", (req, res, ctx) => {
     return res(
@@ -629,6 +640,26 @@ describe("Pages page", () => {
         expect( alertAfter ).toBeInTheDocument();        
       });
     });
+
+
+    it( 'delete menu and show success alert', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const menuDel = await screen.queryAllByRole("del_menu");
+      const firstMenuDel = menuDel[0];
+      userEvent.click(firstMenuDel);
+
+
+      await waitFor(() => {        
+        const alertSuccessAfter = screen.queryByRole("alert_success");        
+        expect( alertSuccessAfter ).toBeInTheDocument();        
+      });
+
+    });
+
+
+
 
   });
 

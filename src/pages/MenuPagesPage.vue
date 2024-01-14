@@ -43,8 +43,8 @@
               <div class="row" v-for="(m, index) in menus" :key="m.id">
                 <div class="form-group mt-3 ">              
                   <input role="menu"  class="form-control"  v-model="menus[index]['name'][lang]" >
-                  <div role="save_menu" class="ml-2"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu"  class="ml-2 trash"  @click="delMenu(m.id)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+                  <div role="save_menu" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu"  class="ml-2 trash"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delMenu(index)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
                   <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
@@ -171,7 +171,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages, postMenu, getMenus, putMenu, setMenuPosition } from "../api/apiCalls";
+  import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition } from "../api/apiCalls";
 
   export default {
 
@@ -285,7 +285,6 @@
             }
           }
           if(!this.msgWrong){
-            //this.pre_loader = true;
             if (!this.startLoading()) {
               return false;
             }
@@ -297,9 +296,7 @@
               const addMenu = await postMenu(post, this.token);
               if( addMenu.data.success ){
                 await this.refreshMenuAndPages();
-                //this.menus['new'] = []; //todo meny times try add menu
                 this.isAddMenu = false;
-                //this.new_menu_name = {};
                 this.msgGood = 'Menu has been added';
               }            
             } catch (error) {
@@ -323,7 +320,6 @@
           }
 
           if(!this.msgWrong){
-            //this.pre_loader = true;
             if (!this.startLoading()) {
               return false;
             }
@@ -346,10 +342,31 @@
           }
         }
       },
-      delMenu(index){
+      async delMenu(index){
         this.clearMsg();
         if('new' === index ){        
           this.isAddMenu = false;
+        }else{
+          if (window.confirm('Are you sure you wish to delete this item?')){
+            if (!this.startLoading()) {
+                return false;
+            }
+
+            try {
+                const menuId = this.menus[index]['id'];
+                const objDeleteMenu = await deleteMenu(menuId, this.token);
+                if(objDeleteMenu.data.success){
+                  const ret = await this.refreshMenuAndPages();
+                  if(ret){
+                    this.msgGood = 'Menu has been deleted';
+                    this.pre_loader = false;
+                  }
+                }
+            } catch (error) {
+              console.log('_is_error__', error);
+              this.msgWrong = 'Delete menu problem = ' + error;
+            }
+          }
         }
       },
       clearMsg(){

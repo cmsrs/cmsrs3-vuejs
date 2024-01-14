@@ -31,6 +31,10 @@ export const getMenus = (token) => {
     return axios.get("/api/menus?token="+token);
 };
 
+export const deleteMenu = (id, token) => {
+    return axios.delete("/api/menus/"+id+"?token="+token);
+};
+
 export const setMenuPosition = (direction, id, token) => {
     return axios.get("/api/menus/position/"+direction+"/"+id+"?token="+token);
 };
