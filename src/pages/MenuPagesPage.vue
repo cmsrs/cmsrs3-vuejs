@@ -56,7 +56,7 @@
             <div class="container">
               <div class="row"  v-if="isAddMenu" >
                 <div class="form-group mt-3 ">              
-                  <input role="new_menu"  class="form-control"  :class="{ 'is-invalid': menus_error['new'] }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <input role="new_menu"  class="form-control"  :class="{ 'is-invalid': menus_error_new }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
                   <div role="save_menu_0" class="ml-2"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
                 </div>
@@ -216,7 +216,7 @@
           isAddMenu: false,
           new_menu_name: {},
           menus: [],
-          menus_error: []
+          menus_error_new: false
         };
     },
     methods: {
@@ -270,15 +270,17 @@
       addMenu(){
         this.clearMsg();
         this.isAddMenu = true;
+        this.menus_error_new = false;
+        this.new_menu_name = {};
       },
       async saveMenu(index){
         this.clearMsg();
         if('new' === index ){
-          this.menus_error['new'] = false;
+          this.menus_error_new = false;
           for(let lang of this.langs){
             if ( !this.new_menu_name[lang] ){
               this.msgWrong = 'Add menu name'; // for '+lang+' lang';
-              this.menus_error['new'] = true;
+              this.menus_error_new = true;
               break;
             }
           }
@@ -297,6 +299,7 @@
                 await this.refreshMenuAndPages();
                 //this.menus['new'] = []; //todo meny times try add menu
                 this.isAddMenu = false;
+                //this.new_menu_name = {};
                 this.msgGood = 'Menu has been added';
               }            
             } catch (error) {
