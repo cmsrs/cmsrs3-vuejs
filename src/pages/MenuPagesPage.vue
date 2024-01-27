@@ -48,6 +48,10 @@
 
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
                   <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                  <div class="container"  role="menu_pages" :data-menu-id="m.id"> <!-- jak w testach jest uchwycic ten element dla pierwszego menu ? -->
+                    <div class="row">first page</div>
+                    <div class="row">second page</div>
+                  </div>
 
                 </div>
               </div>

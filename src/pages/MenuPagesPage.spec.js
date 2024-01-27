@@ -60,7 +60,74 @@ const pages  = [
     content: {
         en: 'inner lorem ipsum'
     }   
-  }
+  },
+  {
+    id: 3,
+    published: 1,
+    commented: 0,
+    after_login: 0,
+    position: 1,
+    type: 'cms',
+    menu_id: 1, 
+    page_id: null, 
+    title:{
+        en: 'cms test p3'
+    },
+    short_title: {
+        en:  'cms p333'
+    },
+    description:{
+        en: 'cms test333'
+    },
+    content: {
+        en: 'page connected to menu 1a'
+    }   
+  },  
+  {
+    id: 4,
+    published: 1,
+    commented: 0,
+    after_login: 0,
+    position: 2,
+    type: 'cms',
+    menu_id: 1, 
+    page_id: null, 
+    title:{
+        en: 'cms test p3b'
+    },
+    short_title: {
+        en:  'cms p333b'
+    },
+    description:{
+        en: 'cms test333b'
+    },
+    content: {
+        en: 'page connected to menu 1b'
+    }   
+  },  
+  {
+    id: 5,
+    published: 1,
+    commented: 0,
+    after_login: 0,
+    position: 1,
+    type: 'cms',
+    menu_id: 2, 
+    page_id: null, 
+    title:{
+        en: 'inner test p44'
+    },
+    short_title: {
+        en:  'inner p44'
+    },
+    description:{
+        en: 'inner test44'
+    },
+    content: {
+        en: 'page connected to menu 2'
+    }   
+  },  
+
 ];  
 
 const menus  = [
@@ -658,6 +725,37 @@ describe("Pages page", () => {
 
     });
 
+    it('show pages belongs to each menu', async () => {
+      await setup();
+      await waitForAjaxes();
+    
+      const firstMenuId = menus[0].id;
+      expect(firstMenuId).toBe(1);
+
+      const secondMenuId = menus[1].id;
+      expect(secondMenuId).toBe(2);
+      
+
+      await waitFor(() => {
+        const menuContainers = screen.queryAllByRole("menu_pages");
+    
+        menuContainers.forEach((container) => {
+          const menuId = container.getAttribute('data-menu-id');
+    
+          if (menuId === String(firstMenuId)) {
+            // This container corresponds to the first menu
+            const pagesInsideMenu = container.querySelectorAll('.row');
+            expect(pagesInsideMenu.length).toBe(2); 
+          }
+          if (menuId === String(secondMenuId)) {
+            // This container corresponds to the first menu
+            const pagesInsideMenu2 = container.querySelectorAll('.row');
+            expect(pagesInsideMenu2.length).toBe(1); // Number of elements inside the container
+          }
+
+        });
+      });
+    });    
 
 
 
