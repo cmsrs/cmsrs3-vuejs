@@ -49,7 +49,15 @@
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
                   <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
                   <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
-                    <div class="row" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">page</div>
+                    <div class="row" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
+                      {{ p.short_title[lang] }}
+                      <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
+                        <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">
+                          {{ pp.short_title[lang] }}
+                        </div>
+
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -204,6 +212,7 @@
           notRelatedPages: false,
           innerPages: false,
           pagesBelongsToMenus: [],
+          pagesBelongsToPages: [],
           langs: this.$store.state.config.langs || configLangs,
           lang: defaultLang, //it is changeable
           defaultLang: defaultLang,
@@ -273,7 +282,7 @@
       getPagesBelongsToMenus( pages ){
         let out = [];
         for(let page of pages){
-          if( page.menu_id ){
+          if( page.menu_id &&  !page.page_id ){
             if ( 'undefined' === typeof(out[page.menu_id]) ){
               out[page.menu_id] = [];
             }
@@ -289,6 +298,26 @@
         }
         return this.pagesBelongsToMenus[menuId];
       },
+      getPagesBelongsToPages( pages ){
+        let out = [];
+        for(let page of pages){
+          if( page.page_id ){
+            if ( 'undefined' === typeof(out[page.page_id]) ){
+              out[page.page_id] = [];
+            }
+            out[page.page_id].push( page );
+            
+          }
+        }
+        return out;
+      },
+      getPagesBelongsToPage( parentPageId ){
+        if ( 'undefined' === typeof(this.pagesBelongsToPages[parentPageId]) ){
+          return false;
+        }
+        return this.pagesBelongsToPages[parentPageId];
+      },
+
       addMenu(){
         this.clearMsg();
         this.isAddMenu = true;
@@ -446,6 +475,7 @@
         try {
             const responseP = await getPages(this.token);
             this.pagesBelongsToMenus = this.getPagesBelongsToMenus(responseP.data.data);
+            this.pagesBelongsToPages = this.getPagesBelongsToPages(responseP.data.data);
 
             this.notRelatedPages = this.getNotRelatedPages( responseP.data.data);
             this.innerPages = this.getInnerPages( responseP.data.data);

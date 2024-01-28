@@ -69,7 +69,7 @@ const pages  = [
     position: 1,
     type: 'cms',
     menu_id: 1, 
-    page_id: null, 
+    page_id: '', 
     title:{
         en: 'cms test p3'
     },
@@ -127,6 +127,50 @@ const pages  = [
         en: 'page connected to menu 2'
     }   
   },  
+  {
+    id: 6,
+    published: 1,
+    commented: 0,
+    after_login: 0,
+    position: 2,
+    type: 'cms',
+    menu_id: 1, 
+    page_id: 3, 
+    title:{
+        en: 'cms test p3c - nestle1'
+    },
+    short_title: {
+        en:  'cms p333c - nestle1'
+    },
+    description:{
+        en: 'cms test333c - nestle1'
+    },
+    content: {
+        en: 'page connected to menu 1c - nestle1'
+    }   
+  },
+  {
+    id: 7,
+    published: 1,
+    commented: 0,
+    after_login: 0,
+    position: 2,
+    type: 'cms',
+    menu_id: 1, 
+    page_id: 3, 
+    title:{
+        en: 'cms test p3c - nestle2'
+    },
+    short_title: {
+        en:  'cms p333c - nestle2'
+    },
+    description:{
+        en: 'cms test333c - nestle2'
+    },
+    content: {
+        en: 'page connected to menu 1c - nestle2'
+    }   
+  }  
 
 ];  
 
@@ -738,6 +782,7 @@ describe("Pages page", () => {
 
       await waitFor(() => {
         const menuContainers = screen.queryAllByRole("menu_pages");
+        expect(menuContainers.length).toBe(2);
     
         menuContainers.forEach((container) => {
           const menuId = container.getAttribute('data-menu-id');
@@ -755,6 +800,33 @@ describe("Pages page", () => {
       });
     });    
 
+    it('show pages belongs to each pages', async () => {
+      await setup();
+      await waitForAjaxes();
+    
+      const parentPageId = 3;
+    
+      await waitFor(() => {
+        const nastedPagesContainers = screen.queryAllByRole("page_pages");
+        expect(nastedPagesContainers.length).toBe(1);
+
+        let isIf = false;
+        nastedPagesContainers.forEach((container) => {
+          const pageId = container.getAttribute('data-page-id');
+          //expect( pageId ).toBe(parentPageId);
+          //console.log(pageId);
+
+          //console.log('aaaaa00='+ pageId  + '   '+parentPageId);
+          if (pageId ===  String(parentPageId) ) {     
+            //console.log('bbb');
+            const pagesInsidePage = container.querySelectorAll('.row');
+            expect(pagesInsidePage.length).toBe(2); 
+            isIf = true;
+          }
+        });
+        expect(isIf).toBe(true); 
+      });
+    });    
 
 
   });
