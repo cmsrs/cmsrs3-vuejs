@@ -742,15 +742,13 @@ describe("Pages page", () => {
         menuContainers.forEach((container) => {
           const menuId = container.getAttribute('data-menu-id');
     
-          if (menuId === String(firstMenuId)) {
-            // This container corresponds to the first menu
+          if (menuId === String(firstMenuId)) {          
             const pagesInsideMenu = container.querySelectorAll('.row');
             expect(pagesInsideMenu.length).toBe(2); 
           }
           if (menuId === String(secondMenuId)) {
-            // This container corresponds to the first menu
             const pagesInsideMenu2 = container.querySelectorAll('.row');
-            expect(pagesInsideMenu2.length).toBe(1); // Number of elements inside the container
+            expect(pagesInsideMenu2.length).toBe(1);
           }
 
         });

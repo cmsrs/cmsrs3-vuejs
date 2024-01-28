@@ -48,11 +48,9 @@
 
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
                   <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
-                  <div class="container"  role="menu_pages" :data-menu-id="m.id"> <!-- jak w testach jest uchwycic ten element dla pierwszego menu ? -->
-                    <div class="row">first page</div>
-                    <div class="row">second page</div>
+                  <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
+                    <div class="row" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">page</div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -205,6 +203,7 @@
           msgGood: '',
           notRelatedPages: false,
           innerPages: false,
+          pagesBelongsToMenus: [],
           langs: this.$store.state.config.langs || configLangs,
           lang: defaultLang, //it is changeable
           defaultLang: defaultLang,
@@ -270,6 +269,25 @@
           }
         }
         return out;
+      },
+      getPagesBelongsToMenus( pages ){
+        let out = [];
+        for(let page of pages){
+          if( page.menu_id ){
+            if ( 'undefined' === typeof(out[page.menu_id]) ){
+              out[page.menu_id] = [];
+            }
+            out[page.menu_id].push( page );
+            
+          }
+        }
+        return out;
+      },
+      getPagesBelongsToMenu( menuId ) {
+        if ( 'undefined' === typeof(this.pagesBelongsToMenus[menuId]) ){
+          return false;
+        }
+        return this.pagesBelongsToMenus[menuId];
       },
       addMenu(){
         this.clearMsg();
@@ -427,6 +445,8 @@
                 
         try {
             const responseP = await getPages(this.token);
+            this.pagesBelongsToMenus = this.getPagesBelongsToMenus(responseP.data.data);
+
             this.notRelatedPages = this.getNotRelatedPages( responseP.data.data);
             this.innerPages = this.getInnerPages( responseP.data.data);
         } catch (error) {
