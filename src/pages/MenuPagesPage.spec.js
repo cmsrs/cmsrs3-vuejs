@@ -836,6 +836,19 @@ describe("Pages page", () => {
         const title = screen.queryByPlaceholderText("title en");
         expect(title).toHaveValue("");
 
+        const shortTitle = screen.queryByPlaceholderText("short title en");
+        expect(shortTitle).toHaveValue("");
+
+        const description = screen.queryByPlaceholderText("description en");
+        //console.log(description);
+        expect(description).toHaveValue("");
+
+        const pageTypeDropdown = screen.queryByLabelText("Page type:");
+        expect(pageTypeDropdown).toHaveValue("cms");
+
+        //const content = screen.queryByPlaceholderText("content en"); //TODO
+        //expect(content).toHaveValue("");
+
         const firstPageIdOnThePage = 3;
         const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
         expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
@@ -846,8 +859,22 @@ describe("Pages page", () => {
         userEvent.click(firstEditPage);
 
         await waitFor(() => {        
+          const page = pages[firstPageIdOnThePageIndex];
+
           const title = screen.queryByPlaceholderText("title en");
-          expect(title).toHaveValue(pages[firstPageIdOnThePageIndex].title['en']);
+          expect(title).toHaveValue(page.title['en']);
+
+          const shortTitle = screen.queryByPlaceholderText("short title en");
+          expect(shortTitle).toHaveValue(page.short_title['en']);
+  
+          const description = screen.queryByPlaceholderText("description en");
+          expect(description).toHaveValue(page.description['en']);
+  
+          const pageTypeDropdown = screen.queryByLabelText("Page type:");
+          expect(pageTypeDropdown).toHaveValue(page.type['en']); //!!
+  
+          //const content = screen.queryByPlaceholderText("content en"); //TODO
+          //expect(content).toHaveValue(page.content['en']);
             
         });
     });

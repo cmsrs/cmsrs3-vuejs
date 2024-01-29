@@ -458,10 +458,14 @@
 
       editPage(pageId){
         const p = this.allPages.find( (page) =>  page.id === pageId );
-        this.title = p.title;
-        //console.log('thisPage',  p);        
-      },
 
+        this.title = p.title;
+        this.short_title = p.short_title;
+        this.description = p.description;
+        this.page_type = p.type; //!
+        this.content = p.content;
+        this.published =  p.published;
+      },
       async refreshMenuAndPages(){
         try {
             const responseM = await getMenus(this.token);            
