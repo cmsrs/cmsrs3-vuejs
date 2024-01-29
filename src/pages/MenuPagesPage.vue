@@ -49,7 +49,7 @@
                   <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
                   <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
                   <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
-                    <div class="row" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
+                    <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
                       {{ p.short_title[lang] }}
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
                         <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">

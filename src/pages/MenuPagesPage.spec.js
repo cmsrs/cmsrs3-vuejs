@@ -788,11 +788,11 @@ describe("Pages page", () => {
           const menuId = container.getAttribute('data-menu-id');
     
           if (menuId === String(firstMenuId)) {          
-            const pagesInsideMenu = container.querySelectorAll('.row');
+            const pagesInsideMenu = container.querySelectorAll('.test-parent-page');
             expect(pagesInsideMenu.length).toBe(2); 
           }
           if (menuId === String(secondMenuId)) {
-            const pagesInsideMenu2 = container.querySelectorAll('.row');
+            const pagesInsideMenu2 = container.querySelectorAll('.test-parent-page');
             expect(pagesInsideMenu2.length).toBe(1);
           }
 
