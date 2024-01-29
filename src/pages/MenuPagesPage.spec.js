@@ -829,7 +829,37 @@ describe("Pages page", () => {
     });    
 
 
+    it('edit first page - check fields', async () => {
+        await setup();
+        await waitForAjaxes();
+            
+        const title = screen.queryByPlaceholderText("title en");
+        expect(title).toHaveValue("");
+
+        const firstPageIdOnThePage = 3;
+        const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
+        expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
+
+
+        const pageEdit = screen.queryAllByRole("edit_page");
+        const firstEditPage = pageEdit[0];
+        userEvent.click(firstEditPage);
+
+        await waitFor(() => {        
+          const title = screen.queryByPlaceholderText("title en");
+          expect(title).toHaveValue(pages[firstPageIdOnThePageIndex].title['en']);
+            
+        });
+    });
+
+
   });
+
+
+
+/*
+-----------------
+*/
 
   describe("Interactions many langs", () => {
     const jsonStore2 = {

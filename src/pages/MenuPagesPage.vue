@@ -50,6 +50,8 @@
                   <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
                   <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
                     <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
+
+                      <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>                      
                       {{ p.short_title[lang] }}
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
                         <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">
@@ -209,6 +211,7 @@
         return {
           msgWrong: '',
           msgGood: '',
+          allPages: [],
           notRelatedPages: false,
           innerPages: false,
           pagesBelongsToMenus: [],
@@ -452,6 +455,13 @@
         }
         this.pre_loader = false;
       },
+
+      editPage(pageId){
+        const p = this.allPages.find( (page) =>  page.id === pageId );
+        this.title = p.title;
+        //console.log('thisPage',  p);        
+      },
+
       async refreshMenuAndPages(){
         try {
             const responseM = await getMenus(this.token);            
@@ -474,6 +484,7 @@
                 
         try {
             const responseP = await getPages(this.token);
+            this.allPages = responseP.data.data;
             this.pagesBelongsToMenus = this.getPagesBelongsToMenus(responseP.data.data);
             this.pagesBelongsToPages = this.getPagesBelongsToPages(responseP.data.data);
 
