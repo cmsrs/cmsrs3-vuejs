@@ -52,7 +52,7 @@
                     <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
 
                       <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
-                      <div role="del_page" class="ml-2"  @click="delPage(p.id)"><i className="far fa-trash cursor-pointer"></i></div>
+                      <div role="del_page" class="ml-2"  @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
                       {{ p.short_title[lang] }}
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
                         <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">
