@@ -262,6 +262,17 @@ let server = setupServer(
       })
     );
   }),
+
+  rest.delete("/api/pages/3", (req, res, ctx) => {
+    requestBody = req.body;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
+  }),
+
   
   rest.get("/api/menus/position/down/1", (req, res, ctx) => {
     return res(
@@ -878,6 +889,27 @@ describe("Pages page", () => {
             
         });
     });
+
+
+    it( 'delete page and show success alert', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const menuDel = await screen.queryAllByRole("del_page");
+      const firstMenuDel = menuDel[0];
+      userEvent.click(firstMenuDel);
+
+      const pageDel = await  screen.queryAllByRole("del_page");
+      const firstDelPage = pageDel[0];
+      userEvent.click(firstDelPage);
+
+      await waitFor(() => {        
+        const alertSuccessAfter = screen.queryByRole("alert_success");        
+        expect( alertSuccessAfter ).toBeInTheDocument();        
+      });
+
+    });
+
 
 
   });

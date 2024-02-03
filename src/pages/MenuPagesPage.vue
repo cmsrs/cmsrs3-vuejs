@@ -51,7 +51,8 @@
                   <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
                     <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
 
-                      <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>                      
+                      <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
+                      <div role="del_page" class="ml-2"  @click="delPage(p.id)"><i className="far fa-trash cursor-pointer"></i></div>
                       {{ p.short_title[lang] }}
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
                         <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">
@@ -183,7 +184,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition } from "../api/apiCalls";
+  import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage } from "../api/apiCalls";
 
   export default {
 
@@ -349,9 +350,11 @@
               };
               const addMenu = await postMenu(post, this.token);
               if( addMenu.data.success ){
-                await this.refreshMenuAndPages();
-                this.isAddMenu = false;
-                this.msgGood = 'Menu has been added';
+                const ret = await this.refreshMenus();
+                if(ret){
+                  this.isAddMenu = false;
+                  this.msgGood = 'Menu has been added';
+                }
               }            
             } catch (error) {
               console.log('_is_error__', error);
@@ -385,7 +388,7 @@
               };
               const updateMenu = await putMenu(post, this.token);
               if(updateMenu.data.success){
-                //await this.refreshMenuAndPages();
+                //await this.refreshMenus();
                 this.msgGood = 'Menu has been changed';                
               }
             } catch (error) {
@@ -410,7 +413,7 @@
                 const menuId = this.menus[index]['id'];
                 const objDeleteMenu = await deleteMenu(menuId, this.token);
                 if(objDeleteMenu.data.success){
-                  const ret = await this.refreshMenuAndPages();
+                  const ret = await this.refreshMenus();
                   if(ret){
                     this.msgGood = 'Menu has been deleted';
                     this.pre_loader = false;
@@ -443,7 +446,7 @@
             const pos = await setMenuPosition( direction, menuId, this.token);
           
             if(pos.data.success){
-              const ret = await this.refreshMenuAndPages();
+              const ret = await this.refreshMenus();
               if(ret){
                 this.msgGood = 'Position menu has been changed';
               }            
@@ -457,6 +460,7 @@
       },
 
       editPage(pageId){
+        this.clearMsg();
         const p = this.allPages.find( (page) =>  page.id === pageId );
 
         this.title = p.title;
@@ -466,7 +470,30 @@
         this.content = p.content;
         this.published =  p.published;
       },
-      async refreshMenuAndPages(){
+      async delPage(pageId){
+        this.clearMsg();
+        if (window.confirm('Are you sure you wish to delete this item?')){
+            if (!this.startLoading()) {
+                return false;
+            }
+
+            try {
+                const objDeletePage = await deletePage(pageId, this.token);
+                if(objDeletePage.data.success){
+                  const ret = await this.refreshPages();
+                  if(ret){
+                    this.msgGood = 'Page has been deleted';
+                    this.pre_loader = false;
+                  }
+                }
+            } catch (error) {
+              console.log('_is_error__', error);
+              this.msgWrong = 'Delete menu problem = ' + error;
+            }
+          }
+        },
+
+      async refreshMenus(){
         try {
             const responseM = await getMenus(this.token);            
             this.menus = responseM.data.data;
@@ -475,17 +502,9 @@
             console.log( 'error get menu=', error);
         }
         return false;
-      }
+      },
 
-    },    
-    async mounted() {
-        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
-            this.$router.push("/");
-        }
-
-        this.pre_loader = true;
-        await this.refreshMenuAndPages();
-                
+      async refreshPages(){
         try {
             const responseP = await getPages(this.token);
             this.allPages = responseP.data.data;
@@ -494,11 +513,28 @@
 
             this.notRelatedPages = this.getNotRelatedPages( responseP.data.data);
             this.innerPages = this.getInnerPages( responseP.data.data);
+            return true;
         } catch (error) {
             console.log( 'error get pages=', error);
         }
+        return false;        
+      },
 
-        this.pre_loader = false;      
+
+    },    
+    async mounted() {
+        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
+            this.$router.push("/");
+        }
+
+        this.pre_loader = true;
+        const refreshM = await this.refreshMenus();
+        const refreshP = await this.refreshPages();
+
+        if(refreshM && refreshP ){
+          this.pre_loader = false;
+        }
+
     },
     watch: {
       new_menu_name: {

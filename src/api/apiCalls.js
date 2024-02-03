@@ -38,3 +38,7 @@ export const deleteMenu = (id, token) => {
 export const setMenuPosition = (direction, id, token) => {
     return axios.get("/api/menus/position/"+direction+"/"+id+"?token="+token);
 };
+
+export const deletePage = (id, token) => {
+    return axios.delete("/api/pages/"+id+"?token="+token);
+};
