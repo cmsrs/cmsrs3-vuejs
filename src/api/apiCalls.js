@@ -8,7 +8,6 @@ export const config = (token) => {
     return axios.get("/api/config?token="+token);
 };
 
-
 export const postPage = (post, token) => {
     return axios.post("/api/pages?token="+token, post);
 };
@@ -26,7 +25,6 @@ export const putMenu = (post, token) => {
     return axios.put("/api/menus/"+id+"?token="+token, post);
 };
 
-
 export const getMenus = (token) => {
     return axios.get("/api/menus?token="+token);
 };
@@ -37,6 +35,10 @@ export const deleteMenu = (id, token) => {
 
 export const setMenuPosition = (direction, id, token) => {
     return axios.get("/api/menus/position/"+direction+"/"+id+"?token="+token);
+};
+
+export const setPagePosition = (direction, id, token) => {
+    return axios.get("/api/pages/position/"+direction+"/"+id+"?token="+token);
 };
 
 export const deletePage = (id, token) => {

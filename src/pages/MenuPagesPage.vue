@@ -52,7 +52,10 @@
                     <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
 
                       <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
-                      <div role="del_page" class="ml-2"  @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
+                      <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
+                      <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('down', p.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                      <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                      
                       {{ p.short_title[lang] }}
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
                         <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">
@@ -184,7 +187,7 @@
   </template>
   <script>
   import storage from "../state/storage";
-  import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage } from "../api/apiCalls";
+  import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
 
   export default {
 
@@ -492,64 +495,84 @@
           }
         },
 
-      async refreshMenus(){
-        try {
-            const responseM = await getMenus(this.token);            
-            this.menus = responseM.data.data;
-            return true;
-        } catch (error) {
-            console.log( 'error get menu=', error);
-        }
-        return false;
-      },
-
-      async refreshPages(){
-        try {
-            const responseP = await getPages(this.token);
-            this.allPages = responseP.data.data;
-            this.pagesBelongsToMenus = this.getPagesBelongsToMenus(responseP.data.data);
-            this.pagesBelongsToPages = this.getPagesBelongsToPages(responseP.data.data);
-
-            this.notRelatedPages = this.getNotRelatedPages( responseP.data.data);
-            this.innerPages = this.getInnerPages( responseP.data.data);
-            return true;
-        } catch (error) {
-            console.log( 'error get pages=', error);
-        }
-        return false;        
-      },
-
-
-    },    
-    async mounted() {
-        if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
-            this.$router.push("/");
-        }
-
-        this.pre_loader = true;
-        const refreshM = await this.refreshMenus();
-        const refreshP = await this.refreshPages();
-
-        if(refreshM && refreshP ){
-          this.pre_loader = false;
-        }
-
-    },
-    watch: {
-      new_menu_name: {
-        handler: function () {
-          this.clearMsg();
+        async positionPage(direction, pageId){
+          if (!this.startLoading()) {
+              return false;
+          }
+          
+          try {
+              const pos = await setPagePosition( direction, pageId, this.token);
+            
+              if(pos.data.success){
+                const ret = await this.refreshPages();
+                if(ret){
+                  this.msgGood = 'Position page has been changed';
+                  this.pre_loader = false;
+                }            
+              }
+          } catch (error) {
+            console.log('_is_error__', error);
+            this.msgWrong = 'Position page problem = ' + error;
+          }                  
         },
-        deep: true
-      },
-      menus: {
-        handler: function () {
-          this.clearMsg();
+
+        async refreshMenus(){
+          try {
+              const responseM = await getMenus(this.token);            
+              this.menus = responseM.data.data;
+              return true;
+          } catch (error) {
+              console.log( 'error get menu=', error);
+          }
+          return false;
         },
-        deep: true
+
+        async refreshPages(){
+          try {
+              const responseP = await getPages(this.token);
+              this.allPages = responseP.data.data;
+              this.pagesBelongsToMenus = this.getPagesBelongsToMenus(responseP.data.data);
+              this.pagesBelongsToPages = this.getPagesBelongsToPages(responseP.data.data);
+
+              this.notRelatedPages = this.getNotRelatedPages( responseP.data.data);
+              this.innerPages = this.getInnerPages( responseP.data.data);
+              return true;
+          } catch (error) {
+              console.log( 'error get pages=', error);
+          }
+          return false;        
+        },
+      },    
+
+      async mounted() {
+          if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
+              this.$router.push("/");
+          }
+
+          this.pre_loader = true;
+          const refreshM = await this.refreshMenus();
+          const refreshP = await this.refreshPages();
+
+          if(refreshM && refreshP ){
+            this.pre_loader = false;
+          }
+      },
+
+      watch: {
+        new_menu_name: {
+          handler: function () {
+            this.clearMsg();
+          },
+          deep: true
+        },
+        menus: {
+          handler: function () {
+            this.clearMsg();
+          },
+          deep: true
+        }
+
       }
-
-    }
 
   };
   </script>

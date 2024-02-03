@@ -201,6 +201,7 @@ let server = setupServer(
     counter += 1;
     return res(ctx.status(200));
   }),
+
   rest.post("/api/menus", (req, res, ctx) => {
     requestBody = req.body;
     counterMenu += 1;
@@ -212,6 +213,7 @@ let server = setupServer(
     );
     //return res(ctx.status(200));
   }),
+
   rest.get("/api/pages", (req, res, ctx) => {
     requestBody = req.body;
     //counter2 += 1;
@@ -273,7 +275,6 @@ let server = setupServer(
     );
   }),
 
-  
   rest.get("/api/menus/position/down/1", (req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -292,6 +293,23 @@ let server = setupServer(
     );
   }),
 
+  rest.get("/api/pages/position/down/3", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+      })
+    );
+  }),
+
+  rest.get("/api/pages/position/up/3", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+      })
+    );
+  }),
 
 );
 
@@ -910,6 +928,38 @@ describe("Pages page", () => {
 
     });
 
+
+    it( 'page change position up', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const upPage = screen.queryAllByRole("up_page");
+      const firstPage = upPage[0];
+      userEvent.click(firstPage);        
+
+
+      await waitFor(() => {
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();
+        
+      });
+    });
+    
+    it( 'page change position down', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const upPage = screen.queryAllByRole("down_page");
+      const firstPage = upPage[0];
+      userEvent.click(firstPage);        
+
+
+      await waitFor(() => {
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect( alertSuccessAfter ).toBeInTheDocument();
+        
+      });
+    });
 
 
   });
