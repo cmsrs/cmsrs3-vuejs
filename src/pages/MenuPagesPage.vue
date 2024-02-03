@@ -449,14 +449,13 @@
               const ret = await this.refreshMenus();
               if(ret){
                 this.msgGood = 'Position menu has been changed';
+                this.pre_loader = false;
               }            
             }
-
         } catch (error) {
           console.log('_is_error__', error);
           this.msgWrong = 'Position menu problem = ' + error;
-        }
-        this.pre_loader = false;
+        }        
       },
 
       editPage(pageId){
