@@ -54,12 +54,18 @@
                       <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
                       <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
                       <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('down', p.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-                      <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
-                      
+                      <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>                      
                       {{ p.short_title[lang] }}
+
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
                         <div class="row" v-for="pp in getPagesBelongsToPage( p.id )" :key="pp.id">
+
+                          <div role="edit_page" class="ml-2"  @click="editPage(pp.id)"><i className="far fa-edit cursor-pointer"></i></div>
+                          <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="delPage(pp.id)"><i className="fas fa-trash cursor-pointer"></i></div>
+                          <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('down', pp.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                          <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', pp.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
                           {{ pp.short_title[lang] }}
+
                         </div>
 
                       </div>
@@ -83,13 +89,25 @@
               <div class="row"  v-if="notRelatedPages" >
                 <h5 class="mt-4">Pages not related to menu</h5>
                   <div class="row" v-for="(p, index) in notRelatedPages" :key="index">
+
+                    <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
+                    <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
+                    <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('down', p.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                    <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>                    
                     {{ p.short_title[defaultLang] }}
+
                   </div>
               </div>
               <div class="row"  v-if="innerPages" >
                 <h5 class="mt-4">Inner boxes</h5>
                   <div class="row" v-for="(p, index) in innerPages" :key="index">                  
+
+                    <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
+                    <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
+                    <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('down', p.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                    <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
                     {{ p.short_title[defaultLang]+" ("+ p.id +")" }}
+
                   </div>
               </div>
             </div>

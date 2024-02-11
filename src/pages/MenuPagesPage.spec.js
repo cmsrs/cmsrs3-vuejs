@@ -962,6 +962,39 @@ describe("Pages page", () => {
     });
 
 
+    it( 'count edit_page icons', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const editPage = screen.queryAllByRole("edit_page");
+      expect(editPage.length).toBe(pages.length);
+    });
+
+    it( 'count del_page icons', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const delPage = screen.queryAllByRole("del_page");
+      expect(delPage.length).toBe(pages.length);
+    });
+
+    it( 'count down_page icons', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const downPage = screen.queryAllByRole("down_page");
+      expect(downPage.length).toBe(pages.length);
+    });
+
+    it( 'count up_page icons', async ()  => {
+      await setup();
+      await waitForAjaxes();
+
+      const upPage = screen.queryAllByRole("up_page");
+      expect(upPage.length).toBe(pages.length);
+    });
+
+
   });
 
 
