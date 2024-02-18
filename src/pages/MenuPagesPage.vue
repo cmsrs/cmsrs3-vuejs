@@ -51,7 +51,18 @@
                   <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
                     <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
 
+                      <PageTitle
+                        @execEditPage="editPage(p.id)"
+                        @execDelPage="delPage(p.id)"
+                        @execPositionPageUp="positionPageUp(p.id)"
+                        @execPositionPageDown="positionPageDown(p.id)"
+                        :pre_loader="pre_loader"                        
+                        :p="p"
+                        :lang="lang"
+                        :allPages="allPages"
+                      ></PageTitle>                      
                       <!-- stat componentu napisz do tego komponent ktory przekazuje na wejsciu otrzymuje p -->
+                      <!--
                       <div>
                         <div role="edit_page" class="ml-2"  @click="editPage(p.id)"><i className="far fa-edit cursor-pointer"></i></div>
                         <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="delPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
@@ -59,6 +70,7 @@
                         <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>                      
                         {{ p.short_title[lang] }}
                       </div>
+                      -->
                       <!-- stop componentu -->
 
                       <div class="container m-2"  role="page_pages" :data-page-id="p.id"  v-if="getPagesBelongsToPage( p.id )" >
@@ -217,9 +229,15 @@
   </template>
   <script>
   import storage from "../state/storage";
+  import PageTitle from "../components/PageTitle";
   import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
 
   export default {
+    name: "MenuPages",
+    components: {
+      PageTitle
+    },
+
 
     data() {
 
@@ -525,17 +543,29 @@
           }
         },
 
+        async positionPageUp( pageId){
+          //console.log('jestem up' + pageId);
+          this.positionPage('up', pageId);
+        },
+        async positionPageDown( pageId){
+          //console.log('jestem down' + pageId);          
+          this.positionPage('down', pageId);
+        },
+
         async positionPage(direction, pageId){
+          //console.log( "fun positionPage=" + direction+", "+pageId ); //undefinde,  12 - tu jest juz zle ustawiony parametr direction
           if (!this.startLoading()) {
               return false;
           }
           
           try {
               const pos = await setPagePosition( direction, pageId, this.token);
-            
+              //console.log(pos);
               if(pos.data.success){
+                //console.log('position success');
                 const ret = await this.refreshPages();
                 if(ret){
+                  //console.log('refresh success');
                   this.msgGood = 'Position page has been changed';
                   this.pre_loader = false;
                 }            
