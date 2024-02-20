@@ -4,7 +4,7 @@
         <div role="del_page" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }" @click="inDelPage(p.id)"><i className="fas fa-trash cursor-pointer"></i></div>
         <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="inPositionPage('down', p.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
         <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="inPositionPage('up', p.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>                      
-        {{ p.short_title[lang] }}
+        {{ p.short_title[lang]+" ("+ p.id +")" }}
     </div>
 </template>
   
