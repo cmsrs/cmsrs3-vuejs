@@ -420,7 +420,8 @@ describe("Pages page", () => {
 
       //console.log(shortTitle);
       await screen.findByText(
-        pages[0]['short_title']['en']+' (1)'
+        pages[0]['short_title']['en']
+        //pages[0]['short_title']['en']+' (1)'
       );
 
       const title = screen.queryByPlaceholderText("title en");
@@ -460,8 +461,8 @@ describe("Pages page", () => {
       );
 
       await screen.findByText(
-        //pages[0]['short_title']['en']
-        pages[0]['short_title']['en']+' (1)'
+        pages[0]['short_title']['en']
+        //pages[0]['short_title']['en']+' (1)'
       );
       
     });

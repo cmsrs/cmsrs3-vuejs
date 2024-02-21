@@ -126,6 +126,7 @@
                       :p="p"
                       :lang="lang"
                       :allPages="allPages"
+                      :showPageId=true
                     ></PageTitle>                      
 
                   </div>
