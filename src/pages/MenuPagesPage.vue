@@ -41,13 +41,19 @@
 
             <div class="container">
               <div class="row" v-for="(m, index) in menus" :key="m.id">
-                <div class="form-group mt-3 ">              
-                  <input role="menu"  class="form-control"  v-model="menus[index]['name'][lang]" >
-                  <div role="save_menu" class="ml-2"  :class="{ 'disabled-if-loader': pre_loader }"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu"  class="ml-2 trash"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delMenu(index)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
-                  <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-                  <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                  <div class="container mt-3">
+                    <div class="row">                
+                        <input role="menu"  class="col-6"  v-model="menus[index]['name'][lang]" >
+                        <div role="save_menu" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
+                        <div role="del_menu"  class="ml-2 trash col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delMenu(index)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+
+                        <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                        <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                    </div>
+                  </div>
+
+
                   <div class="container"  role="menu_pages" :data-menu-id="m.id"  v-if="getPagesBelongsToMenu( m.id )" >
                     <div class="row test-parent-page" v-for="p in getPagesBelongsToMenu( m.id )" :key="p.id">
 
@@ -81,7 +87,6 @@
                       </div>
                     </div>
                   </div>
-                </div>
               </div>
             </div>
 

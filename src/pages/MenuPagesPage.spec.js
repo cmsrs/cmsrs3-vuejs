@@ -850,7 +850,7 @@ describe("Pages page", () => {
           //console.log('aaaaa00='+ pageId  + '   '+parentPageId);
           if (pageId ===  String(parentPageId) ) {     
             //console.log('bbb');
-            const pagesInsidePage = container.querySelectorAll('.row');
+            const pagesInsidePage = container.querySelectorAll('.test-page');
             expect(pagesInsidePage.length).toBe(2); 
             isIf = true;
           }
