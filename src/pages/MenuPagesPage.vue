@@ -91,12 +91,13 @@
             </div>
 
             <div class="container">
-              <div class="row"  v-if="isAddMenu" >
-                <div class="form-group mt-3 ">              
-                  <input role="new_menu"  class="form-control"  :class="{ 'is-invalid': menus_error_new }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
-                  <div role="save_menu_0" class="ml-2"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu_0"  class="ml-2 trash"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
-                </div>
+              <div class="row  mt-3"  v-if="isAddMenu" >
+
+                
+                  <input role="new_menu"  class="col-6"  :class="{ 'is-invalid': menus_error_new }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <div role="save_menu_0" class="ml-2 col-1"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu_0"  class="ml-2 trash  col-1"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+
               </div>
             </div>
 
