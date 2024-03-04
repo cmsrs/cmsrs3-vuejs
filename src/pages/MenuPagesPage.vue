@@ -39,12 +39,15 @@
               Add menu
             </button>
 
-            <div class="container">
+            <div class="container" style="margin-left: 0px; padding-left: 0px;">
               <div class="row" v-for="(m, index) in menus" :key="m.id">
 
                   <div class="container mt-3">
-                    <div class="row">                
-                        <input role="menu"  class="col-6"  v-model="menus[index]['name'][lang]" >
+                    <div class="row">    
+                        <div class="form-group col-6">
+                          <input role="menu"  class="form-control"   v-model="menus[index]['name'][lang]" >
+                        </div>            
+                        
                         <div role="save_menu" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
                         <div role="del_menu"  class="ml-2 trash col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delMenu(index)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
@@ -90,18 +93,20 @@
               </div>
             </div>
 
-            <div class="container">
+            <div class="container" style="margin-left: 0px; padding-left: 0px;">
               <div class="row  mt-3"  v-if="isAddMenu" >
 
-                
-                  <input role="new_menu"  class="col-6"  :class="{ 'is-invalid': menus_error_new }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  <div class="form-group col-6">
+                    <input role="new_menu"  class="form-control"  :class="{ 'is-invalid': menus_error_new }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
+                  </div>
+                  
                   <div role="save_menu_0" class="ml-2 col-1"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
                   <div role="del_menu_0"  class="ml-2 trash  col-1"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
               </div>
             </div>
 
-            <div class="container">
+            <div class="container"  style="margin-left: 0px; padding-left: 0px;">
               <div class="row"  v-if="notRelatedPages" >
                 <h5 class="mt-4">Pages not related to menu</h5>
                   <div class="row" v-for="(p, index) in notRelatedPages" :key="index">
