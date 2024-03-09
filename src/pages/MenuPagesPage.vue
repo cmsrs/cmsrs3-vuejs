@@ -217,6 +217,7 @@
 
                 <div class="form-group mt-3" v-if="(page_type === 'cms') || (page_type === 'inner') || (page_type === 'privacy_policy' )">
                   <br>
+                  <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
                   tu bedzie contentCKE: CKEditor (dla: 'cms', 'inner', 'privacy_policy' )
                 </div>
                 <div class="form-group mt-3" v-else>
@@ -239,11 +240,15 @@
   import storage from "../state/storage";
   import PageTitle from "../components/PageTitle";
   import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
+  import CKEditor from '@ckeditor/ckeditor5-vue';
+  import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
   export default {
     name: "MenuPages",
     components: {
-      PageTitle
+      PageTitle,
+      ckeditor: CKEditor.component
     },
 
 
@@ -291,7 +296,13 @@
           isAddMenu: false,
           new_menu_name: {},
           menus: [],
-          menus_error_new: false
+          menus_error_new: false,
+
+          editor: ClassicEditor,
+          editorData: '<p>Content of the editor.</p>',
+          editorConfig: {
+            // The configuration of the editor.
+          }          
         };
     },
     methods: {

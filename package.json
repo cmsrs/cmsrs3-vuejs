@@ -9,6 +9,8 @@
     "test": "jest --watch"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.2.0",
+    "@ckeditor/ckeditor5-vue": "^5.1.0",
     "axios": "^0.21.4",
     "core-js": "^3.33.2",
     "secure-ls": "^1.2.6",
