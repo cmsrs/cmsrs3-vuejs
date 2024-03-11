@@ -159,11 +159,11 @@
         
               <form>
                 <div class="form-group mt-3 ">              
-                  <input class="form-control" v-model="title[lang]" :placeholder="`title ${lang}`">
+                  <input class="form-control" :class="{ 'is-invalid': errFields.includes('title') }"  v-model="title[lang]" :placeholder="`title ${lang}`">
                 </div>
 
                 <div class="form-group mt-3 ">              
-                  <input  class="form-control"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
+                  <input  class="form-control"  :class="{ 'is-invalid': errFields.includes('short_title') }"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
                 </div>              
 
                 <div class="form-group mt-3 ">                            
@@ -217,11 +217,11 @@
 
                 <div class="form-group mt-3" v-if="(page_type === 'cms') || (page_type === 'inner') || (page_type === 'privacy_policy' )">
                   <br>
-                  <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+                  <ckeditor :editor="editor" v-model="content[lang]" :config="editorConfig"></ckeditor>
                   tu bedzie contentCKE: CKEditor (dla: 'cms', 'inner', 'privacy_policy' )
                 </div>
                 <div class="form-group mt-3" v-else>
-                  <textarea  class="form-control"  rows="20" cols="50" v-model="content[lang]" :placeholder="`content ${lang}`" style="fontSize:'10pt'"></textarea>
+                  <textarea  class="form-control"  rows="20" cols="50" v-model="content[lang]" :placeholder="`content ${lang}`" style="font-size:'10pt'"></textarea>
                 </div>      
                 
                 <div className="form-group mt-3">
@@ -237,6 +237,7 @@
     </div>
   </template>
   <script>
+  import functions from "../helpers/functions.js";
   import storage from "../state/storage";
   import PageTitle from "../components/PageTitle";
   import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
@@ -297,9 +298,9 @@
           new_menu_name: {},
           menus: [],
           menus_error_new: false,
+          errFields: [],
 
           editor: ClassicEditor,
-          editorData: '<p>Content of the editor.</p>',
           editorConfig: {
             // The configuration of the editor.
           }          
@@ -307,9 +308,11 @@
     },
     methods: {
       async saveEditPage() {
-        this.pre_loader = true;
-        try {
+        if (!this.startLoading()) {
+            return false;
+        }
 
+        try {
             const post = {
                 title: this.title,
                 short_title: this.short_title,
@@ -319,12 +322,21 @@
                 published: this.published
             };
 
-            //console.log('post', post);
-            await postPage(post, this.token);
+            const retPage = await postPage(post, this.token);
 
-            const response = await getPages(this.token);
-            this.notRelatedPages = this.getNotRelatedPages( response.data.data);
-            this.innerPages = this.getInnerPages( response.data.data);
+            if(retPage.data.success){
+                this.msgGood = 'Page has been added';                
+            }else if( retPage.data.success === false ){
+                this.msgWrong =  await functions.parseError( retPage.data.error );
+                this.errFields =  await functions.getErrorFields( retPage.data.error );
+            }else{
+                this.msgWrong = 'Something wrong';                              
+            }            
+
+            const ret = await this.refreshPages();
+            if(ret){
+              this.pre_loader = false;
+            }
             
         } catch (error) {
             //this.failMessage = 'Invalid save page';
@@ -499,6 +511,7 @@
       clearMsg(){
         this.msgWrong = '';
         this.msgGood = '';
+        this.errFields = [];
       },
       async startLoading() {        
         this.clearMsg();
