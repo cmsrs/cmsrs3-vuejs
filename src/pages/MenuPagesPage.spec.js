@@ -948,6 +948,31 @@ describe("Pages page", () => {
         });
     });
 
+    it('edit first page and see success msg', async () => {
+      await setup();
+      await waitForAjaxes();
+
+      const pageEdit = screen.queryAllByRole("edit_page");
+      const firstEditPage = pageEdit[0];
+      userEvent.click(firstEditPage);
+
+      const button = screen.queryByRole("button_save_edit_page" );
+      await userEvent.click(button);
+
+      const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
+      expect(spinnerAfterClick).not.toBeNull();
+
+      await waitForElementToBeRemoved(spinnerAfterClick);
+      expect(counter).toBe(1);      
+
+      const successMsg = trans.ttt( 'success_page_edit' );
+      expect( successMsg ).not.toBe( '');
+      await screen.findByText(
+       successMsg
+      );
+    
+    });
+
 
     it( 'delete page and show success alert', async ()  => {
       await setup();
