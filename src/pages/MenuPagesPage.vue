@@ -238,6 +238,7 @@
   </template>
   <script>
   import functions from "../helpers/functions.js";
+  import trans from "../helpers/trans.js";
   import storage from "../state/storage";
   import PageTitle from "../components/PageTitle";
   import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
@@ -325,7 +326,7 @@
             const retPage = await postPage(post, this.token);
 
             if(retPage.data.success){
-                this.msgGood = 'Page has been added';                
+                this.msgGood =  trans.ttt( 'success_page_add' );  //'Page has been added';                
             }else if( retPage.data.success === false ){
                 this.msgWrong =  await functions.parseError( retPage.data.error );
                 this.errFields =  await functions.getErrorFields( retPage.data.error );

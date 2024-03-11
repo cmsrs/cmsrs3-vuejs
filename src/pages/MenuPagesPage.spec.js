@@ -6,6 +6,7 @@ import {
   fireEvent
 } from "@testing-library/vue";
 import MenuPagesPage from "./MenuPagesPage.vue";
+import trans from "../helpers/trans.js";
 
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
@@ -199,7 +200,12 @@ let server = setupServer(
   rest.post("/api/pages", (req, res, ctx) => {
     requestBody = req.body;
     counter += 1;
-    return res(ctx.status(200));
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
   }),
 
   rest.post("/api/menus", (req, res, ctx) => {
@@ -406,6 +412,32 @@ describe("Pages page", () => {
       expect(store.state.config.defaultLang).toEqual(store.state.config.langs[0]);
     });
 
+    it( 'create some page', async ()  => {
+      await setup();
+      await waitForAjaxes();      
+      const title = screen.queryByPlaceholderText("title en");
+      await userEvent.type(title, 'tiitle'  );
+
+      const shortTitle = screen.queryByPlaceholderText("short title en");
+      await userEvent.type(shortTitle, 'short_tiiiitle'  );
+
+      const button = screen.queryByRole("button_save_edit_page" );
+      await userEvent.click(button);
+
+      const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
+      expect(spinnerAfterClick).not.toBeNull();
+
+      await waitForElementToBeRemoved(spinnerAfterClick);
+      expect(counter).toBe(1);      
+
+      const successMsg = trans.ttt( 'success_page_add' );
+      expect( successMsg ).not.toBe( '');
+      await screen.findByText(
+       successMsg
+      );
+
+    });
+
     it( 'create main_page', async ()  => {
       await setup();
       await waitForAjaxes();      
@@ -463,6 +495,12 @@ describe("Pages page", () => {
       await screen.findByText(
         pages[0]['short_title']['en']
         //pages[0]['short_title']['en']+' (1)'
+      );
+
+      const successMsg = trans.ttt( 'success_page_add' );
+      expect( successMsg ).not.toBe( '');
+      await screen.findByText(
+        successMsg
       );
       
     });
