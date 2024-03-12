@@ -194,6 +194,7 @@ const menus  = [
 
 let requestBody;
 let counter = 0;
+let counter2 = 0;
 let counterMenu = 0;
 let server = setupServer(
   //?token=abcde12345
@@ -207,6 +208,19 @@ let server = setupServer(
       })
     );
   }),
+
+  rest.put("/api/pages/3", (req, res, ctx) => {
+    requestBody = req.body;
+    counter2 += 1;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
+  }),
+
+
 
   rest.post("/api/menus", (req, res, ctx) => {
     requestBody = req.body;
@@ -348,6 +362,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   counter = 0;
+  counter2 = 0;  
   counterMenu = 0;  
   server.resetHandlers();
 });
@@ -963,7 +978,8 @@ describe("Pages page", () => {
       expect(spinnerAfterClick).not.toBeNull();
 
       await waitForElementToBeRemoved(spinnerAfterClick);
-      expect(counter).toBe(1);      
+      expect(counter).toBe(0);   
+      expect(counter2).toBe(1);         
 
       const successMsg = trans.ttt( 'success_page_edit' );
       expect( successMsg ).not.toBe( '');

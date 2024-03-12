@@ -241,7 +241,7 @@
   import trans from "../helpers/trans.js";
   import storage from "../state/storage";
   import PageTitle from "../components/PageTitle";
-  import { postPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
+  import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
   import CKEditor from '@ckeditor/ckeditor5-vue';
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -300,6 +300,7 @@
           menus: [],
           menus_error_new: false,
           errFields: [],
+          currentPageId: false,
 
           editor: ClassicEditor,
           editorConfig: {
@@ -323,10 +324,10 @@
                 published: this.published
             };
 
-            const retPage = await postPage(post, this.token);
+            const retPage = this.currentPageId ? await putPage(post, this.currentPageId, this.token) : await postPage(post, this.token);
 
             if(retPage.data.success){
-                this.msgGood =  trans.ttt( 'success_page_add' );  //'Page has been added';                
+                this.msgGood = this.currentPageId ? trans.ttt( 'success_page_edit' ) : trans.ttt( 'success_page_add' );
             }else if( retPage.data.success === false ){
                 this.msgWrong =  await functions.parseError( retPage.data.error );
                 this.errFields =  await functions.getErrorFields( retPage.data.error );
@@ -545,6 +546,8 @@
       editPage(pageId){
         this.clearMsg();
         const p = this.allPages.find( (page) =>  page.id === pageId );
+
+        this.currentPageId = p.id;
 
         this.title = p.title;
         this.short_title = p.short_title;

@@ -8,8 +8,9 @@ describe("trans", () => {
         expect( t1 ).not.toBe( '' );
       });
       it( 'getStrByKey get empty', async ()  => {
-        const t1 = trans.ttt( 'success_page_edit_23434' );
-        expect( t1 ).toBe( '' );
+        const fakeKey =  'success_page_edit_23434';
+        const t1 = trans.ttt( fakeKey );
+        expect( t1 ).toBe( fakeKey );
       });
 
     });

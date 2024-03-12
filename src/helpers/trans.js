@@ -5,7 +5,7 @@ const ttt =  ( key ) => {
         success_page_edit: 'Page has been changed'
     }
         
-    return d[key] ? d[key] : '';
+    return d[key] ? d[key] : key;
 
 };
   

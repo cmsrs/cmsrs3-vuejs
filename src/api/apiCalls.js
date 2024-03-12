@@ -12,6 +12,10 @@ export const postPage = (post, token) => {
     return axios.post("/api/pages?token="+token, post);
 };
 
+export const putPage = (post, id, token) => {
+    return axios.put("/api/pages/"+id+"?token="+token, post);
+};
+
 export const getPages = (token) => {
     return axios.get("/api/pages?token="+token);
 };
