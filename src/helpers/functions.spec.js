@@ -26,4 +26,55 @@ describe("functions", () => {
       });      
     });
 
+    describe("isNotEmptyObj", () => {
+      it( 'isNotEmptyObj out true', async ()  => {
+        const keys = [ 'en', 'pl' ];
+
+        const obj = {
+          'pl': 'a',
+          'en' :'b'
+        };
+
+        const out = functions.isNotEmptyObj( obj, keys );
+        expect(out).toBe( true );
+      });      
+
+      it( 'isNotEmptyObj out false', async ()  => {
+        const keys = [ 'en', 'pl' ];
+
+        const obj = {
+          'pl': 'a',
+          'en' :''
+        };
+
+        const out = functions.isNotEmptyObj( obj, keys );
+        expect(out).toBe( false );
+      });      
+
+      it( 'isNotEmptyObj empty in out false', async ()  => {
+        const keys = [ 'en', 'pl' ];
+                
+        const obj = {
+        };
+
+        const out = functions.isNotEmptyObj( obj, keys );
+        expect(out).toBe( false );
+      });      
+
+
+      it( 'isNotEmptyObj out false with keys', async ()  => {
+        const keys = [ 'en', 'pl' ];
+
+        const obj = {
+          'pl': 'a',
+        };
+
+        const out = functions.isNotEmptyObj( obj, keys );
+        expect(out).toBe( false );
+      });      
+
+
+    });
+
+
 });  

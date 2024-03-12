@@ -159,11 +159,11 @@
         
               <form>
                 <div class="form-group mt-3 ">              
-                  <input class="form-control" :class="{ 'is-invalid': errFields.includes('title') }"  v-model="title[lang]" :placeholder="`title ${lang}`">
+                  <input class="form-control" :class="{ 'is-invalid': isInvalidTitle() }"  v-model="title[lang]" :placeholder="`title ${lang}`">
                 </div>
 
                 <div class="form-group mt-3 ">              
-                  <input  class="form-control"  :class="{ 'is-invalid': errFields.includes('short_title') }"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
+                  <input  class="form-control"  :class="{ 'is-invalid': isInvalidShortTitle() }"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
                 </div>              
 
                 <div class="form-group mt-3 ">                            
@@ -237,6 +237,7 @@
     </div>
   </template>
   <script>
+  import { isProxy, toRaw } from 'vue';
   import functions from "../helpers/functions.js";
   import trans from "../helpers/trans.js";
   import storage from "../state/storage";
@@ -252,7 +253,6 @@
       PageTitle,
       ckeditor: CKEditor.component
     },
-
 
     data() {
 
@@ -309,6 +309,22 @@
         };
     },
     methods: {
+      proxyToArray( proxyOrArr ) {
+        return isProxy(proxyOrArr) ? toRaw( proxyOrArr ) : proxyOrArr;
+      },
+
+      isInvalidTitle() {
+        const langs = this.proxyToArray( this.langs );
+        const title = this.proxyToArray(this.title);
+        return this.errFields.includes('short_title') && !functions.isNotEmptyObj( title, langs );
+      },
+
+      isInvalidShortTitle() {
+        const langs = this.proxyToArray( this.langs );        
+        const short_title = this.proxyToArray(this.short_title);
+        return this.errFields.includes('short_title') && !functions.isNotEmptyObj( short_title, langs );
+      },
+
       async saveEditPage() {
         if (!this.startLoading()) {
             return false;
@@ -580,28 +596,22 @@
         },
 
         async positionPageUp( pageId){
-          //console.log('jestem up' + pageId);
           this.positionPage('up', pageId);
         },
         async positionPageDown( pageId){
-          //console.log('jestem down' + pageId);          
           this.positionPage('down', pageId);
         },
 
         async positionPage(direction, pageId){
-          //console.log( "fun positionPage=" + direction+", "+pageId ); //undefinde,  12 - tu jest juz zle ustawiony parametr direction
           if (!this.startLoading()) {
               return false;
           }
           
           try {
               const pos = await setPagePosition( direction, pageId, this.token);
-              //console.log(pos);
               if(pos.data.success){
-                //console.log('position success');
                 const ret = await this.refreshPages();
                 if(ret){
-                  //console.log('refresh success');
                   this.msgGood = 'Position page has been changed';
                   this.pre_loader = false;
                 }            

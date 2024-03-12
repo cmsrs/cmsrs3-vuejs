@@ -24,8 +24,25 @@
 
     return result;
   };
+
+  const isNotEmptyObj = ( obj, keys ) => {
+    if( Object.keys(obj).length === 0 ){
+      return false;
+    }
+
+    let isNotEmpty = true;
+    for(let key of keys ){
+      if( !obj[key] ){
+        isNotEmpty = false;
+        break;
+      }
+    }
+    return isNotEmpty;
+  };
+
   
   export default {
     parseError,
-    getErrorFields
+    getErrorFields,
+    isNotEmptyObj
   };
