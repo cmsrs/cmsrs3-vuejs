@@ -218,21 +218,47 @@
                   </select>
                 </div>    
 
-                <div class="form-group mt-3" v-if="page_type !== 'main_page'">
-                  <br>
-                  tu bedzie wyswierlac sie dla innych stron niz main_page: <br>
-                  1. menus<br>
+                <div class="mt-3" v-if="page_type !== 'main_page'">
+                  <!--
+                  tu bedzie wyswierlac sie dla innych stron niz main_page:
+                  1. menus
                   2. parent_page                  
+                  -->
+
+                  <div class="form-group mt-3">
+                    <label for="menu_items">Menu:</label>
+                    <select role="menu_items"  class="rs-select form-control" v-model="menu_id">
+                      <option v-for="menu in menus" :key="menu.id" :value="menu.id">
+                        {{ menu.name[lang] }}
+                      </option>
+                    </select>
+                  </div>    
+
+
+                  <div class="form-group mt-3">
+                    <label for="page">Page:</label>
+                    <select role="page_items"  class="rs-select form-control" v-model="page_id">
+                      <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
+                        {{ page.short_title[lang] }}
+                      </option>
+                    </select>
+                  </div>    
+
+
                 </div>
 
-                <div class="form-group mt-3" v-if="(page_type === 'cms') || (page_type === 'inner') || (page_type === 'privacy_policy' )">
-                  <br>
-                  <ckeditor :editor="editor" v-model="content[lang]" :config="editorConfig"></ckeditor>
-                  tu bedzie contentCKE: CKEditor (dla: 'cms', 'inner', 'privacy_policy' )
+                <div class="mt-4">
+                  <div class="form-group" v-if="(page_type === 'cms') || (page_type === 'inner') || (page_type === 'privacy_policy' )">
+                    <br>
+                    <ckeditor :editor="editor" v-model="content[lang]" :config="editorConfig"></ckeditor>
+                    <!--
+                    tu bedzie contentCKE: CKEditor (dla: 'cms', 'inner', 'privacy_policy' )
+                    -->
+                  </div>
+                  <div class="form-group" v-else>
+                    <textarea  class="form-control"  rows="20" cols="50" v-model="content[lang]" :placeholder="`content ${lang}`" style="font-size:'10pt'"></textarea>
+                  </div>      
                 </div>
-                <div class="form-group mt-3" v-else>
-                  <textarea  class="form-control"  rows="20" cols="50" v-model="content[lang]" :placeholder="`content ${lang}`" style="font-size:'10pt'"></textarea>
-                </div>      
                 
                 <div className="form-group mt-3">
                   <input type="file" name="images"  multiple/>
@@ -314,7 +340,13 @@
           content: {},
           page_type: 'cms',                    
           published: false,
-        
+          commented: false,           
+          after_login: false, 
+          menu_id: '', 
+          page_id:'', 
+          images: [],            
+
+          rootPagesBelongToMenu: [],
           isAddMenu: false,
           pre_loader: false,          
           new_menu_name: {},
@@ -380,6 +412,12 @@
         this.content = {};
         this.page_type = 'cms';
         this.published = false;
+        this.commented = false;           
+        this.after_login = false;
+        this.menu_id = '';
+        this.page_id = '';
+        this.images = [];            
+
 
         this.pre_loader = false;
       },
@@ -585,6 +623,10 @@
         this.clearMsg();
         const p = this.allPages.find( (page) =>  page.id === pageId );
 
+        if( p.menu_id ){
+          this.rootPagesBelongToMenu = this.allPages.filter( (page) =>  (page.menu_id === p.menu_id) &&  !page.page_id );
+        }
+
         this.currentPageId = p.id;
 
         this.title = p.title;
@@ -593,6 +635,13 @@
         this.page_type = p.type; //!
         this.content = p.content;
         this.published =  p.published;
+
+        this.commented = p.commented;
+        this.after_login = p.after_login;
+        this.menu_id = p.menu_id;
+        this.page_id = p.page_id;
+        this.images = p.images;
+        
       },
       async delPage(pageId){
         this.clearMsg();

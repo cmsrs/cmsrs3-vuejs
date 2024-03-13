@@ -750,13 +750,12 @@ describe("Pages page", () => {
     it( 'menu change position up', async ()  => {
       await setup();
       await waitForAjaxes();
+      
+      const upMenu = screen.queryAllByRole("up_menu");
+      const secondDownMenu = upMenu[1];
+      await userEvent.click(secondDownMenu);        
 
-      await waitFor(() => {
-
-        const upMenu = screen.queryAllByRole("up_menu");
-        const secondDownMenu = upMenu[1];
-        userEvent.click(secondDownMenu);        
-
+      await waitFor(() => {        
         const alertSuccessAfter = screen.queryByRole("alert_success");
         expect( alertSuccessAfter ).toBeInTheDocument();
         
@@ -962,8 +961,14 @@ describe("Pages page", () => {
 
       const title2 = screen.queryByPlaceholderText("title en");
       expect(title2).toHaveValue(page.title['en']);
-
       
+      const menuItems = await screen.findByRole('menu_items');
+      expect(menuItems.value).toEqual( page.menu_id.toString() )  ; 
+
+      const pageItems = await screen.findByRole('page_items');
+      expect(pageItems.value).toEqual( page.page_id )  ; 
+
+
       const button = screen.queryByRole("button_clear_page_data" );
       await  userEvent.click(button);
 
