@@ -9,5 +9,5 @@ select.rs-select {
 } 
 
 .msg-info {
-  height: 50px;
+  min-height: 50px;
 }

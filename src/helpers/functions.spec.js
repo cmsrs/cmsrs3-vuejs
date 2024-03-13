@@ -9,12 +9,12 @@ describe("functions", () => {
       it( 'parseError return str', async ()  => {
         const input = 'aaaaaaa';
         const out =  await functions.parseError( input );
-        expect(out ).toBe(input);
+        expect(out ).toEqual( {'err' : [input]} );
       });
 
-      it( 'parseError return obj', async ()  => {
+      it( 'parseError input obj', async ()  => {
         const out =  await functions.parseError( errStrOrJsonTest1 );
-        expect(out).toBe("The title.pl field is required.");
+        expect(out).toBe(errStrOrJsonTest1);
       });      
     });
 

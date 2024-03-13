@@ -1,10 +1,11 @@
  
   const  parseError = async ( errStrOrJson ) => {
     if (typeof errStrOrJson === 'object' && errStrOrJson !== null) {
-      const firstKey = Object.keys(errStrOrJson)[0];
-      return errStrOrJson[firstKey][0];
-    } else {
+      //const firstKey = Object.keys(errStrOrJson)[0];
+      //return errStrOrJson[firstKey][0];
       return errStrOrJson;
+    } else {
+      return  { 'err' : [errStrOrJson] };
     }
   };
 
@@ -25,6 +26,7 @@
     return result;
   };
 
+  //this function is not use in code
   const isNotEmptyObj = ( obj, keys ) => {
     if( Object.keys(obj).length === 0 ){
       return false;

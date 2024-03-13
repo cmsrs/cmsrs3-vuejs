@@ -22,8 +22,12 @@
           <div v-if="msgGood" class="alert alert-primary" role="alert_success">
             {{ msgGood }}
           </div>
-          <div v-if="msgWrong" class="alert alert-danger" role="alert_danger">
-            {{ msgWrong }}
+          <div v-if="msgWrong" class="alert alert-danger" role="alert_danger">          
+            <ul>
+              <li v-for="(value, key) in msgWrong" :key="key">
+                {{ key }}: {{ value[0] }}
+              </li>
+            </ul>            
           </div>      
         </div>
       </div>
@@ -159,11 +163,11 @@
         
               <form>
                 <div class="form-group mt-3 ">              
-                  <input class="form-control" :class="{ 'is-invalid': isInvalidTitle() }"  v-model="title[lang]" :placeholder="`title ${lang}`">
+                  <input class="form-control" :class="{ 'is-invalid': errFields.includes('title') }"  v-model="title[lang]" :placeholder="`title ${lang}`">
                 </div>
 
                 <div class="form-group mt-3 ">              
-                  <input  class="form-control"  :class="{ 'is-invalid': isInvalidShortTitle() }"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
+                  <input  class="form-control"  :class="{ 'is-invalid': errFields.includes('short_title') }"  v-model="short_title[lang]" :placeholder="`short title ${lang}`">
                 </div>              
 
                 <div class="form-group mt-3 ">                            
@@ -237,7 +241,6 @@
     </div>
   </template>
   <script>
-  import { isProxy, toRaw } from 'vue';
   import functions from "../helpers/functions.js";
   import trans from "../helpers/trans.js";
   import storage from "../state/storage";
@@ -309,21 +312,6 @@
         };
     },
     methods: {
-      proxyToArray( proxyOrArr ) {
-        return isProxy(proxyOrArr) ? toRaw( proxyOrArr ) : proxyOrArr;
-      },
-
-      isInvalidTitle() {
-        const langs = this.proxyToArray( this.langs );
-        const title = this.proxyToArray(this.title);
-        return this.errFields.includes('short_title') && !functions.isNotEmptyObj( title, langs );
-      },
-
-      isInvalidShortTitle() {
-        const langs = this.proxyToArray( this.langs );        
-        const short_title = this.proxyToArray(this.short_title);
-        return this.errFields.includes('short_title') && !functions.isNotEmptyObj( short_title, langs );
-      },
 
       async saveEditPage() {
         if (!this.startLoading()) {
