@@ -941,6 +941,38 @@ describe("Pages page", () => {
         });
     });
 
+    it('edit first page and then click clear button', async () => {
+      await setup();
+      await waitForAjaxes();
+          
+      const title = screen.queryByPlaceholderText("title en");
+      expect(title).toHaveValue("");
+
+
+      const firstPageIdOnThePage = 3;
+      const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
+      expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
+
+      const pageEdit = screen.queryAllByRole("edit_page");
+      const firstEditPage = pageEdit[0];
+      await  userEvent.click(firstEditPage);
+
+      //await waitFor(() => {        
+      const page = pages[firstPageIdOnThePageIndex];
+
+      const title2 = screen.queryByPlaceholderText("title en");
+      expect(title2).toHaveValue(page.title['en']);
+
+      
+      const button = screen.queryByRole("button_clear_page_data" );
+      await  userEvent.click(button);
+
+      const titleAfter = screen.queryByPlaceholderText("title en");
+      expect(titleAfter).toHaveValue("");
+          
+      //});
+  });
+
     it('edit first page and see success msg', async () => {
       await setup();
       await waitForAjaxes();

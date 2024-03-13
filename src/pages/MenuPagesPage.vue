@@ -154,12 +154,12 @@
           <div class="col-7">
 
               <!-- !to moze byc takze edit page -->
-              <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2" :disabled="pre_loader">
+              <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
                 Add page
               </button>
-              <button class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
+              <button role="button_clear_page_data" @click.prevent="clearDataPage"  class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
         
               <form>
                 <div class="form-group mt-3 ">              
@@ -278,6 +278,15 @@
 
         const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;
 
+        /*
+        //todo
+          commented: 0,           
+          after_login: 0, 
+          menu_id: '', 
+          page_id:'', 
+          images: []  
+        */
+
         return {
           msgWrong: '',
           msgGood: '',
@@ -291,14 +300,17 @@
           defaultLang: defaultLang,
           page_types : this.$store.state.config.page_types || pageTypes,
           token: this.$store.state.auth.token || token,
-          page_type: 'cms',                    
+
+          //page fields
           title: {},
           short_title: {},
           description: {},
           content: {},
-          pre_loader: false,
+          page_type: 'cms',                    
           published: false,
+        
           isAddMenu: false,
+          pre_loader: false,          
           new_menu_name: {},
           menus: [],
           menus_error_new: false,
@@ -350,6 +362,22 @@
         }
         this.pre_loader = false;
       },
+
+      clearDataPage(){
+        if (!this.startLoading()) {
+            return false;
+        }
+
+        this.title = {};
+        this.short_title = {};
+        this.description = {};
+        this.content = {};
+        this.page_type = 'cms';
+        this.published = false;
+
+        this.pre_loader = false;
+      },
+
       changeLang(lang){
         this.lang = lang;
       },
