@@ -175,32 +175,38 @@
                 </div>
 
 
-                <div className="form-check row mt-2">
-                  <input
+                <div className="form-check mt-2 row" >
+                  <label>
+                    <input
                       className="col-1"
                       name="published"
                       type="checkbox"
                       v-model="published"
                       />
-                  <label>Published</label>
+                      Published
+                  </label>
                 </div>
 
-                <div className="form-check row">
-                    <input
+                <div className="form-check  mt-2 row">
+                    <label>                  
+                      <input
                         className="col-1"
                         name="commented"
                         type="checkbox"
                         />
-                    <label>Commented</label>
+                      Commented
+                    </label>
                 </div>
 
-                <div className="form-check row">
-                    <input
+                <div className="form-check  mt-2 row">
+                    <label>
+                      <input
                         className="col-1"
                         name="after_login"
                         type="checkbox"
                         />
-                    <label>Available after log in</label>
+                      Available after log in
+                    </label>
                 </div>
 
                 <div class="form-group mt-3">
