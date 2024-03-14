@@ -26,6 +26,14 @@
     return result;
   };
 
+  const createEmptyObj = ( langs ) => {
+    const emptyObj = {};
+    langs.forEach(lang => {
+      emptyObj[lang] = '';
+    });
+    return emptyObj;
+  };
+
   //this function is not use in code
   const isNotEmptyObj = ( obj, keys ) => {
     if( Object.keys(obj).length === 0 ){
@@ -44,6 +52,7 @@
 
   
   export default {
+    createEmptyObj,
     parseError,
     getErrorFields,
     isNotEmptyObj

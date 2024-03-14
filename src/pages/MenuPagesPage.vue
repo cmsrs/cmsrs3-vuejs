@@ -237,7 +237,7 @@
 
 
                   <div class="form-group mt-3">
-                    <label for="page"  class="text-secondary">Page:</label>
+                    <label for="page"  class="text-secondary">Parent page:</label>
                     <select role="page_items"  class="rs-select form-control" v-model="page_id">
                       <option   value=""  disabled>Select a page</option> <!-- Pusta wartość -->
                       <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
@@ -311,15 +311,6 @@
         }
 
         const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;
-
-        /*
-        //todo
-          commented: 0,           
-          after_login: 0, 
-          menu_id: '', 
-          page_id:'', 
-          images: []  
-        */
 
         return {
           msgWrong: '',
@@ -681,7 +672,7 @@
         this.short_title = p.short_title;
         this.description = p.description;
         this.page_type = p.type; //!
-        this.content = p.content;
+        this.content = p.content[this.lang] ? p.content : functions.createEmptyObj( this.langs );
         this.published =  p.published;
 
         this.commented = p.commented;

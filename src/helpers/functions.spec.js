@@ -76,5 +76,21 @@ describe("functions", () => {
 
     });
 
+    describe("createEmptyObj", () => {
+
+      it( 'createEmptyObj with two langs', async ()  => {
+        const langs = [ 'en', 'pl' ];
+
+        const outExpect = {
+          'en': '',
+          'pl': '',        
+        };
+
+        const out = functions.createEmptyObj( langs );
+        expect(out).toEqual( outExpect );        
+      });          
+
+    });              
+
 
 });  
