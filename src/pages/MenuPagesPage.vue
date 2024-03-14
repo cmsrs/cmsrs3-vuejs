@@ -210,7 +210,7 @@
                 </div>
 
                 <div class="form-group mt-3">
-                  <label for="pageType">Page type:</label>
+                  <label for="pageType"  class="text-secondary">Page type:</label>
                   <select class="rs-select form-control" id="pageType" v-model="page_type">
                     <option v-for="pageType in page_types" :key="pageType" :value="pageType">
                       {{ pageType }}
@@ -226,7 +226,7 @@
                   -->
 
                   <div class="form-group mt-3">
-                    <label for="menu_items">Menu:</label>
+                    <label for="menu_items" class="text-secondary">Menu:</label>
                     <select role="menu_items"  class="rs-select form-control" v-model="menu_id">
                       <option v-for="menu in menus" :key="menu.id" :value="menu.id">
                         {{ menu.name[lang] }}
@@ -236,7 +236,7 @@
 
 
                   <div class="form-group mt-3">
-                    <label for="page">Page:</label>
+                    <label for="page"  class="text-secondary">Page:</label>
                     <select role="page_items"  class="rs-select form-control" v-model="page_id">
                       <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
                         {{ page.short_title[lang] }}
