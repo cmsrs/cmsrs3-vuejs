@@ -227,7 +227,8 @@
 
                   <div class="form-group mt-3">
                     <label for="menu_items" class="text-secondary">Menu:</label>
-                    <select role="menu_items"  class="rs-select form-control" v-model="menu_id">
+                    <select role="menu_items"  class="rs-select form-control" v-model="menu_id" @change="handleMenuChange">
+                      <option value=""  disabled>Select a menu</option> <!-- Pusta wartość -->                      
                       <option v-for="menu in menus" :key="menu.id" :value="menu.id">
                         {{ menu.name[lang] }}
                       </option>
@@ -238,6 +239,7 @@
                   <div class="form-group mt-3">
                     <label for="page"  class="text-secondary">Page:</label>
                     <select role="page_items"  class="rs-select form-control" v-model="page_id">
+                      <option value=""  disabled>Select a page</option> <!-- Pusta wartość -->
                       <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
                         {{ page.short_title[lang] }}
                       </option>
@@ -375,7 +377,14 @@
                 description: this.description,
                 type: this.page_type, //!
                 content: this.content,
-                published: this.published
+                published: this.published,
+
+                commented: this.commented,
+                after_login:  this.after_login,
+                menu_id: this.menu_id,
+                page_id: this.page_id,
+                images: this.images
+
             };
 
             const retPage = this.currentPageId ? await putPage(post, this.currentPageId, this.token) : await postPage(post, this.token);
@@ -412,12 +421,14 @@
         this.content = {};
         this.page_type = 'cms';
         this.published = false;
+
         this.commented = false;           
         this.after_login = false;
         this.menu_id = '';
         this.page_id = '';
         this.images = [];            
 
+        this.currentPageId = false; //!
 
         this.pre_loader = false;
       },
@@ -619,12 +630,55 @@
         }        
       },
 
+      /**
+       * only root pages withot children (copy from react)
+       */
+      getRootPages( menuId ){
+        const pageId = this.currentPageId;
+
+        let parentIds = [] //get children
+        for(let p of this.allPages){
+          if( (p.menu_id === menuId) &&  p.page_id ){
+            parentIds.push(p.page_id);
+          }
+        }
+
+        let pages = [];
+        //pages.push({});
+        
+        //only one level of depth
+        if(parentIds.includes(pageId)){
+          return pages;
+        }
+
+        for(let p of this.allPages){
+          //edit
+          if( (p.menu_id === menuId) && !p.page_id && pageId && (p.id !== pageId ) ){
+            pages.push(p);
+          }
+          //new
+          if( (p.menu_id === menuId) && !p.page_id && !pageId ){
+            pages.push(p);
+          }
+        }
+
+        //console.log(pages);
+
+        return pages;
+      },
+
+      handleMenuChange() {
+        if(this.menu_id){
+          this.rootPagesBelongToMenu = this.getRootPages( this.menu_id );
+        }
+      },
+
       editPage(pageId){
         this.clearMsg();
         const p = this.allPages.find( (page) =>  page.id === pageId );
 
         if( p.menu_id ){
-          this.rootPagesBelongToMenu = this.allPages.filter( (page) =>  (page.menu_id === p.menu_id) &&  !page.page_id );
+          this.rootPagesBelongToMenu = this.getRootPages( p.menu_id );
         }
 
         this.currentPageId = p.id;
