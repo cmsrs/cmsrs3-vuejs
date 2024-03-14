@@ -228,7 +228,7 @@
                   <div class="form-group mt-3">
                     <label for="menu_items" class="text-secondary">Menu:</label>
                     <select role="menu_items"  class="rs-select form-control" v-model="menu_id" @change="handleMenuChange">
-                      <option value=""  disabled>Select a menu</option> <!-- Pusta wartość -->                      
+                      <option  value=""  disabled>Select a menu</option> <!-- Pusta wartość -->                      
                       <option v-for="menu in menus" :key="menu.id" :value="menu.id">
                         {{ menu.name[lang] }}
                       </option>
@@ -239,7 +239,7 @@
                   <div class="form-group mt-3">
                     <label for="page"  class="text-secondary">Page:</label>
                     <select role="page_items"  class="rs-select form-control" v-model="page_id">
-                      <option value=""  disabled>Select a page</option> <!-- Pusta wartość -->
+                      <option   value=""  disabled>Select a page</option> <!-- Pusta wartość -->
                       <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
                         {{ page.short_title[lang] }}
                       </option>
@@ -632,9 +632,11 @@
 
       /**
        * only root pages withot children (copy from react)
+       * get root pages belongs to given menu, and get pages without children
        */
       getRootPages( menuId ){
-        const pageId = this.currentPageId;
+        menuId = parseInt( menuId );        
+        const pageId = this.currentPageId ? parseInt( this.currentPageId ) : false;
 
         let parentIds = [] //get children
         for(let p of this.allPages){
@@ -644,7 +646,6 @@
         }
 
         let pages = [];
-        //pages.push({});
         
         //only one level of depth
         if(parentIds.includes(pageId)){
@@ -662,27 +663,20 @@
           }
         }
 
-        //console.log(pages);
-
         return pages;
       },
 
       handleMenuChange() {
-        if(this.menu_id){
-          this.rootPagesBelongToMenu = this.getRootPages( this.menu_id );
-        }
+        this.rootPagesBelongToMenu = this.menu_id ? this.getRootPages( this.menu_id ) : [];
       },
 
       editPage(pageId){
         this.clearMsg();
         const p = this.allPages.find( (page) =>  page.id === pageId );
 
-        if( p.menu_id ){
-          this.rootPagesBelongToMenu = this.getRootPages( p.menu_id );
-        }
-
         this.currentPageId = p.id;
 
+        this.rootPagesBelongToMenu = p.menu_id ?  this.getRootPages( p.menu_id ) : [];
         this.title = p.title;
         this.short_title = p.short_title;
         this.description = p.description;
