@@ -228,7 +228,7 @@
                   <div class="form-group mt-3">
                     <label for="menu_items" class="text-secondary">Menu:</label>
                     <select role="menu_items"  class="rs-select form-control" v-model="menu_id" @change="handleMenuChange">
-                      <option  value=""  disabled>Select a menu</option> <!-- Pusta wartość -->                      
+                      <option  value="" ></option> <!-- Pusta wartość -->                      
                       <option v-for="menu in menus" :key="menu.id" :value="menu.id">
                         {{ menu.name[lang] }}
                       </option>
@@ -239,7 +239,7 @@
                   <div class="form-group mt-3">
                     <label for="page"  class="text-secondary">Parent page:</label>
                     <select role="page_items"  class="rs-select form-control" v-model="page_id">
-                      <option   value=""  disabled>Select a page</option> <!-- Pusta wartość -->
+                      <option   value="" ></option> <!-- Pusta wartość -->
                       <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
                         {{ page.short_title[lang] }}
                       </option>
