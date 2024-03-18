@@ -37,7 +37,7 @@
           <!-- Menu  -->
           <div class="col-5">
 
-            <button role="button_add_menu"  @click.prevent="addMenu" class="btn btn-primary mt-2 mb-2" >
+            <button role="button_add_menu"  @click.prevent="addMenu" class="btn btn-primary mt-2 mb-2" :disabled="pre_loader">
               <i v-if="!pre_loader" class="fas fa-plus"></i>
               <span role="pre_loader_add_menu" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>              
               Add menu
@@ -157,7 +157,7 @@
               <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
-                Add page
+                Add/Edit page
               </button>
               <button role="button_clear_page_data" @click.prevent="clearDataPage"  class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
         
@@ -262,9 +262,18 @@
                   </div>      
                 </div>
                 
-                <div className="form-group mt-3">
-                  <input type="file" name="images"  multiple/>
-                </div>              
+                <div class="row mt-3">
+                  <button role="button_upload_images" @click.prevent="upload_images"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2 mr-2 col-3" :disabled="pre_loader">
+                    <i v-if="!pre_loader" class="fas fa-plus"></i>
+                    <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                    Upload images
+                  </button>
+
+                  <div className="form-group mt-3 col">
+                    <input type="file" name="images" @change="handleUploadFile"   multiple/>
+                  </div>       
+              </div>
+
 
               </form>
 
@@ -279,7 +288,7 @@
   import trans from "../helpers/trans.js";
   import storage from "../state/storage";
   import PageTitle from "../components/PageTitle";
-  import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition } from "../api/apiCalls";
+  import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition, uploadImage } from "../api/apiCalls";
   import CKEditor from '@ckeditor/ckeditor5-vue';
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -347,6 +356,7 @@
           menus_error_new: false,
           errFields: [],
           currentPageId: false,
+          //uplodedImages: [],
 
           editor: ClassicEditor,
           editorConfig: {
@@ -422,6 +432,58 @@
         this.currentPageId = false; //!
 
         this.pre_loader = false;
+      },
+
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      },
+
+      async handleUploadFile(event){
+        const files = event.target.files || event.dataTransfer.files;
+        if (!files.length){
+          return false;          
+        } 
+        //console.log('7');                
+        if (!this.currentPageId){
+          return false;          
+        } 
+        //console.log('8');        
+        if (!this.startLoading()) {
+          return false;
+        }
+
+        const images = await this.getImages(files);    
+
+        for (let i = 0; i < images.length; i++) {
+
+            let ret = uploadImage( images[i], 'page', this.currentPageId, this.token );
+            await this.delay(5000);
+
+            if(ret){
+                this.msgGood = 'Images has been uploaded ' + (i + 1) + "/" + images.length;
+            }
+        }        
+        this.pre_loader = false;        
+        //console.log(images);
+      },
+
+      async getImages(files) {
+          const promises = [];
+          for (let i = 0; i < files.length; i++) {
+              promises.push(new Promise((resolve, reject) => {
+                  let name = files[i].name;
+                  let reader = new FileReader();
+
+                  reader.readAsDataURL(files[i]);
+                  reader.onload = (e) => {
+                      resolve({ data: e.target.result, name: name });
+                  }
+                  reader.onerror = (error) => {
+                      reject(error);
+                  };
+              }));
+          }
+          return Promise.all(promises);
       },
 
       changeLang(lang){

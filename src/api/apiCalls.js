@@ -48,3 +48,8 @@ export const setPagePosition = (direction, id, token) => {
 export const deletePage = (id, token) => {
     return axios.delete("/api/pages/"+id+"?token="+token);
 };
+
+
+export const uploadImage = (post, type, id, token) => {
+    return axios.post("/api/image/"+type+"/"+id+"?token="+token, post) ;
+};
