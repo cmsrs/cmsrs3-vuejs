@@ -356,7 +356,6 @@
           menus_error_new: false,
           errFields: [],
           currentPageId: false,
-          //uplodedImages: [],
 
           editor: ClassicEditor,
           editorConfig: {
@@ -443,11 +442,11 @@
         if (!files.length){
           return false;          
         } 
-        //console.log('7');                
+
         if (!this.currentPageId){
           return false;          
         } 
-        //console.log('8');        
+
         if (!this.startLoading()) {
           return false;
         }
@@ -464,7 +463,6 @@
             }
         }        
         this.pre_loader = false;        
-        //console.log(images);
       },
 
       async getImages(files) {
