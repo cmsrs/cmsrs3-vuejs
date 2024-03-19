@@ -263,9 +263,12 @@
                 </div>
                 
 
-                <div class="form-group mt-3 col" :disabled="pre_loader">
-                  <input type="file" name="images" @change="handleUploadFile"   multiple/>
-                </div>       
+                <label  class="custom-file-upload mt-3" :style="{ opacity: pre_loader ? '0.6' : '1' }">
+                    <input class="upload-img" type="file" name="images" @change="handleUploadFile"   multiple :disabled="pre_loader">
+                    <span role="pre_loader_add_menu" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                    <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
+                </label>
+                  
 
 
               </form>
@@ -431,6 +434,10 @@
       },
 
       async handleUploadFile(event){
+        if(this.pre_loader){
+          return false;
+        }
+
         const files = event.target.files || event.dataTransfer.files;
         if (!files.length){
           return false;          
