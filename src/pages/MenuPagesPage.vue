@@ -52,11 +52,11 @@
                           <input role="menu"  class="form-control"   v-model="menus[index]['name'][lang]" >
                         </div>            
                         
-                        <div role="save_menu" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="saveMenu(index)"><i className="far fa-save cursor-pointer"></i></div>
-                        <div role="del_menu"  class="ml-2 trash col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delMenu(index)"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+                        <div role="save_menu" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="saveMenu(index)"><i class="far fa-save cursor-pointer"></i></div>
+                        <div role="del_menu"  class="ml-2 trash col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delMenu(index)"><i class="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
-                        <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionMenu('down', m.id)"><i className="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-                        <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionMenu('up', m.id)"><i className="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                        <div v-if="menus.length > 1" role="down_menu"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionMenu('down', m.id)"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                        <div v-if="menus.length > 1" role="up_menu" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionMenu('up', m.id)"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
                     </div>
                   </div>
 
@@ -104,8 +104,8 @@
                     <input role="new_menu"  class="form-control"  :class="{ 'is-invalid': menus_error_new }"  v-model="new_menu_name[lang]" :placeholder="`Menu name ${lang}`">
                   </div>
                   
-                  <div role="save_menu_0" class="ml-2 col-1"  @click="saveMenu('new')"><i className="far fa-save cursor-pointer"></i></div>
-                  <div role="del_menu_0"  class="ml-2 trash  col-1"  @click="delMenu('new')"><i className="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
+                  <div role="save_menu_0" class="ml-2 col-1"  @click="saveMenu('new')"><i class="far fa-save cursor-pointer"></i></div>
+                  <div role="del_menu_0"  class="ml-2 trash  col-1"  @click="delMenu('new')"><i class="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>
 
               </div>
             </div>
@@ -154,7 +154,7 @@
           <div class="col-7">
 
               <!-- !to moze byc takze edit page -->
-              <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
+              <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
                 Add/Edit page
@@ -175,10 +175,10 @@
                 </div>
 
 
-                <div className="form-check mt-2 row" >
+                <div class="form-check mt-2 row" >
                   <label>
                     <input
-                      className="col-1"
+                      class="col-1"
                       name="published"
                       type="checkbox"
                       v-model="published"
@@ -187,10 +187,10 @@
                   </label>
                 </div>
 
-                <div className="form-check  mt-2 row">
+                <div class="form-check  mt-2 row">
                     <label>                  
                       <input
-                        className="col-1"
+                        class="col-1"
                         name="commented"
                         type="checkbox"
                         />
@@ -198,10 +198,10 @@
                     </label>
                 </div>
 
-                <div className="form-check  mt-2 row">
+                <div class="form-check  mt-2 row">
                     <label>
                       <input
-                        className="col-1"
+                        class="col-1"
                         name="after_login"
                         type="checkbox"
                         />
@@ -262,17 +262,10 @@
                   </div>      
                 </div>
                 
-                <div class="row mt-3">
-                  <button role="button_upload_images" @click.prevent="upload_images"  type="submit" className="add-page-btn  btn btn-primary mt-2 mb-2 mr-2 col-3" :disabled="pre_loader">
-                    <i v-if="!pre_loader" class="fas fa-plus"></i>
-                    <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
-                    Upload images
-                  </button>
 
-                  <div className="form-group mt-3 col">
-                    <input type="file" name="images" @change="handleUploadFile"   multiple/>
-                  </div>       
-              </div>
+                <div class="form-group mt-3 col" :disabled="pre_loader">
+                  <input type="file" name="images" @change="handleUploadFile"   multiple/>
+                </div>       
 
 
               </form>
