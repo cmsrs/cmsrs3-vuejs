@@ -9,7 +9,10 @@ export const config = (token) => {
 };
 
 export const postPage = (post, token) => {
-    return axios.post("/api/pages?token="+token, post);
+    //console.log('____________________postPage___________');
+    const ret = axios.post("/api/pages?token="+token, post);
+    //console.log( ret );
+    return ret;
 };
 
 export const putPage = (post, id, token) => {
@@ -57,4 +60,16 @@ export const deletePage = (id, token) => {
 
 export const uploadImage = (post, type, id, token) => {
     return axios.post("/api/image/"+type+"/"+id+"?token="+token, post) ;
+};
+
+export const getImages = (type, id, token) => {
+    return axios.get("/api/images/"+type+"/"+id+"?token="+token) ;
+};
+
+export const deleteImage = (id, token) => {
+    return axios.delete("/api/images/"+id+"?token="+token);
+};
+
+export const setImagePosition = (direction, id, token)  => {
+    return axios.get("/api/images/position/"+direction+"/"+id+"?token="+token);
 };

@@ -263,14 +263,24 @@
                   </div>      
                 </div>
                 
-
-                <label  class="custom-file-upload mt-3" :style="{ opacity: (pre_loader || !currentPageId ) ? '0.6' : '1' }">
+                <label  class="custom-file-upload mt-3 mb-3" :style="{ opacity: (pre_loader || !currentPageId ) ? '0.6' : '1' }">
                     <input class="upload-img" type="file" name="images" @change="handleUploadFile"   multiple :disabled="(pre_loader || !currentPageId )">
-                    <span role="pre_loader_add_menu" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                    <span role="pre_loader_upload_images" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
                     <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
                 </label>
-                  
 
+                <div class="row mt-2" v-for="(image, index) in images" :key="image.id">
+                  <img class="col-2" :src="SERVER_URL + image['fs']['small']"  :alt="image['alt'][lang]" />
+
+                  <div class="form-group col-6">
+                      <input role="menu"  class="form-control"   v-model="images[index]['alt'][lang]" >
+                  </div>
+
+                  <div role="del_image"  class="ml-2 trash col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="delImage(image.id)"><i class="fas fa-trash cursor-pointer"  aria-hidden="true"/></div>                  
+                  <div role="down_image"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionImage('down', image.id)"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
+                  <div role="up_image" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="positionImage('up', image.id)"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+
+                </div>
 
               </form>
 
@@ -281,11 +291,12 @@
     </div>
   </template>
   <script>
+  import {SERVER_URL} from '../config.js';  
   import functions from "../helpers/functions.js";
   import trans from "../helpers/trans.js";
   import storage from "../state/storage";
   import PageTitle from "../components/PageTitle";
-  import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition, uploadImage } from "../api/apiCalls";
+  import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition, uploadImage, getImages, deleteImage, setImagePosition } from "../api/apiCalls";
   import CKEditor from '@ckeditor/ckeditor5-vue';
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -360,6 +371,13 @@
           }          
         };
     },
+
+    computed: {
+      SERVER_URL() {
+        return SERVER_URL;
+      }
+    },
+
     methods: {
 
       async saveEditPage() {
@@ -384,11 +402,16 @@
 
             };
 
-            const retPage = this.currentPageId ? await putPage(post, this.currentPageId, this.token) : await postPage(post, this.token);
+            const retPage = this.currentPageId ? (await putPage(post, this.currentPageId, this.token)) : await postPage(post, this.token);
+
+            //console.log(retPage.data);
 
             if(retPage.data.success){
                 //this.msgGood = this.currentPageId ? trans.ttt( 'success_page_edit' ) : trans.ttt( 'success_page_add' );
                 if( !this.currentPageId  ){
+
+                  //console.log( this.currentPageId);
+                  //console.log(retPage.data);
                   this.currentPageId = retPage.data.data.pageId;
                   this.msgGood = trans.ttt( 'success_page_add' );
                 }else{
@@ -688,7 +711,63 @@
         }        
       },
 
+      async delImage(id){
+        if(!this.currentPageId){
+          console.log( 'cant find page_id' );
+          return false;
+        }
+
+        if (window.confirm('Are you sure you wish to delete this item?')){
+          if (!this.startLoading()) {
+              return false;
+          }
+
+          try {
+              const objDeleteImage = await deleteImage(id, this.token);
+              if(objDeleteImage.data.success){
+                const images = await getImages('page', this.currentPageId, this.token);
+                if(images.data.success){
+                  this.images = images.data.data;
+                  this.msgGood = 'Image has been deleted';
+                  this.pre_loader = false;
+                }
+              }
+          } catch (error) {
+            console.log('_is_error_del_image_', error);
+            this.msgWrong = 'Delete menu problem = ' + error;
+          }
+        }
+      },
+
+      async positionImage(direction, imageId){
+        if(!this.currentPageId){
+          console.log( 'cant find page_id' );
+          return false;
+        }
+
+        if (!this.startLoading()) {
+            return false;
+        }
+        try {                              
+            const pos = await setImagePosition( direction, imageId, this.token);
+          
+            if(pos.data.success){
+              const images = await getImages('page', this.currentPageId, this.token);
+              if(images.data.success){
+                this.images = images.data.data;
+                this.msgGood = 'Position image has been changed';
+                this.pre_loader = false;
+              }            
+            }
+        } catch (error) {
+          console.log('_is_error_pos_image_', error);
+          this.msgWrong = 'Position image problem = ' + error;
+        }        
+      },
+
+      
       /**
+       * todo move this function to functions
        * only root pages withot children (copy from react)
        * get root pages belongs to given menu, and get pages without children
        */
@@ -853,6 +932,11 @@
             this.clearMsg();
           },
           deep: true
+        },
+        lang: {
+          handler: function () {
+            this.clearMsg();
+          }
         }
 
       }
