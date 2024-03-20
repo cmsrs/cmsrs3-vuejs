@@ -157,7 +157,8 @@
               <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
-                Add/Edit page
+                <span v-if="!currentPageId">Add page</span>
+                <span v-if="currentPageId">Edit page</span>
               </button>
               <button role="button_clear_page_data" @click.prevent="clearDataPage"  class="add-page-btn  btn btn-info ml-3 mt-2 mb-2"  :disabled="pre_loader">Clear data</button>
         
@@ -263,8 +264,8 @@
                 </div>
                 
 
-                <label  class="custom-file-upload mt-3" :style="{ opacity: pre_loader ? '0.6' : '1' }">
-                    <input class="upload-img" type="file" name="images" @change="handleUploadFile"   multiple :disabled="pre_loader">
+                <label  class="custom-file-upload mt-3" :style="{ opacity: (pre_loader || !currentPageId ) ? '0.6' : '1' }">
+                    <input class="upload-img" type="file" name="images" @change="handleUploadFile"   multiple :disabled="(pre_loader || !currentPageId )">
                     <span role="pre_loader_add_menu" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
                     <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
                 </label>
@@ -386,7 +387,13 @@
             const retPage = this.currentPageId ? await putPage(post, this.currentPageId, this.token) : await postPage(post, this.token);
 
             if(retPage.data.success){
-                this.msgGood = this.currentPageId ? trans.ttt( 'success_page_edit' ) : trans.ttt( 'success_page_add' );
+                //this.msgGood = this.currentPageId ? trans.ttt( 'success_page_edit' ) : trans.ttt( 'success_page_add' );
+                if( !this.currentPageId  ){
+                  this.currentPageId = retPage.data.data.pageId;
+                  this.msgGood = trans.ttt( 'success_page_add' );
+                }else{
+                  this.msgGood = trans.ttt( 'success_page_edit' );
+                }
             }else if( retPage.data.success === false ){
                 this.msgWrong =  await functions.parseError( retPage.data.error );
                 this.errFields =  await functions.getErrorFields( retPage.data.error );
@@ -456,13 +463,13 @@
         for (let i = 0; i < images.length; i++) {
 
             let ret = uploadImage( images[i], 'page', this.currentPageId, this.token );
-            await this.delay(5000);
+            await this.delay(6000);
 
             if(ret){
                 this.msgGood = 'Images has been uploaded ' + (i + 1) + "/" + images.length;
             }
         }        
-        this.pre_loader = false;        
+        this.pre_loader = false;      
       },
 
       async getImages(files) {

@@ -20,6 +20,11 @@ export const getPages = (token) => {
     return axios.get("/api/pages?token="+token);
 };
 
+//not use
+export const getPage = (id, token) => {
+    return axios.get("/api/pages/"+id+"?token="+token);
+};
+
 export const postMenu = (post, token) => {
     return axios.post("/api/menus?token="+token, post);
 };
