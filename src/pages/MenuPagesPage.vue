@@ -491,8 +491,13 @@
             if(ret){
                 this.msgGood = 'Images has been uploaded ' + (i + 1) + "/" + images.length;
             }
+        } 
+        
+        const dbImages = await getImages('page', this.currentPageId, this.token);
+        if(dbImages.data.success){
+          this.images = dbImages.data.data;
+          this.pre_loader = false;
         }        
-        this.pre_loader = false;      
       },
 
       async getImages(files) {
