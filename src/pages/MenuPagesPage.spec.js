@@ -204,7 +204,10 @@ let server = setupServer(
     return res(
       ctx.status(200),
       ctx.json({
-        success: true
+        success: true,
+        data: {
+          pageId: 8
+        }
       })
     );
   }),
