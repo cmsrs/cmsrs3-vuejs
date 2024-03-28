@@ -310,38 +310,28 @@
 
     data() {
 
-        const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disaapear
-        let configLangs = [];
-        let configDefaultLang = '';
-        let pageTypes = [];
-
-        if(storedStateConfig){
-          configLangs = storedStateConfig.langs;
-          configDefaultLang = storedStateConfig.defaultLang;
-          pageTypes = storedStateConfig.page_types;
-        }
-
-        const storedState = storage.getItem("auth");
-        let token = '';
-        if(storedState){
-          token = storedState.token;
-        }
-
-        const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;
+        const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage( storage );
+        const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;     
 
         return {
-          msgWrong: '',
-          msgGood: '',
-          allPages: [],
-          notRelatedPages: false,
-          innerPages: false,
-          pagesBelongsToMenus: [],
-          pagesBelongsToPages: [],
+          //from storage
           langs: this.$store.state.config.langs || configLangs,
           lang: defaultLang, //it is changeable
           defaultLang: defaultLang,
           page_types : this.$store.state.config.page_types || pageTypes,
           token: this.$store.state.auth.token || token,
+
+          //some constants
+          msgWrong: '',
+          msgGood: '',
+          pre_loader: false,          
+          errFields: [], //optional
+
+          allPages: [],
+          notRelatedPages: false,
+          innerPages: false,
+          pagesBelongsToMenus: [],
+          pagesBelongsToPages: [],
 
           //page fields
           title: {},
@@ -357,12 +347,10 @@
           images: [],            
 
           rootPagesBelongToMenu: [],
-          isAddMenu: false,
-          pre_loader: false,          
+          isAddMenu: false,        
           new_menu_name: {},
           menus: [],
-          menus_error_new: false,
-          errFields: [],
+          menus_error_new: false,          
           currentPageId: false,
 
           editor: ClassicEditor,

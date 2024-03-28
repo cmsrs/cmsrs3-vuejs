@@ -50,10 +50,32 @@
     return isNotEmpty;
   };
 
+  const retrieveParamsFromStorage = (storage) => {
+    const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disappear
+    let configLangs = [];
+    let configDefaultLang = '';
+    let pageTypes = [];
+
+    if(storedStateConfig){
+      configLangs = storedStateConfig.langs;
+      configDefaultLang = storedStateConfig.defaultLang;
+      pageTypes = storedStateConfig.page_types;
+    }
+
+    const storedState = storage.getItem("auth");
+    let token = '';
+    if(storedState){
+      token = storedState.token;
+    }
+
+    return { configLangs, configDefaultLang, pageTypes, token };
+  };
+
   
   export default {
     createEmptyObj,
     parseError,
     getErrorFields,
+    retrieveParamsFromStorage,
     isNotEmptyObj
   };

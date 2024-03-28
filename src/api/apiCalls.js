@@ -73,3 +73,12 @@ export const deleteImage = (id, token) => {
 export const setImagePosition = (direction, id, token)  => {
     return axios.get("/api/images/position/"+direction+"/"+id+"?token="+token);
 };
+
+export const getClients = (column, direction, search, token) => {
+    let strSearch  = '';
+    if(search){
+        strSearch = "&search="+search;
+    }
+
+    return axios.get("/api/clients/"+column+"/"+direction+"?token="+token+strSearch);
+};

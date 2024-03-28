@@ -1,73 +1,126 @@
 import {
   render, 
-  screen, 
-  waitFor,
+  screen,
   waitForElementToBeRemoved
 } from "@testing-library/vue";
 import UsersPage from "./UsersPage.vue";
-
-import userEvent from "@testing-library/user-event";
+import { createStore } from "vuex";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
-import store from "../state/store";
-import storage from "../state/storage";
 
-/*
-let requestBody;
-let counter = 0;
-const server = setupServer(
-  rest.post("/api/login", (req, res, ctx) => {
-    requestBody = req.body;
-    counter += 1;
+
+const responseGetClients = {
+  "success": 1,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 13,
+        "name": "Fake Kowalski",
+        "email": "sth@abc-example.com",
+        "email_verified_at": null,
+        "role": "client",
+        "created_at": "2024-03-27T12:09:24.000000Z",
+        "updated_at": "2024-03-27T12:09:24.000000Z"
+      },
+      {
+        "id": 12,
+        "name": "First Abc Kowalski",
+        "email": "fake@example.com",
+        "email_verified_at": null,
+        "role": "client",
+        "created_at": "2024-03-27T12:09:24.000000Z",
+        "updated_at": "2024-03-27T12:09:24.000000Z"
+      }
+    ],
+    "first_page_url": "http://127.0.0.1:8000/api/clients/id/desc?page=1",
+    "from": 1,
+    "next_page_url": null,
+    "path": "http://127.0.0.1:8000/api/clients/id/desc",
+    "per_page": 10,
+    "prev_page_url": null,
+    "to": 2
+  }
+};
+
+
+let server = setupServer(
+  rest.get("/api/clients/name/desc", (req, res, ctx) => {
     return res(
-      ctx.status(404), //TODO it sould be 401
-      ctx.json({
-        success: false,
-        error: "some error text"
-        })
-    );
-  })
-);
+      ctx.status(200),
+      ctx.json(
+        responseGetClients
+      )
+    );  
+  }),
+);  
 
-
-beforeAll(() => server.listen());
+beforeAll(() => {
+  server.listen();
+});
 
 beforeEach(() => {
-  counter = 0;
   server.resetHandlers();
 });
 
-afterAll(() => server.close());
-*/
 
-
-const setup = async () => {
-    
-    render(UsersPage, {
-      global: {
-        plugins: [store],
-        mocks: {
-          $router: {
-            push: () => {},
-          },
-        },
-      },
-    });
-    
+const jsonStore = {
+  auth: {
+    isLoggedIn: true,
+    token:  "abcde12345",
+    email: "user_rs@mail.com",
+    password: "PasswordRs"
+  },
+  config: {
+    page_types: ['cms', 'gallery', 'main_page'],
+    langs: ['en'], //!!
+    defaultLang: 'en', //!!
+    cache_enable: 1
+  }
 };
 
+const store = createStore({
+  state: jsonStore,
+});
+
+const setup = async () => {
+  render(UsersPage, {
+    global: {
+      plugins: [store],
+      mocks: {
+        $router: {
+          push: () => {},
+        },
+      },
+    },
+  });
+};
+
+const waitForAjax = async () => {
+  const spinner = screen.queryByRole("pre_loader_add_client");
+  expect(spinner).not.toBeNull();
+  await waitForElementToBeRemoved(spinner);
+};
 
 describe("Users page", () => {
   describe("Layout", () => {
     it( 'has users header', async ()  => {
-        await setup();
-        const header = screen.queryByRole("heading", { name: "Users" });
-        expect(header).toBeInTheDocument();  //bez zalogowania widzimy header - nie wiem czy to jest dobry test.
+      await setup();
+      const header = screen.queryByRole("heading", { name: "Users" });
+      expect(header).toBeInTheDocument();
     });
-    describe("Interactions", () => {
-
-    });      
   });
 
+  describe("Interactions", () => {
+    it( 'show data in table', async ()  => {
+      await setup();
+      await waitForAjax();
+      const name1 = responseGetClients.data.data[0].name;
+      await screen.findByText(
+        name1
+      );
+  });
+
+  });
   
 });
