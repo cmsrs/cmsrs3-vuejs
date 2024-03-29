@@ -26,8 +26,8 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">First
-                <div role="down_image"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="sorting('name', 'down')"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-                <div role="up_image" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="sorting('name', 'up')"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>
+                <span role="down_image"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="sorting('name', 'down')"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></span>
+                <span role="up_image" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="sorting('name', 'up')"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></span>
               </th>
               <th scope="col">Last</th>
               <th scope="col">Handle</th>
@@ -36,7 +36,7 @@
           <tbody>
 
 
-            <tr class="row" v-for="(c, index) in clients.data" :key="index">
+            <tr v-for="(c, index) in clients.data" :key="index">
               <th scope="row">{{ index+1 }}</th>
               <td>{{ c['name'] }}</td>
               <td>{{ c['email'] }}</td>
