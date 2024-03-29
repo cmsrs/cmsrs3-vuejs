@@ -1,4 +1,5 @@
 import functions from "./functions.js";
+import storage from "../state/storage";
 
 
 describe("functions", () => {
@@ -93,4 +94,42 @@ describe("functions", () => {
     });              
 
 
-});  
+});
+
+describe("retrieveParamsFromStorage", () => {
+   
+  const jsonStore = {
+    auth: {
+      isLoggedIn: true,
+      token:  "abcde12345",
+      email: "user_rs@mail.com",
+      password: "PasswordRs"
+    },
+    config: {
+      page_types: ['cms', 'gallery', 'main_page'],
+      langs: ['en'], //!!
+      defaultLang: 'en', //!!
+      cache_enable: 1
+    }
+  };
+
+  storage.setItem("auth", jsonStore.auth);
+  storage.setItem("config", jsonStore.config);
+
+  it( 'get all params', async ()  => {
+    const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage( storage );        
+
+    expect(configLangs).toEqual(jsonStore.config.langs);
+    expect(configDefaultLang).toBe(jsonStore.config.defaultLang );
+    expect(pageTypes).toEqual(jsonStore.config.page_types );    
+    expect(token).toBe(jsonStore.auth.token );
+
+  });          
+
+  it( 'get one param', async ()  => {
+    const { token } = functions.retrieveParamsFromStorage( storage );        
+    expect(token).toBe(jsonStore.auth.token );
+  });          
+
+
+}); 
