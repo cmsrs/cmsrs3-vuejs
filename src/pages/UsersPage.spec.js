@@ -55,6 +55,7 @@ let server = setupServer(
     );  
   }),
   rest.get("/api/clients/name/asc", (req, res, ctx) => {
+    counter += 1;
     return res(
       ctx.status(200),
       ctx.json(
@@ -64,6 +65,7 @@ let server = setupServer(
   }),
 
   rest.get("/api/clients/name/desc", (req, res, ctx) => {
+    counter += 1;
     return res(
       ctx.status(200),
       ctx.json(
@@ -78,7 +80,10 @@ beforeAll(() => {
   server.listen();
 });
 
+let counter = 0;
+
 beforeEach(() => {
+  counter = 0;
   server.resetHandlers();
 });
 
@@ -161,6 +166,7 @@ describe("Users page", () => {
       const button = screen.queryAllByRole("sorting_asc" );
       await  userEvent.click(button[0]);
 
+      expect(counter).toBe(1);
       const name1 = responseGetClients.data.data[0].name;
       await screen.findByText(
         name1
@@ -174,6 +180,7 @@ describe("Users page", () => {
       const button = screen.queryAllByRole("sorting_desc" );
       await  userEvent.click(button[0]);
   
+      expect(counter).toBe(1);      
       const name1 = responseGetClients.data.data[0].name;
       await screen.findByText(
         name1

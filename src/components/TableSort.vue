@@ -10,7 +10,8 @@
     props: {
       pre_loader: Boolean,
       onClickAsc: Function,
-      onClickDesc: Function
+      onClickDesc: Function,
+      sortColumn: String
     },
     methods: {
       

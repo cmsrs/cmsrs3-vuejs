@@ -1,4 +1,4 @@
-<template>
+  <template>
     <div data-testid="users-page">
       <h3>Users</h3>
 
@@ -28,6 +28,7 @@
 
               <th scope="col">Name
                 <TableSort
+                  :sortColumn="'name'"
                   @onClickAsc="sortingAsc('name')"
                   @onClickDesc="sortingDesc('name')"
                   :pre_loader="pre_loader"                        
@@ -36,6 +37,7 @@
 
               <th scope="col">Email
                 <TableSort
+                  :sortColumn="'email'"
                   @onClickAsc="sortingAsc('email')"
                   @onClickDesc="sortingDesc('email')"
                   :pre_loader="pre_loader"                        
@@ -44,6 +46,7 @@
 
               <th scope="col">Created
                 <TableSort
+                  :sortColumn="'created_at'"
                   @onClickAsc="sortingAsc('created_at')"
                   @onClickDesc="sortingDesc('created_at')"
                   :pre_loader="pre_loader"                        
@@ -98,10 +101,14 @@ export default {
     const { token } = functions.retrieveParamsFromStorage( storage );
     return {
       token: this.$store.state.auth.token || token,
-
       pre_loader: false,          
+      clients: [],      
 
-      clients: [],
+      //search params for:
+      //api/clients/$column/$direction?token=$token&search=abc
+      column: '',
+      direction: '',
+      search: ''
     };
   },  
 
@@ -112,7 +119,10 @@ export default {
 
     async sortingAsc(column){
       this.pre_loader = true;
-      const refreshC = await this.refreshClients(column, 'asc', ''); //!todo - search input
+      this.column = column;
+      this.direction = 'asc';
+
+      const refreshC = await this.refreshClients();
       
       if(refreshC ){
         this.pre_loader = false;
@@ -121,16 +131,19 @@ export default {
 
     async sortingDesc(column){
       this.pre_loader = true;
-      const refreshC = await this.refreshClients(column, 'desc', ''); //!todo - search input
+      this.column = column;
+      this.direction = 'desc';
+      
+      const refreshC = await this.refreshClients();
       
       if(refreshC ){
         this.pre_loader = false;
       }
     },
 
-    async refreshClients(name, direction, search){
+    async refreshClients(){
       try {
-          const responseC = await getClients( name, direction, search, this.token);
+          const responseC = await getClients( this.column, this.direction, this.search, this.token);
           this.clients = responseC.data.data;
           return true;
       } catch (error) {
@@ -146,7 +159,13 @@ export default {
       }
 
       this.pre_loader = true;
-      const refreshC = await this.refreshClients('created_at', 'desc', ''); //set up sorting on the start
+
+      //set up sorting on the start
+      this.column = 'created_at';
+      this.direction = 'desc';
+      this.search = '';
+      
+      const refreshC = await this.refreshClients(); 
       
       if(refreshC ){
         this.pre_loader = false;
