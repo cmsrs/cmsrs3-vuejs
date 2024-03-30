@@ -2,7 +2,7 @@
     <div data-testid="users-page">
       <h3>Users</h3>
 
-      <div class="container">
+      <div class="container mt-5">
 
         <button role="button_save_edit_page" @click.prevent="addClient"  type="submit" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
           <i v-if="!pre_loader" class="fas fa-plus"></i>
@@ -31,7 +31,9 @@
                   :sortColumn="'name'"
                   @onClickAsc="sortingAsc('name')"
                   @onClickDesc="sortingDesc('name')"
-                  :pre_loader="pre_loader"                        
+                  :pre_loader="pre_loader"      
+                  :column = "column"
+                  :direction = "direction"                                  
                 ></TableSort>
               </th>
 
@@ -41,6 +43,8 @@
                   @onClickAsc="sortingAsc('email')"
                   @onClickDesc="sortingDesc('email')"
                   :pre_loader="pre_loader"                        
+                  :column = "column"
+                  :direction = "direction"                                  
                 ></TableSort>
               </th>
 
@@ -50,6 +54,8 @@
                   @onClickAsc="sortingAsc('created_at')"
                   @onClickDesc="sortingDesc('created_at')"
                   :pre_loader="pre_loader"                        
+                  :column = "column"
+                  :direction = "direction"                                  
                 ></TableSort>
               </th>
 
