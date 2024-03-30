@@ -4,22 +4,28 @@
 
       <div class="container mt-5">
 
-        <button role="button_save_edit_page" @click.prevent="addClient"  type="submit" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
-          <i v-if="!pre_loader" class="fas fa-plus"></i>
+        <div class="row">
+          <div class="col-5">
+            <button role="button_save_edit_page" @click.prevent="addClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
+              <i v-if="!pre_loader" class="fas fa-plus"></i>
 
-          <span role="pre_loader_add_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
-          Add Client
-        </button>  
-        
-        <div class="input-group">
-          <div class="form-outline" data-mdb-input-init>
-            <input type="search" id="form1" class="form-control" />
-            <label class="form-label" for="form1">Search</label>
-          </div>
-          <button type="button" class="btn btn-primary" data-mdb-ripple-init>
-            <i class="fas fa-search"></i>
-          </button>
-        </div>        
+              <span role="pre_loader_add_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+              Add Client
+            </button>  
+          </div>      
+          
+          <div  class="col-7 d-flex align-items-baseline">            
+
+                <input type="input" class="form-control col" />
+              
+                <button role="button_search_client" @click.prevent="addClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
+                  <i v-if="!pre_loader" class="fas fa-search"></i>
+                  <span role="pre_loader_search_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                  <span>Search client</span>
+                </button>                  
+
+          </div>        
+        </div>
 
         <table class="table">
           <thead>
@@ -68,7 +74,7 @@
               <th scope="row">{{ index+1 }}</th>
               <td>{{ c['name'] }}</td>
               <td>{{ c['email'] }}</td>
-              <td>{{ c['created_at'] }}</td>              
+              <td>{{ c['created_at'] ?  c['created_at'].split("T")[0] : '' }}</td>
             </tr>
 
           </tbody>
