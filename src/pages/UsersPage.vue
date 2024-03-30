@@ -123,10 +123,10 @@ export default {
       console.log('add client');
     },
 
-    async sortingAsc(column){
+    async sorting(column, direction){    
       this.pre_loader = true;
       this.column = column;
-      this.direction = 'asc';
+      this.direction = direction;
 
       const refreshC = await this.refreshClients();
       
@@ -135,16 +135,12 @@ export default {
       }
     },
 
+    async sortingAsc(column){
+      this.sorting(column, 'asc');
+    },
+
     async sortingDesc(column){
-      this.pre_loader = true;
-      this.column = column;
-      this.direction = 'desc';
-      
-      const refreshC = await this.refreshClients();
-      
-      if(refreshC ){
-        this.pre_loader = false;
-      }
+      this.sorting(column, 'desc');
     },
 
     async refreshClients(){
