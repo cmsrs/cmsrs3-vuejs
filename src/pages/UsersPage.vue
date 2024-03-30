@@ -25,12 +25,31 @@
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">First
-                <span role="down_image"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="sorting('name', 'down')"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></span>
-                <span role="up_image" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="sorting('name', 'up')"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></span>
+
+              <th scope="col">Name
+                <TableSort
+                  @onClickAsc="sortingAsc('name')"
+                  @onClickDesc="sortingDesc('name')"
+                  :pre_loader="pre_loader"                        
+                ></TableSort>
               </th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
+
+              <th scope="col">Email
+                <TableSort
+                  @onClickAsc="sortingAsc('email')"
+                  @onClickDesc="sortingDesc('email')"
+                  :pre_loader="pre_loader"                        
+                ></TableSort>
+              </th>
+
+              <th scope="col">Created
+                <TableSort
+                  @onClickAsc="sortingAsc('created_at')"
+                  @onClickDesc="sortingDesc('created_at')"
+                  :pre_loader="pre_loader"                        
+                ></TableSort>
+              </th>
+
             </tr>
           </thead>
           <tbody>
@@ -66,9 +85,13 @@
 import functions from "../helpers/functions.js";
 import storage from "../state/storage";
 import { getClients } from "../api/apiCalls";
+import TableSort from "../components/TableSort";
 
 export default {    
   name: "UserPage",
+  components: {
+    TableSort
+  },
 
   data() {
 
@@ -86,12 +109,28 @@ export default {
     addClient(){
       console.log('add client');
     },
-    sorting(name, direction){
-      console.log(name, direction);
+
+    async sortingAsc(column){
+      this.pre_loader = true;
+      const refreshC = await this.refreshClients(column, 'asc', ''); //!todo - search input
+      
+      if(refreshC ){
+        this.pre_loader = false;
+      }
     },
-    async refreshClients(){
+
+    async sortingDesc(column){
+      this.pre_loader = true;
+      const refreshC = await this.refreshClients(column, 'desc', ''); //!todo - search input
+      
+      if(refreshC ){
+        this.pre_loader = false;
+      }
+    },
+
+    async refreshClients(name, direction, search){
       try {
-          const responseC = await getClients( 'created_at', 'desc', '', this.token);
+          const responseC = await getClients( name, direction, search, this.token);
           this.clients = responseC.data.data;
           return true;
       } catch (error) {
@@ -107,7 +146,7 @@ export default {
       }
 
       this.pre_loader = true;
-      const refreshC = await this.refreshClients();
+      const refreshC = await this.refreshClients('created_at', 'desc', ''); //set up sorting on the start
       
       if(refreshC ){
         this.pre_loader = false;

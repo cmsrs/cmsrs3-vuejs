@@ -153,7 +153,7 @@
           <!-- Pages  -->
           <div class="col-7">
 
-              <!-- !to moze byc takze edit page -->
+              <!-- !it can be edit page too -->
               <button role="button_save_edit_page" @click.prevent="saveEditPage"  type="submit" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span role="pre_loader_save_edit_page" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>

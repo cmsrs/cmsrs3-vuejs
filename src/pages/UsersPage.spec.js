@@ -7,6 +7,7 @@ import UsersPage from "./UsersPage.vue";
 import { createStore } from "vuex";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+import userEvent from "@testing-library/user-event";
 
 
 const responseGetClients = {
@@ -53,6 +54,24 @@ let server = setupServer(
       )
     );  
   }),
+  rest.get("/api/clients/name/asc", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        responseGetClients
+      )
+    );  
+  }),
+
+  rest.get("/api/clients/name/desc", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json(
+        responseGetClients
+      )
+    );  
+  }),
+
 );  
 
 beforeAll(() => {
@@ -133,7 +152,33 @@ describe("Users page", () => {
         email2
       );
       
-  });
+    });
+
+    it( 'sorting asc by name', async ()  => {
+      await setup();
+      await waitForAjax();
+
+      const button = screen.queryAllByRole("sorting_asc" );
+      await  userEvent.click(button[0]);
+
+      const name1 = responseGetClients.data.data[0].name;
+      await screen.findByText(
+        name1
+      );
+    });    
+
+    it( 'sorting desc by name', async ()  => {
+      await setup();
+      await waitForAjax();
+  
+      const button = screen.queryAllByRole("sorting_desc" );
+      await  userEvent.click(button[0]);
+  
+      const name1 = responseGetClients.data.data[0].name;
+      await screen.findByText(
+        name1
+      );
+    });      
 
   });
   
