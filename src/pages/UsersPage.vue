@@ -27,7 +27,7 @@
           </div>        
         </div>
 
-        <table class="table">
+        <table class="table mt-2 mb-4">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -64,11 +64,9 @@
                   :direction = "direction"                                  
                 ></TableSort>
               </th>
-
             </tr>
           </thead>
           <tbody>
-
 
             <tr v-for="(c, index) in clients.data" :key="index">
               <th scope="row">{{ index+1 }}</th>
@@ -78,16 +76,12 @@
             </tr>
 
           </tbody>
-        </table>        
+        </table>  
 
         <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-end">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#">Next</a>
+          <ul class="pagination justify-content-end">            
+            <li   v-for="(link, index) in clients.links" :key="index" class="page-item"  :class="{ 'disabled': !link['url'], 'active': link['active'] }"  >
+              <a class="page-link" :href="link['url'] || '#'" v-html="link.label"></a>
             </li>
           </ul>
         </nav>
