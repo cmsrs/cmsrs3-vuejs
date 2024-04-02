@@ -80,7 +80,7 @@
 
         <nav aria-label="Page navigation example">
           <ul class="pagination justify-content-end">            
-            <li v-for="(link, index) in clients.links" :key="index" class="page-item"  :class="{ 'disabled': !link['url'], 'active': link['active'] }" >
+            <li v-for="(link, index) in clients.links" :key="index" class="page-item"  :class="{ 'disabled': (!link['url'] || pre_loader ), 'active': link['active'] }" >
               <a role="pagination_links" class="page-link"  @click="link['url'] && changePageByUrl(link['url'])"  v-html="link.label"></a>
             </li>
           </ul>
