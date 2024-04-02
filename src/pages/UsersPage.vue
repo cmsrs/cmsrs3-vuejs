@@ -80,8 +80,8 @@
 
         <nav aria-label="Page navigation example">
           <ul class="pagination justify-content-end">            
-            <li   v-for="(link, index) in clients.links" :key="index" class="page-item"  :class="{ 'disabled': !link['url'], 'active': link['active'] }"  >
-              <a class="page-link" :href="link['url'] || '#'" v-html="link.label"></a>
+            <li v-for="(link, index) in clients.links" :key="index" class="page-item"  :class="{ 'disabled': !link['url'], 'active': link['active'] }" >
+              <a role="pagination_links" class="page-link"  @click="link['url'] && changePageByUrl(link['url'])"  v-html="link.label"></a>
             </li>
           </ul>
         </nav>
@@ -114,7 +114,9 @@ export default {
       //api/clients/$column/$direction?token=$token&search=abc
       column: '',
       direction: '',
-      search: ''
+      page: '',
+      search: '',
+
     };
   },  
 
@@ -123,11 +125,10 @@ export default {
       console.log('add client');
     },
 
-    async sorting(column, direction){    
-      this.pre_loader = true;
-      this.column = column;
-      this.direction = direction;
-
+    async changePageByUrl(url){
+      this.pre_loader = true;      
+      this.page = functions.retrieveParamsFromUrl( url, 'page');
+      
       const refreshC = await this.refreshClients();
       
       if(refreshC ){
@@ -143,9 +144,22 @@ export default {
       this.sorting(column, 'desc');
     },
 
+    async sorting(column, direction){    
+      this.pre_loader = true;
+      this.column = column;
+      this.direction = direction;
+      this.page = '1';
+
+      const refreshC = await this.refreshClients();
+      
+      if(refreshC ){
+        this.pre_loader = false;
+      }
+    },
+
     async refreshClients(){
       try {
-          const responseC = await getClients( this.column, this.direction, this.search, this.token);
+          const responseC = await getClients( this.column, this.direction, this.token, this.page, this.search );
           this.clients = responseC.data.data;
           return true;
       } catch (error) {
@@ -165,6 +179,7 @@ export default {
       //set up sorting on the start
       this.column = 'created_at';
       this.direction = 'desc';
+      this.page = '1';      
       this.search = '';
       
       const refreshC = await this.refreshClients(); 

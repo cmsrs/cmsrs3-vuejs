@@ -132,4 +132,15 @@ describe("retrieveParamsFromStorage", () => {
   });          
 
 
-}); 
+});
+
+
+describe("retrieveParamsFromUrl", () => {
+   
+  it( 'get page param from url', async ()  => {
+    const url = "http://127.0.0.1:8000/api/clients/id/desc?page=1";
+    const page = functions.retrieveParamsFromUrl( url, 'page');
+    expect(page).toBe("1");
+  });          
+
+});

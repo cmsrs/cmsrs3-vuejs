@@ -71,11 +71,18 @@
     return { configLangs, configDefaultLang, pageTypes, token };
   };
 
+  const retrieveParamsFromUrl = (url, param) => {
+    const objUrl = new URL(url);
+    const params = new URLSearchParams(objUrl.search);
+    const page = params.get(param);    
+    return page;
+  };
   
   export default {
     createEmptyObj,
     parseError,
     getErrorFields,
     retrieveParamsFromStorage,
+    retrieveParamsFromUrl,
     isNotEmptyObj
   };

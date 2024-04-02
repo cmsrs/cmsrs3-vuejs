@@ -74,11 +74,15 @@ export const setImagePosition = (direction, id, token)  => {
     return axios.get("/api/images/position/"+direction+"/"+id+"?token="+token);
 };
 
-export const getClients = (column, direction, search, token) => {
+export const getClients = (column, direction, token, page, search) => {
+
     let strSearch  = '';
     if(search){
         strSearch = "&search="+search;
     }
 
-    return axios.get("/api/clients/"+column+"/"+direction+"?token="+token+strSearch);
+    const pageNumber = page ? page : '1';
+    const url = "/api/clients/"+column+"/"+direction+"?token="+token+"&page="+pageNumber+strSearch;
+
+    return axios.get(url);
 };

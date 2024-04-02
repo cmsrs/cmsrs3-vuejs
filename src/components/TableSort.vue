@@ -1,9 +1,9 @@
 <template>
   <span>
-      <span role="sorting_asc"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click.prevent="inSortAsc(column)" >
+      <span :role="'sorting_' + sortColumn + '_asc'"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click.prevent="inSortAsc(column)" >
         <i class="fas fa-arrow-down cursor-pointer" :class="{ 'text-primary': ((sortColumn == column) &&  (direction == 'asc')) }"  aria-hidden="true"></i>
       </span>
-      <span role="sorting_desc" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click.prevent="inSortDesc(column)" >
+      <span :role="'sorting_' + sortColumn + '_desc'" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click.prevent="inSortDesc(column)" >
         <i class="fas fa-arrow-up cursor-pointer" :class="{ 'text-primary': ((sortColumn == column) &&  (direction == 'desc')) }"  aria-hidden="true"></i>
       </span>
   </span>      
