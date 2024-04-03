@@ -1,4 +1,4 @@
-  <template>
+<template>
     <div data-testid="users-page">
       <h3>Users</h3>
 
@@ -11,7 +11,7 @@
 
         <div class="row">
           <div class="col-5">
-            <button role="button_save_edit_page" @click.prevent="addClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
+            <button role="button_add_client" @click.prevent="addClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
               <i v-if="!pre_loader" class="fas fa-plus"></i>
 
               <span role="pre_loader_add_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
@@ -21,9 +21,9 @@
           
           <div  class="col-7 d-flex align-items-baseline">            
 
-                <input type="input" class="form-control col" />
+                <input type="input" class="form-control col" name="search" />
               
-                <button role="button_search_client" @click.prevent="addClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
+                <button role="button_search_client" @click.prevent="searchClients" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                   <i v-if="!pre_loader" class="fas fa-search"></i>
                   <span role="pre_loader_search_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
                   <span>Search client</span>
@@ -137,11 +137,17 @@ export default {
   },  
 
   methods: {
+
     addClient(){
-      console.log('add client');
+      this.$router.push({ name: 'user', params: { mode: 'add' } });
     },
     editClient(id){
-      console.log('edit client ='+id );
+      this.$router.push({ name: 'user', params: { mode: 'edit', id: id } });
+    },
+
+    async searchClients()
+    {
+      console.log('search Clients' );
     },
 
     async delClient(id){

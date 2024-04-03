@@ -258,6 +258,26 @@ describe("Users page", () => {
       expect(counter).toBe(1); //mount      
       const clientDel = await screen.queryAllByRole("edit_client");
       userEvent.click(clientDel[0]);
+      //todo
+    });
+
+    it( 'add client', async ()  => {
+      await setup();
+      await waitForAjax();
+
+      expect(counter).toBe(1); //mount      
+      const clientAdd = await screen.queryByRole("button_add_client");
+      userEvent.click(clientAdd);
+      //todo
+    });
+
+    it( 'search client', async ()  => {
+      await setup();
+      await waitForAjax();
+
+      expect(counter).toBe(1); //mount      
+      const search = await screen.queryByRole("button_search_client");
+      userEvent.click(search);
     });
     
 
