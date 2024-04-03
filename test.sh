@@ -1,6 +1,7 @@
 #run all test
 if [ "$1" = "all" ]; then
     ./node_modules/jest/bin/jest.js  --verbose  --env=@happy-dom/jest-environment
+    exit
 fi
 
 #run test from one file

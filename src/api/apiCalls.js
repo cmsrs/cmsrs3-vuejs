@@ -86,3 +86,7 @@ export const getClients = (column, direction, token, page, search) => {
 
     return axios.get(url);
 };
+
+export const deleteClient = (id, token) => {
+    return axios.delete("/api/clients/"+id+"?token="+token);
+};

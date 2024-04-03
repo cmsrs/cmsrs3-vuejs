@@ -1,6 +1,7 @@
 import {
   render, 
   screen,
+  waitFor,  
   waitForElementToBeRemoved
 } from "@testing-library/vue";
 import UsersPage from "./UsersPage.vue";
@@ -9,13 +10,15 @@ import { setupServer } from "msw/node";
 import { rest } from "msw";
 import userEvent from "@testing-library/user-event";
 
+global.window.confirm = jest.fn(() => true);
+
 const responseGetClients = {
   success: 1,
   data: {
     current_page: 1,
     data: [
       {
-        id: 4,
+        id: 1,
         name: "Fake Kowalski",
         email: "sth@abc-example.com",
         email_verified_at: null,
@@ -24,7 +27,7 @@ const responseGetClients = {
         updated_at: "2024-04-01T10:33:02.000000Z"
       },
       {
-        id: 3,
+        id: 2,
         name: "First Abc Kowalski",
         email: "fake@example.com",
         email_verified_at: null,
@@ -93,6 +96,16 @@ let server = setupServer(
         responseGetClients
       )
     );  
+  }),
+
+  rest.delete("/api/clients/1", (req, res, ctx) => {
+    counter += 1;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
   }),
 
 );  
@@ -220,7 +233,33 @@ describe("Users page", () => {
       await  userEvent.click(aHref[1]);
       expect(counter).toBe(2); //mount+click     
   
-    });      
+    }); 
+    
+    it( 'delete client', async ()  => {
+      await setup();
+      await waitForAjax();
+
+      expect(counter).toBe(1); //mount      
+      const clientDel = await screen.queryAllByRole("del_client");
+      userEvent.click(clientDel[0]);
+
+      await waitFor(() => {        
+        expect(counter).toBe(3);        
+        const alertSuccessAfter = screen.queryByRole("alert_success");        
+        expect( alertSuccessAfter ).toBeInTheDocument();        
+      });  
+    });
+
+    
+    it( 'edit client', async ()  => {
+      await setup();
+      await waitForAjax();
+
+      expect(counter).toBe(1); //mount      
+      const clientDel = await screen.queryAllByRole("edit_client");
+      userEvent.click(clientDel[0]);
+    });
+    
 
   });
   

@@ -2,7 +2,12 @@
     <div data-testid="users-page">
       <h3>Users</h3>
 
-      <div class="container mt-5">
+      <Msg 
+        :msgGood="msgGood"                        
+        :msgWrong="msgWrong"
+      ></Msg>
+
+      <div class="container">
 
         <div class="row">
           <div class="col-5">
@@ -65,6 +70,7 @@
                 ></TableSort>
               </th>
             </tr>
+            <th scope="col">Action</th>
           </thead>
           <tbody>
 
@@ -73,6 +79,10 @@
               <td>{{ c['name'] }}</td>
               <td>{{ c['email'] }}</td>
               <td>{{ c['created_at'] ?  c['created_at'].split("T")[0] : '' }}</td>
+              <td>
+                <div role="edit_client" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="editClient(c['id'])"><i class="far fa-edit cursor-pointer"></i></div>
+                <div role="del_client" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }" @click="delClient(c['id'])"><i class="fas fa-trash cursor-pointer"></i></div>                
+              </td>
             </tr>
 
           </tbody>
@@ -93,12 +103,14 @@
 <script>
 import functions from "../helpers/functions.js";
 import storage from "../state/storage";
-import { getClients } from "../api/apiCalls";
+import { getClients, deleteClient } from "../api/apiCalls";
+import Msg from "../components/Msg";
 import TableSort from "../components/TableSort";
 
 export default {    
   name: "UserPage",
   components: {
+    Msg,
     TableSort
   },
 
@@ -107,6 +119,9 @@ export default {
     const { token } = functions.retrieveParamsFromStorage( storage );
     return {
       token: this.$store.state.auth.token || token,
+      msgWrong: '',
+      msgGood: '',
+
       pre_loader: false,          
       clients: [],      
 
@@ -124,7 +139,35 @@ export default {
     addClient(){
       console.log('add client');
     },
+    editClient(id){
+      console.log('edit client ='+id );
+    },
 
+    async delClient(id){
+      this.clearMsg();  
+      if (window.confirm('Are you sure you wish to delete this item?')){
+        this.pre_loader = true;      
+
+        try{
+
+          const response = await deleteClient(id);
+          if(response.data.success){
+            const ret = await this.refreshClients();
+            if(ret){
+              this.msgGood = 'Client has been deleted';
+              this.pre_loader = false;
+            }
+          }
+
+        } catch (error) {
+          console.log('_is_error__', error);
+          this.msgWrong = 'Delete client problem = ' + error;
+        }
+
+
+
+      }
+    },
     async changePageByUrl(url){
       this.pre_loader = true;      
       this.page = functions.retrieveParamsFromUrl( url, 'page');
@@ -157,7 +200,13 @@ export default {
       }
     },
 
+    clearMsg(){
+      this.msgWrong = '';
+      this.msgGood = '';
+    },
+
     async refreshClients(){
+      this.clearMsg();
       try {
           const responseC = await getClients( this.column, this.direction, this.token, this.page, this.search );
           this.clients = responseC.data.data;
