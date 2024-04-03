@@ -69,8 +69,9 @@
                   :direction = "direction"                                  
                 ></TableSort>
               </th>
+              <th scope="col">Action</th>
             </tr>
-            <th scope="col">Action</th>
+            
           </thead>
           <tbody>
 
@@ -80,8 +81,8 @@
               <td>{{ c['email'] }}</td>
               <td>{{ c['created_at'] ?  c['created_at'].split("T")[0] : '' }}</td>
               <td>
-                <div role="edit_client" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="editClient(c['id'])"><i class="far fa-edit cursor-pointer"></i></div>
-                <div role="del_client" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }" @click="delClient(c['id'])"><i class="fas fa-trash cursor-pointer"></i></div>                
+                <span role="edit_client" class="me-1" :class="{ 'disabled-if-loader': pre_loader }"  @click="editClient(c['id'])"><i class="far fa-edit cursor-pointer"></i></span>
+                <span role="del_client" class="ms-1"  :class="{ 'disabled-if-loader': pre_loader }" @click="delClient(c['id'])"><i class="fas fa-trash cursor-pointer"></i></span>                
               </td>
             </tr>
 
@@ -150,7 +151,7 @@ export default {
 
         try{
 
-          const response = await deleteClient(id);
+          const response = await deleteClient(id, this.token);
           if(response.data.success){
             const ret = await this.refreshClients();
             if(ret){
