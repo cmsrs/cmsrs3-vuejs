@@ -94,3 +94,12 @@ export const deleteClient = (id, token) => {
 export const getClient = (id, token) => {
     return axios.get("/api/clients/"+id+"?token="+token);
 };
+
+export const postClient = (post, token) => {
+    return axios.post("/api/clients?token="+token, post);
+};
+
+export const putClient = (post, token) => {
+    const id = post['id'];
+    return axios.put("/api/clients/"+id+"?token="+token, post);
+};

@@ -8,7 +8,8 @@ import UserEditPage from "./UserEditPage.vue";
 import { createStore } from "vuex";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
-//import userEvent from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
+import trans from "../helpers/trans.js";
 
 //global.window.confirm = jest.fn(() => true);
 
@@ -37,6 +38,29 @@ let server = setupServer(
       )
     );
   }),
+
+  rest.put("/api/clients/1", (req, res, ctx) => {
+    counter += 1;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
+  }),
+
+
+
+  rest.post("/api/clients", (req, res, ctx) => {
+    counter += 1;
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true
+      })
+    );
+  }),
+  
 
 );  
 
@@ -175,6 +199,41 @@ describe("User edit page", () => {
       const password_confirmation = screen.queryByPlaceholderText("password confirmation");
       expect(password_confirmation).toHaveValue("");
     });
+
+
+    it( 'edit client', async ()  => {
+      await setupEdit();
+      await waitForAjax();
+      expect(counter).toBe(1);
+
+      const email = screen.queryByPlaceholderText("email"); //zmieniamy jakis pierdoly
+      await userEvent.type( email , 'aaaa@example.com');//email is not changeable in edit mode
+
+
+      const name = screen.queryByPlaceholderText("name");
+      await userEvent.type( name , 'aaaa');
+
+      const password = screen.queryByPlaceholderText("password");
+      await userEvent.type( password , 'abc');
+
+      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
+      await userEvent.type( password_confirmation , 'abc');
+
+
+      const buttonSubmit = screen.queryByRole("button_save_edit_client" );
+      await userEvent.click(buttonSubmit);
+
+      const successMsg = trans.ttt( 'success_client_edit' );
+      console.log('_______________________',successMsg);
+      expect( successMsg ).not.toBe( '');
+      await screen.findByText(
+       successMsg
+      );
+
+
+    });
+
+
 
   });
 

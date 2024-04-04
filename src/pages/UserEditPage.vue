@@ -12,11 +12,20 @@
 
         <div class="row">
           <div class="col-5">
+            <button 
+              @click.prevent="back"  
+              class="add-page-btn  btn btn-info ml-3 mt-2 mb-2" 
+              :disabled="pre_loader"
+            >Back</button>
+          </div>          
+
+          <div class="col-5">
             <button role="button_save_edit_client" @click.prevent="addEditClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
               <i v-if="!pre_loader" class="fas fa-plus"></i>
 
               <span role="pre_loader_add_edit_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
-              Add Client
+                <span v-if="mode === 'edit'">Edit</span>
+                <span v-else>Add</span>
             </button>  
           </div>                                  
         </div>
@@ -46,16 +55,14 @@
             </div>
 
 
-            <button 
-              @click.prevent="back"  
-              class="add-page-btn  btn btn-info ml-3 mt-2 mb-2" 
-              :disabled="pre_loader"
-            >Back</button>
+            <!--
 
             <button type="submit" class="btn btn-primary" :disabled="pre_loader">
               <span v-if="mode === 'edit'">Edit</span>
               <span v-else>Add</span>
             </button>
+
+            -->
           </form>
 
         </div>        
@@ -69,8 +76,9 @@
 <script>
 import functions from "../helpers/functions.js";
 import storage from "../state/storage";
-import { getClient } from "../api/apiCalls";
+import { getClient, postClient, putClient } from "../api/apiCalls";
 import Msg from "../components/Msg";
+import trans from "../helpers/trans.js";
 
 export default {    
   name: "UserEditPage",
@@ -117,6 +125,45 @@ export default {
         password: '',
         password_confirmation: ''
       }
+    },
+
+    async addEditClient(){
+      console.log("addEditClient");
+      this.pre_loader = true;
+      try{
+        const retClient = this.client.id ? (await putClient(this.client, this.token)) : await postClient(this.client, this.token);
+        if(retClient.data.success){
+            this.msgGood = this.client.id ? trans.ttt( 'success_client_edit' ) : trans.ttt( 'success_client_add' );
+                /*
+                if( !this.currentPageId  ){
+
+                  //console.log( this.currentPageId);
+                  //console.log(retPage.data);
+                  this.currentPageId = retPage.data.data.pageId;
+                  this.msgGood = trans.ttt( 'success_page_add' );
+                }else{
+                  this.msgGood = trans.ttt( 'success_page_edit' );
+                }
+                */
+        }else if( retPage.data.success === false ){
+            console.log('TODO');
+            //this.msgWrong =  await functions.parseError( retPage.data.error );
+            //this.errFields =  await functions.getErrorFields( retPage.data.error );
+        }else{
+            this.msgWrong = 'Something wrong';                              
+        }            
+
+            //const ret = await this.refreshPages();
+            //if(ret){
+            //  this.pre_loader = false;
+            //}
+            
+      } catch (error) {
+          //this.failMessage = 'Invalid save page';
+          console.log('_is_error__', error);
+      }
+      this.pre_loader = false;
+
     },
 
     async loadClient(id){      
