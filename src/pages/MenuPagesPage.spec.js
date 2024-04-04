@@ -415,8 +415,9 @@ describe("Pages page", () => {
         await setup();
         await waitForAjaxes();    
         await waitFor(() => {    
-          const header = screen.queryByRole("heading", { name: "CMS - menus and pages" });
-          expect(header).toBeInTheDocument();  //bez zalogowania widzimy header - nie wiem czy to jest dobry test.
+          //const header = screen.queryByRole("head_menu_pages", { name: "CMS - menus and pages" });
+          const header = screen.queryByRole("head_menu_pages");
+          expect(header).toBeInTheDocument();
         });
     });
 
