@@ -21,7 +21,7 @@
           
           <div  class="col-7 d-flex align-items-baseline">            
 
-                <input type="input" class="form-control col" name="search" />
+                <input type="input" class="form-control col" name="search"  v-model="searchValue" />
               
                 <button role="button_search_client" @click.prevent="searchClients" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
                   <i v-if="!pre_loader" class="fas fa-search"></i>
@@ -131,7 +131,8 @@ export default {
       column: '',
       direction: '',
       page: '',
-      search: '',
+      search: '', //after click button
+      searchValue: '', // current value
 
     };
   },  
@@ -147,7 +148,14 @@ export default {
 
     async searchClients()
     {
-      console.log('search Clients' );
+      this.search = this.searchValue;
+      this.pre_loader = true;      
+
+      const refreshC = await this.refreshClients();
+      
+      if(refreshC ){
+        this.pre_loader = false;
+      }
     },
 
     async delClient(id){
@@ -156,7 +164,6 @@ export default {
         this.pre_loader = true;      
 
         try{
-
           const response = await deleteClient(id, this.token);
           if(response.data.success){
             const ret = await this.refreshClients();
@@ -165,14 +172,10 @@ export default {
               this.pre_loader = false;
             }
           }
-
         } catch (error) {
           console.log('_is_error__', error);
           this.msgWrong = 'Delete client problem = ' + error;
         }
-
-
-
       }
     },
     async changePageByUrl(url){

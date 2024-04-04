@@ -278,6 +278,10 @@ describe("Users page", () => {
       expect(counter).toBe(1); //mount      
       const search = await screen.queryByRole("button_search_client");
       userEvent.click(search);
+      await waitFor(() => {        
+        expect(counter).toBe(2);        
+      });  
+
     });
     
 
