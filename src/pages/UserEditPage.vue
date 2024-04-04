@@ -1,7 +1,7 @@
 <template>
     <div data-testid="users-page-edit">      
-      <h1 v-if="mode === 'edit'">Edit client</h1>
-      <h1 v-else>Add client</h1>
+      <h3 v-if="mode === 'edit'">Edit client</h3>
+      <h3 v-else>Add client</h3>
 
       <Msg 
         :msgGood="msgGood"                        
@@ -15,12 +15,50 @@
             <button role="button_save_edit_client" @click.prevent="addEditClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
               <i v-if="!pre_loader" class="fas fa-plus"></i>
 
-              <span role="pre_loader_add_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+              <span role="pre_loader_add_edit_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
               Add Client
             </button>  
           </div>                                  
         </div>
 
+        <div class="row">
+
+          <form>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" v-model="client.email"  class="form-control" id="email" aria-describedby="emailHelp"  placeholder="email"  :disabled="mode === 'edit'" >
+              <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+            </div>
+
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" v-model="client.name" class="form-control" id="name"   placeholder="name">
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" v-model="client.password" class="form-control" id="password"  placeholder="password">
+            </div>
+
+            <div class="mb-3">
+              <label for="password_confirmation" class="form-label">Password confirmation</label>
+              <input type="password"  v-model="client.password_confirmation" class="form-control" id="password_confirmation"  placeholder="password confirmation">
+            </div>
+
+
+            <button 
+              @click.prevent="back"  
+              class="add-page-btn  btn btn-info ml-3 mt-2 mb-2" 
+              :disabled="pre_loader"
+            >Back</button>
+
+            <button type="submit" class="btn btn-primary" :disabled="pre_loader">
+              <span v-if="mode === 'edit'">Edit</span>
+              <span v-else>Add</span>
+            </button>
+          </form>
+
+        </div>        
 
 
 
@@ -31,7 +69,7 @@
 <script>
 import functions from "../helpers/functions.js";
 import storage from "../state/storage";
-//import { getClients, deleteClient } from "../api/apiCalls";
+import { getClient } from "../api/apiCalls";
 import Msg from "../components/Msg";
 
 export default {    
@@ -47,9 +85,7 @@ export default {
     }
   },  
 
-
   data() {
-
     const { token } = functions.retrieveParamsFromStorage( storage );
     return {
       token: this.$store.state.auth.token || token,
@@ -59,12 +95,49 @@ export default {
       pre_loader: false,          
       client: {}
 
-
     };
   },  
 
   methods: {
 
+    back(){
+      this.$router.push({ name: 'users' });
+    },
+
+    clearMsg(){
+      this.msgWrong = '';
+      this.msgGood = '';
+    },
+
+    getEmptyClient(){
+      return {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
+      }
+    },
+
+    async loadClient(id){      
+      try {
+          const responseC = await getClient( id, this.token );
+          if(responseC.data.success){
+            const client = responseC.data.data;
+            this.client.id = client.id;
+            this.client.name = client.name;
+            this.client.email = client.email;
+            return true;
+          }else{
+            this.msgWrong = 'Sth wrong with get client';  
+            console.log( 'error get client=', responseC.data);
+          }
+      } catch (error) {
+          this.msgWrong = 'Sth wrong with get client (error)';
+          console.log( 'error get client=', error);
+      }
+      return false;        
+    },
  
   },
 
@@ -72,22 +145,23 @@ export default {
       if(!this.$store.state.auth.isLoggedIn){
           this.$router.push("/");
       }
+      if ( (this.mode !== 'edit') &&  (this.mode !== 'add')  ) {
+          this.$router.push("/");
+      }
+
+      this.clearMsg();
+      this.client = this.getEmptyClient();
 
       if (this.mode === 'edit') {
-        console.log('Edycja użytkownika o ID:', this.id);
-      } else {
-        console.log('Dodawanie nowego użytkownika');
-      }
+        this.pre_loader = true;
+        const loadC = await this.loadClient(this.id);
       
-      //const userId = this.$router.params.id;
-      //console.log( 'userId='+ userId );
+        if( loadC ){
+          this.pre_loader = false;
+        }        
+      }
 
-      //this.pre_loader = true;      
-      //const refreshC = await this.refreshClients();       
-      //if(refreshC ){
-      //  this.pre_loader = false;
-      //}
-
+      //console.log(this.client);
   }
 };
 </script>

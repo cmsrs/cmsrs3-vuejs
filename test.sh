@@ -5,7 +5,8 @@ if [ "$1" = "all" ]; then
 fi
 
 #run test from one file
-./node_modules/jest/bin/jest.js  --verbose ./src/pages/UsersPage.spec.js
+#./node_modules/jest/bin/jest.js  --verbose ./src/pages/UsersPage.spec.js
+./node_modules/jest/bin/jest.js  --verbose ../src/pages/UserEditPage.spec.js 
 
 
 #one test
@@ -14,3 +15,4 @@ fi
 
 
 #./node_modules/jest/bin/jest.js  --verbose -t 'retrieveParamsFromUrl'   ./src/helpers/functions.spec.js
+

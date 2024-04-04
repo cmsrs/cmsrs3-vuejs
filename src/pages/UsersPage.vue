@@ -148,8 +148,8 @@ export default {
 
     async searchClients()
     {
-      this.search = this.searchValue;
-      this.pre_loader = true;      
+      this.pre_loader = true;            
+      this.search = this.searchValue;      
 
       const refreshC = await this.refreshClients();
       
