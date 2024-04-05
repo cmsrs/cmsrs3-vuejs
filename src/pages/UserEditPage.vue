@@ -11,26 +11,16 @@
       <div class="container">
 
         <div class="row">
-          <div class="col-5">
+          <div class="col">
             <button 
               @click.prevent="back"  
               class="add-page-btn  btn btn-info ml-3 mt-2 mb-2" 
               :disabled="pre_loader"
             >Back</button>
           </div>          
-
-          <div class="col-5">
-            <button role="button_save_edit_client" @click.prevent="addEditClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
-              <i v-if="!pre_loader" class="fas fa-plus"></i>
-
-              <span role="pre_loader_add_edit_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
-                <span v-if="mode === 'edit'">Edit</span>
-                <span v-else>Add</span>
-            </button>  
-          </div>                                  
         </div>
 
-        <div class="row">
+        <div class="row pb-4 pt-4">
 
           <form>
             <div class="mb-3">
@@ -55,12 +45,14 @@
             </div>
 
 
-            <!--
-            <button type="submit" class="btn btn-primary" :disabled="pre_loader">
-              <span v-if="mode === 'edit'">Edit</span>
-              <span v-else>Add</span>
-            </button>
-            -->
+            <button role="button_save_edit_client" @click.prevent="addEditClient" class="add-page-btn  btn btn-primary mt-2 mb-2 mr-2" :disabled="pre_loader">
+              <i v-if="!pre_loader" class="fas fa-plus"></i>
+
+              <span role="pre_loader_add_edit_client" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+                <span v-if="mode === 'edit'">Edit client</span>
+                <span v-else>Add client</span>
+            </button>  
+
           </form>
 
         </div>        
@@ -126,6 +118,7 @@ export default {
     },
 
     async addEditClient(){
+      this.clearMsg();
       this.pre_loader = true;
       try{
         const retClient = this.client.id ? (await putClient(this.client, this.token)) : await postClient(this.client, this.token);
