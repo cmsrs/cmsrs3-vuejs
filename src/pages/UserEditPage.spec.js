@@ -1,7 +1,7 @@
 import {
   render, 
   screen,
-  //waitFor,  
+  waitFor,  
   waitForElementToBeRemoved
 } from "@testing-library/vue";
 import UserEditPage from "./UserEditPage.vue";
@@ -48,8 +48,6 @@ let server = setupServer(
       })
     );
   }),
-
-
 
   rest.post("/api/clients", (req, res, ctx) => {
     counter += 1;
@@ -206,12 +204,12 @@ describe("User edit page", () => {
       await waitForAjax();
       expect(counter).toBe(1);
 
-      const email = screen.queryByPlaceholderText("email"); //zmieniamy jakis pierdoly
+      const email = screen.queryByPlaceholderText("email");
       await userEvent.type( email , 'aaaa@example.com');//email is not changeable in edit mode
 
 
       const name = screen.queryByPlaceholderText("name");
-      await userEvent.type( name , 'aaaa');
+      await userEvent.type( name , 'aaaaaaaaaaaaa');
 
       const password = screen.queryByPlaceholderText("password");
       await userEvent.type( password , 'abc');
@@ -222,19 +220,135 @@ describe("User edit page", () => {
 
       const buttonSubmit = screen.queryByRole("button_save_edit_client" );
       await userEvent.click(buttonSubmit);
+      expect(counter).toBe(2);      
 
       const successMsg = trans.ttt( 'success_client_edit' );
-      console.log('_______________________',successMsg);
       expect( successMsg ).not.toBe( '');
       await screen.findByText(
        successMsg
       );
 
-
     });
 
 
+    it( 'add client', async ()  => {
+      await setupAdd();
+      //await waitForAjax();
+      expect(counter).toBe(0);
+
+      const email = screen.queryByPlaceholderText("email");
+      await userEvent.type( email , 'aaaabb@example.com');//email is not changeable in edit mode
+
+
+      const name = screen.queryByPlaceholderText("name");
+      await userEvent.type( name , 'aaaaaaaaaaaaa');
+
+      const password = screen.queryByPlaceholderText("password");
+      await userEvent.type( password , 'abc');
+
+      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
+      await userEvent.type( password_confirmation , 'abc');
+
+
+      const buttonSubmit = screen.queryByRole("button_save_edit_client" );
+      await userEvent.click(buttonSubmit);
+      expect(counter).toBe(1);      
+
+      const successMsg = trans.ttt( 'success_client_add' );
+      expect( successMsg ).not.toBe('');
+      await screen.findByText(
+       successMsg
+      );
+    });
+
 
   });
+
+  describe("Interactions validation errors", () => {
+
+    const responseError = {
+      success: false,
+      error: {
+        name: ["The name field is required."],
+        email: ["The email has already been taken."],
+        password: [
+          "The password must be at least 8 characters.",
+          "The password confirmation does not match."
+        ]
+      }
+    };
+
+    let server = setupServer(
+    
+      rest.post("/api/clients", (req, res, ctx) => {
+        counter += 1;
+        return res(
+          ctx.status(200),
+          ctx.json(
+            responseError          
+          )
+        );
+      }),          
+    );  
+    
+    beforeAll(() => {
+      server.listen();
+    });
+    
+    let counter = 0;
+    
+    beforeEach(() => {
+      counter = 0;
+      server.resetHandlers();
+    });
+        
+    it( 'add client with errors', async ()  => {
+      await setupAdd();
+      //await waitForAjax();
+      expect(counter).toBe(0);
+
+      const email = screen.queryByPlaceholderText("email");
+      await userEvent.type( email , 'aaaabb@example.com');//email is not changeable in edit mode
+
+
+      const name = screen.queryByPlaceholderText("name");
+      await userEvent.type( name , 'aaaaaaaaaaaaa');
+
+      const password = screen.queryByPlaceholderText("password");
+      await userEvent.type( password , 'abc');
+
+      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
+      await userEvent.type( password_confirmation , 'abc');
+
+
+      const buttonSubmit = screen.queryByRole("button_save_edit_client" );
+      await userEvent.click(buttonSubmit);
+      expect(counter).toBe(1);      
+
+      const alertDangerAfter = screen.queryByRole("alert_danger");
+      expect( alertDangerAfter ).not.toBeInTheDocument();
+
+      await waitFor(() => {    
+        const alertDangerAfter2 = screen.queryByRole("alert_danger");
+        expect( alertDangerAfter2 ).toBeInTheDocument();
+  
+        const email2 = screen.queryByPlaceholderText("email");
+        expect(email2).toHaveClass("is-invalid");      
+
+        const name2 = screen.queryByPlaceholderText("name");
+        expect(name2).toHaveClass("is-invalid");      
+
+        const password2 = screen.queryByPlaceholderText("password");
+        expect(password2).toHaveClass("is-invalid");      
+
+        const password_confirmation2 = screen.queryByPlaceholderText("password confirmation");
+        expect(password_confirmation2).toHaveClass("is-invalid");              
+  
+      });
+    });
+
+
+  });
+
 
 });

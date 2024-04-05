@@ -35,33 +35,31 @@
           <form>
             <div class="mb-3">
               <label for="email" class="form-label">Email address</label>
-              <input type="email" v-model="client.email"  class="form-control" id="email" aria-describedby="emailHelp"  placeholder="email"  :disabled="mode === 'edit'" >
+              <input type="email" v-model="client.email"  class="form-control" :class="{ 'is-invalid': errFields.includes('email') }"  id="email" aria-describedby="emailHelp"  placeholder="email"  :disabled="mode === 'edit'" >
               <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
             </div>
 
             <div class="mb-3">
               <label for="name" class="form-label">Name</label>
-              <input type="text" v-model="client.name" class="form-control" id="name"   placeholder="name">
+              <input type="text" v-model="client.name" class="form-control" :class="{ 'is-invalid': errFields.includes('name') }"  id="name" placeholder="name">
             </div>
 
             <div class="mb-3">
               <label for="password" class="form-label">Password</label>
-              <input type="password" v-model="client.password" class="form-control" id="password"  placeholder="password">
+              <input type="password" v-model="client.password" class="form-control" :class="{ 'is-invalid': errFields.includes('password') }" id="password"  placeholder="password">
             </div>
 
             <div class="mb-3">
               <label for="password_confirmation" class="form-label">Password confirmation</label>
-              <input type="password"  v-model="client.password_confirmation" class="form-control" id="password_confirmation"  placeholder="password confirmation">
+              <input type="password"  v-model="client.password_confirmation" class="form-control" :class="{ 'is-invalid': errFields.includes('password') }" id="password_confirmation"  placeholder="password confirmation">
             </div>
 
 
             <!--
-
             <button type="submit" class="btn btn-primary" :disabled="pre_loader">
               <span v-if="mode === 'edit'">Edit</span>
               <span v-else>Add</span>
             </button>
-
             -->
           </form>
 
@@ -99,10 +97,10 @@ export default {
       token: this.$store.state.auth.token || token,
       msgWrong: '',
       msgGood: '',
+      errFields: [], //optional
 
       pre_loader: false,          
       client: {}
-
     };
   },  
 
@@ -128,42 +126,22 @@ export default {
     },
 
     async addEditClient(){
-      console.log("addEditClient");
       this.pre_loader = true;
       try{
         const retClient = this.client.id ? (await putClient(this.client, this.token)) : await postClient(this.client, this.token);
         if(retClient.data.success){
             this.msgGood = this.client.id ? trans.ttt( 'success_client_edit' ) : trans.ttt( 'success_client_add' );
-                /*
-                if( !this.currentPageId  ){
-
-                  //console.log( this.currentPageId);
-                  //console.log(retPage.data);
-                  this.currentPageId = retPage.data.data.pageId;
-                  this.msgGood = trans.ttt( 'success_page_add' );
-                }else{
-                  this.msgGood = trans.ttt( 'success_page_edit' );
-                }
-                */
-        }else if( retPage.data.success === false ){
-            console.log('TODO');
-            //this.msgWrong =  await functions.parseError( retPage.data.error );
-            //this.errFields =  await functions.getErrorFields( retPage.data.error );
+        }else if( retClient.data.success === false ){
+            this.msgWrong =  await functions.parseError( retClient.data.error );
+            this.errFields =  await functions.getErrorFields( retClient.data.error );
         }else{
-            this.msgWrong = 'Something wrong';                              
+            this.msgWrong = 'Something wrong with add or edit client - check response status';                              
         }            
 
-            //const ret = await this.refreshPages();
-            //if(ret){
-            //  this.pre_loader = false;
-            //}
-            
       } catch (error) {
-          //this.failMessage = 'Invalid save page';
           console.log('_is_error__', error);
       }
       this.pre_loader = false;
-
     },
 
     async loadClient(id){      
@@ -207,8 +185,6 @@ export default {
           this.pre_loader = false;
         }        
       }
-
-      //console.log(this.client);
   }
 };
 </script>
