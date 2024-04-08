@@ -67,7 +67,7 @@
 import functions from "../helpers/functions.js";
 import storage from "../state/storage";
 import { getClient, postClient, putClient } from "../api/apiCalls";
-import Msg from "../components/Msg";
+import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
 
 export default {    

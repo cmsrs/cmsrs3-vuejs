@@ -285,8 +285,8 @@
   import functions from "../helpers/functions.js";
   import trans from "../helpers/trans.js";
   import storage from "../state/storage";
-  import PageTitle from "../components/PageTitle";
-  import Msg from "../components/Msg";
+  import PageTitle from "../components/PageTitle.vue";
+  import Msg from "../components/Msg.vue";
   import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition, uploadImage, getImages, deleteImage, setImagePosition } from "../api/apiCalls";
   import CKEditor from '@ckeditor/ckeditor5-vue';
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';

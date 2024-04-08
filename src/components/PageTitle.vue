@@ -20,6 +20,7 @@
   
   <script>
   export default {
+    name: "PageTitle",
     props: {
       pre_loader: Boolean,
       p: Object, // Assuming pageTitle is an object with translations

@@ -22,9 +22,9 @@
 
 </template>
 <script>
-import Input from "../components/Input";
-import ButtonWithProgress from "../components/ButtonWithProgress";
-import { login, config } from "../api/apiCalls";
+import Input from "../components/Input.vue";
+import ButtonWithProgress from "../components/ButtonWithProgress.vue";
+import { login, config } from "../api/apiCalls.js";
 
 export default {
     name: "LoginPage",

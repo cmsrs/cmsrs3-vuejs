@@ -104,9 +104,9 @@
 <script>
 import functions from "../helpers/functions.js";
 import storage from "../state/storage";
-import { getClients, deleteClient } from "../api/apiCalls";
-import Msg from "../components/Msg";
-import TableSort from "../components/TableSort";
+import { getClients, deleteClient } from "../api/apiCalls.js";
+import Msg from "../components/Msg.vue";
+import TableSort from "../components/TableSort.vue";
 
 export default {    
   name: "UserPage",

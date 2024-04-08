@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router";
-import LoginPage from "../pages/LoginPage";
-import MenuPagesPage from "../pages/MenuPagesPage";
-import UsersPage from "../pages/UsersPage";
-import UserEditPage from "../pages/UserEditPage";
+import { createRouter, createWebHistory } from "vue-router"
+import MenuPagesPage from "../pages/MenuPagesPage.vue"
+import LoginPage from "../pages/LoginPage.vue"
+import UsersPage from "../pages/UsersPage.vue";
+import UserEditPage from "../pages/UserEditPage.vue";
 //import UserPage from "../pages/UserPage";
 //import AccountActivationPage from "../pages/AccountActivationPage";
 
