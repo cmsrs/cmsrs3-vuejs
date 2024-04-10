@@ -58,7 +58,7 @@
 
     if(storedStateConfig){
       configLangs = storedStateConfig.langs;
-      configDefaultLang = storedStateConfig.defaultLang;
+      configDefaultLang = storedStateConfig.langs[0] || '';    //storedStateConfig.defaultLang ? ;
       pageTypes = storedStateConfig.page_types;
     }
 

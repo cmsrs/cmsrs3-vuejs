@@ -303,15 +303,15 @@
     data() {
 
         const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage( storage );
-        const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;     
+        //const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;     
 
         return {
           //from storage
-          langs: this.$store.state.config.langs || configLangs,
-          lang: defaultLang, //it is changeable
-          defaultLang: defaultLang,
-          page_types : this.$store.state.config.page_types || pageTypes,
-          token: this.$store.state.auth.token || token,
+          langs: configLangs,
+          lang: configDefaultLang, //it is changeable
+          defaultLang: configDefaultLang,
+          page_types : pageTypes,
+          token: token,
 
           //some constants
           msgWrong: '',
@@ -892,7 +892,7 @@
       },    
 
       async mounted() {
-          if(!this.$store.state.auth || !this.$store.state.auth.isLoggedIn || !this.token){
+          if( !this.token ){
               this.$router.push("/");
           }
 

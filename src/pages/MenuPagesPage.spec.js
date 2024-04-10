@@ -1,3 +1,17 @@
+import { render, router, screen, waitFor, waitForElementToBeRemoved } from '../../test/helper.js'
+import '../../test/afterlogin.js'
+
+import MenuPagesPage from "./MenuPagesPage.vue";
+import { setupServer } from "msw/node"
+import {  HttpResponse, http } from "msw"
+import userEvent from "@testing-library/user-event"
+import trans from "../helpers/trans.js"
+import storage from "../state/storage.js"
+import { afterAll, beforeAll } from 'vitest'
+
+const confirmSpy = vi.spyOn(window, 'confirm')
+
+/*
 import {
   render, 
   screen, 
@@ -10,12 +24,13 @@ import trans from "../helpers/trans.js";
 
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
-import { rest } from "msw";
+import { http } from "msw";
 //import store from "../state/store";
 import { createStore } from "vuex";
 
 // Mock the window.confirm method
 global.window.confirm = jest.fn(() => true);
+*/
 
 const pages  = [
   {
@@ -192,152 +207,122 @@ const menus  = [
   }  
 ];
 
-let requestBody;
 let counter = 0;
 let counter2 = 0;
 let counterMenu = 0;
 let server = setupServer(
   //?token=abcde12345
-  rest.post("/api/pages", (req, res, ctx) => {
-    requestBody = req.body;
+  http.post("/api/pages", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-        data: {
-          pageId: 8
-        }
-      })
-    );
+    const jsonRes = {
+      success: true,
+      data: {
+        pageId: 8
+      }
+    }
+
+    return HttpResponse.json(
+      jsonRes
+    )
   }),
 
-  rest.put("/api/pages/3", (req, res, ctx) => {
+  http.put("/api/pages/3", () => {
     requestBody = req.body;
     counter2 += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
-  }),
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
 
 
-  rest.post("/api/menus", (req, res, ctx) => {
-    requestBody = req.body;
+  http.post("/api/menus", () => {
     counterMenu += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
-    //return res(ctx.status(200));
+    return HttpResponse.json({
+      success: true
+  })
+  //return res(ctx.status(200));
   }),
 
-  rest.get("/api/pages", (req, res, ctx) => {
-    requestBody = req.body;
+  http.get("/api/pages", () => {
     //counter2 += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-        data: pages
-      })
-    );
+    const jsonRes = {
+      success: true,
+      data: pages
+    }
+
+
+    return HttpResponse.json(
+      jsonRes
+    )
   
     //return res(ctx.status(200));
   }),
     
-  rest.get("/api/menus", (req, res, ctx) => {
-    requestBody = req.body;
+  http.get("/api/menus", () => {
     //counter2 += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-        data: menus
-      })
-    );
+
+    const jsonRes ={
+      success: true,
+      data: menus
+    }
+
+    return HttpResponse.json(
+      jsonRes
+    )
   
     //return res(ctx.status(200));
   }),
 
-  rest.put("/api/menus/1", (req, res, ctx) => {
-    requestBody = req.body;
+  http.put("/api/menus/1", () => {
     //counter2 += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
-  
+    return HttpResponse.json({
+      success: true
+  })
+
     //return res(ctx.status(200));
   }),
 
-  rest.delete("/api/menus/1", (req, res, ctx) => {
-    requestBody = req.body;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
-  }),
+  http.delete("/api/menus/1", () => {
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
-  rest.delete("/api/pages/3", (req, res, ctx) => {
-    requestBody = req.body;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
-  }),
+  http.delete("/api/pages/3", () => {
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
-  rest.get("/api/menus/position/down/1", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-      })
-    );
-  }),
+  http.get("/api/menus/position/down/1", () => {
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
-  rest.get("/api/menus/position/up/2", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-      })
-    );
-  }),
+  http.get("/api/menus/position/up/2", () => {
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
-  rest.get("/api/pages/position/down/3", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-      })
-    );
-  }),
+  http.get("/api/pages/position/down/3", () => {
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
-  rest.get("/api/pages/position/up/3", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true,
-      })
-    );
-  }),
+  http.get("/api/pages/position/up/3", () => {
+    return HttpResponse.json({
+      success: true
+  })
+}),
 
 );
 
 /*
-const getPages = rest.get("/api/pages", (req, res, ctx) => {
+const getPages = http.get("/api/pages", () => {
   return res(
     ctx.status(200),
     ctx.json({
@@ -348,7 +333,7 @@ const getPages = rest.get("/api/pages", (req, res, ctx) => {
 });
 
 //don't use
-const getMenus = rest.get("/api/menus", (req, res, ctx) => {
+const getMenus = http.get("/api/menus", () => {
   return res(
     ctx.status(200),
     ctx.json({
@@ -370,7 +355,9 @@ beforeEach(() => {
   server.resetHandlers();
 });
 
+afterAll(() => server.close())
 
+/*
 const jsonStore = {
   auth: {
     isLoggedIn: true,
@@ -402,6 +389,12 @@ const setup = async () => {
     },
   });
 };
+*/
+
+const setup = async () => {
+  render(MenuPagesPage );
+};
+
 
 const waitForAjaxes = async () => {
   const spinner = screen.queryByRole("pre_loader_save_edit_page");
@@ -496,8 +489,8 @@ describe("Pages page", () => {
       const content = screen.queryByPlaceholderText("content en");
       await userEvent.type(content, pages[0]['content']['en']);
 
-      const spinnerBeforClick = screen.queryByRole("pre_loader_save_edit_page");
-      expect(spinnerBeforClick).toBeNull();
+      const spinnerBeforeClick = screen.queryByRole("pre_loader_save_edit_page");
+      expect(spinnerBeforeClick).toBeNull();
 
       const button = screen.queryByRole("button_save_edit_page" );
       await userEvent.click(button);
@@ -507,7 +500,6 @@ describe("Pages page", () => {
 
       await waitForElementToBeRemoved(spinnerAfterClick);
       expect(counter).toBe(1);      
-      //console.log(requestBody); //why requestBody is empty ? todo
 
       await screen.findByText(
         "Pages not related to menu"
@@ -585,8 +577,8 @@ describe("Pages page", () => {
 
       //const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
       //await userEvent.type(addMenuPlaceholder, 'New menu name');
-      const alertDangerBefor = screen.queryByRole("alert_danger");
-      expect( alertDangerBefor ).not.toBeInTheDocument();
+      const alertDangerBefore = screen.queryByRole("alert_danger");
+      expect( alertDangerBefore ).not.toBeInTheDocument();
 
       const icon = screen.queryByRole("save_menu_0");
       await userEvent.click(icon);
@@ -654,12 +646,12 @@ describe("Pages page", () => {
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
       await userEvent.type(addMenuPlaceholder, 'New menu name');
 
-      const alertSuccessBefor = screen.queryByRole("alert_success");
-      expect( alertSuccessBefor ).not.toBeInTheDocument();
+      const alertSuccessBefore = screen.queryByRole("alert_success");
+      expect( alertSuccessBefore ).not.toBeInTheDocument();
 
       expect(counterMenu).toBe(0);      
-      const spinnerBeforClick = screen.queryByRole("pre_loader_add_menu");
-      expect(spinnerBeforClick).toBeNull();
+      const spinnerBeforeClick = screen.queryByRole("pre_loader_add_menu");
+      expect(spinnerBeforeClick).toBeNull();
 
       const icon = screen.queryByRole("save_menu_0");
       await userEvent.click(icon);
@@ -821,6 +813,7 @@ describe("Pages page", () => {
 
 
     it( 'delete menu and show success alert', async ()  => {
+      confirmSpy.mockReturnValueOnce(true)
       await setup();
       await waitForAjaxes();
 
@@ -874,11 +867,11 @@ describe("Pages page", () => {
       const parentPageId = 3;
     
       await waitFor(() => {
-        const nastedPagesContainers = screen.queryAllByRole("page_pages");
-        expect(nastedPagesContainers.length).toBe(1);
+        const nestedPagesContainers = screen.queryAllByRole("page_pages");
+        expect(nestedPagesContainers.length).toBe(1);
 
         let isIf = false;
-        nastedPagesContainers.forEach((container) => {
+        nestedPagesContainers.forEach((container) => {
           const pageId = container.getAttribute('data-page-id');
           //expect( pageId ).toBe(parentPageId);
           //console.log(pageId);
@@ -1013,6 +1006,7 @@ describe("Pages page", () => {
 
 
     it( 'delete page and show success alert', async ()  => {
+      confirmSpy.mockReturnValueOnce(true)
       await setup();
       await waitForAjaxes();
 
@@ -1144,7 +1138,15 @@ describe("Pages page", () => {
         cache_enable: 1
       }
     };
+
+    localStorage.clear()
+    storage.setItem('auth', jsonStore2.auth )
+    storage.setItem('config', jsonStore2.config )
+
+
+
     
+    /*
     const store2 = createStore({
       state: jsonStore2,
     });
@@ -1161,6 +1163,7 @@ describe("Pages page", () => {
         },
       });
     };
+    */
 
     it( 'show langs', async ()  => {
       await setup2();
@@ -1185,29 +1188,47 @@ describe("Pages page", () => {
           }
         },
       ];
+
+
+/*
+    const jsonRes = {
+      success: true,
+      data: {
+        pageId: 8
+      }
+    }
+
+    return HttpResponse.json(
+      jsonRes
+    )
+*/
+
+
+
   
       server.resetHandlers();
       let server2 = setupServer(
-        rest.get("/api/pages", (req, res, ctx) => {
-          requestBody = req.body;
+        http.get("/api/pages", () => {
           //counter2 += 1;
-          return res(
-            ctx.status(200),
-            ctx.json({
-              success: true,
-              data: pages
-            })
-          );
+
+          const jsonRes = {
+            success: true,
+            data: pages
+          }
+
+          return HttpResponse.json(
+            jsonRes
+          )
         }),
-        rest.get("/api/menus", (req, res, ctx) => {
-          requestBody = req.body;
-          return res(
-            ctx.status(200),
-            ctx.json({
-              success: true,
-              data: menus2
-            })
-          );
+        http.get("/api/menus", () => {
+          const jsonRes = {
+            success: true,
+            data: menus2
+          }
+
+          return HttpResponse.json(
+            jsonRes
+          )
         }),
         
       
