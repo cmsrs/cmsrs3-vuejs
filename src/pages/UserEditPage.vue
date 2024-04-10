@@ -69,6 +69,7 @@ import storage from "../state/storage";
 import { getClient, postClient, putClient } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
+//import { useRouter } from 'vue-router'
 
 export default {    
   name: "UserEditPage",
@@ -86,7 +87,7 @@ export default {
   data() {
     const { token } = functions.retrieveParamsFromStorage( storage );
     return {
-      token: this.$store.state.auth.token || token,
+      token: token,
       msgWrong: '',
       msgGood: '',
       errFields: [], //optional
@@ -160,11 +161,14 @@ export default {
   },
 
   async mounted() {
-      if(!this.$store.state.auth.isLoggedIn){
-          this.$router.push("/");
+
+      //console.log('token='+this.token);
+      if(!this.token){
+        this.$router.push("/");
       }
+
       if ( (this.mode !== 'edit') &&  (this.mode !== 'add')  ) {
-          this.$router.push("/");
+        this.$router.push("/"); //TODO test manually
       }
 
       this.clearMsg();

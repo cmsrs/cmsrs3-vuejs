@@ -1,21 +1,13 @@
-import { render, router, screen, waitFor } from '../../test/helper.js'
+import { render, router, screen, waitFor, waitForElementToBeRemoved } from '../../test/helper.js'
+import '../../test/afterlogin.js'
 
-/*
-import {
-  render, 
-  screen,
-  waitFor,  
-  waitForElementToBeRemoved
-} from "@testing-library/vue";
-*/
-import UserEditPage from "./UserEditPage.vue";
-//import { createStore } from "vuex";
-import { setupServer } from "msw/node";
-import {  HttpResponse, http } from "msw";
-import userEvent from "@testing-library/user-event";
-import trans from "../helpers/trans.js";
-
-//global.window.confirm = jest.fn(() => true);
+import UserEditPage from "./UserEditPage.vue"
+import { setupServer } from "msw/node"
+import {  HttpResponse, http } from "msw"
+import userEvent from "@testing-library/user-event"
+import trans from "../helpers/trans.js"
+import storage from "../state/storage.js"
+import { afterAll, beforeAll } from 'vitest'
 
 const responseGetClient = {
   success: 1,
@@ -33,120 +25,82 @@ const responseGetClient = {
 
 let server = setupServer(
 
-  http.get("/api/clients/1", (req, res, ctx) => {
+  http.get("/api/clients/1", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json(
+    return HttpResponse.json(
         responseGetClient
-      )
-    );
+    )
   }),
 
-  http.put("/api/clients/1", (req, res, ctx) => {
+  http.put("/api/clients/1", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
+    return HttpResponse.json({
+        success: true
+    })
+  }),
+
+  http.post("/api/clients", () => {
+    counter += 1
+    return HttpResponse.json({
         success: true
       })
-    );
   }),
+);
 
-  http.post("/api/clients", (req, res, ctx) => {
-    counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
-  }),
-  
 
-);  
+let counter = 0;  
 
 beforeAll(() => {
   server.listen();
-});
-
-let counter = 0;
+})
 
 beforeEach(() => {
   counter = 0;
   server.resetHandlers();
-});
+})
 
-/*
-const jsonStore = {
-  auth: {
-    isLoggedIn: true,
-    token:  "abcde12345",
-    email: "user_rs@mail.com",
-    password: "PasswordRs"
-  },
-  config: {
-    page_types: ['cms', 'gallery', 'main_page'],
-    langs: ['en'], //!!
-    defaultLang: 'en', //!!
-    cache_enable: 1
-  }
+afterAll(() => server.close())
+
+const setupAdd = async () => {
+  router.push('/user/add/')
+  await router.isReady()
+  return render(UserEditPage, {
+    props: {
+      mode: 'add'
+    }})
 };
 
-const store = createStore({
-  state: jsonStore,
-});
-
 const setupEdit = async () => {
-  render(UserEditPage, {
+  router.push('/user/edit/1')
+  await router.isReady()
+  return render(UserEditPage, {
     props: {
       mode: 'edit',
       id: '1'
-    },    
-    global: {
-      plugins: [store],
-      mocks: {
-        $router: {
-          push: () => {},
-        },
-      },
-    },
-  });
+    }})
 };
-
-const setupAdd = async () => {
-  render(UserEditPage, {
-    props: {
-      mode: 'add'
-    },    
-    global: {
-      plugins: [store],
-      mocks: {
-        $router: {
-          push: () => {},
-        },
-      },
-    },
-  });
-};
-*/
-
 
 const waitForAjax = async () => {
   const spinner = screen.queryByRole("pre_loader_add_edit_client");
+
+  //console.log(spinner);
   expect(spinner).not.toBeNull();
   await waitForElementToBeRemoved(spinner);
 };
 
-describe.skip("test vite", () => {
-  it( 'has add client header', async ()  => {
+
+describe.skip("empty token", () => { //TODO
+  it( 'has user redirect', async ()  => {
+      
+    storage.setItem('auth', { token: '' } )
     await setupAdd();
     const header = screen.queryByRole("heading", { name: "Add client" });
-    expect(header).toBeInTheDocument();
+    expect(header).not.toBeInTheDocument();
   });
 });
 
-describe.skip("User edit page", () => {
+
+describe("User edit page", () => {
   describe("Layout", () => {
     it( 'has edit client header', async ()  => {
       await setupEdit();
@@ -165,6 +119,7 @@ describe.skip("User edit page", () => {
   describe("Interactions", () => {
     it( 'load client data', async ()  => {
       await setupEdit();
+
       await waitForAjax();
       expect(counter).toBe(1); //mount      
     });
@@ -210,7 +165,7 @@ describe.skip("User edit page", () => {
     });
 
 
-    it( 'edit client', async ()  => {
+    it( 'edit client by click', async ()  => {
       await setupEdit();
       await waitForAjax();
       expect(counter).toBe(1);
@@ -242,7 +197,7 @@ describe.skip("User edit page", () => {
     });
 
 
-    it( 'add client', async ()  => {
+    it( 'add client by click', async ()  => {
       await setupAdd();
       //await waitForAjax();
       expect(counter).toBe(0);
@@ -255,11 +210,10 @@ describe.skip("User edit page", () => {
       await userEvent.type( name , 'aaaaaaaaaaaaa');
 
       const password = screen.queryByPlaceholderText("password");
-      await userEvent.type( password , 'abc');
+      await userEvent.type( password , 'abc2');
 
       const password_confirmation = screen.queryByPlaceholderText("password confirmation");
-      await userEvent.type( password_confirmation , 'abc');
-
+      await userEvent.type( password_confirmation , 'abc2');
 
       const buttonSubmit = screen.queryByRole("button_save_edit_client" );
       await userEvent.click(buttonSubmit);
@@ -277,43 +231,30 @@ describe.skip("User edit page", () => {
 
   describe("Interactions validation errors", () => {
 
-    const responseError = {
-      success: false,
-      error: {
-        name: ["The name field is required."],
-        email: ["The email has already been taken."],
-        password: [
-          "The password must be at least 8 characters.",
-          "The password confirmation does not match."
-        ]
-      }
-    };
-
-    let server = setupServer(
-    
-      http.post("/api/clients", (req, res, ctx) => {
-        counter += 1;
-        return res(
-          ctx.status(200),
-          ctx.json(
-            responseError          
-          )
-        );
-      }),          
-    );  
-    
-    beforeAll(() => {
-      server.listen();
-    });
-    
-    let counter = 0;
-    
-    beforeEach(() => {
-      counter = 0;
-      server.resetHandlers();
-    });
-        
     it( 'add client with errors', async ()  => {
+
+      const responseError = {
+        success: false,
+        error: {
+          name: ["The name field is required."],
+          email: ["The email has already been taken."],
+          password: [
+            "The password must be at least 8 characters.",
+            "The password confirmation does not match."
+          ]
+        }
+      };
+  
+      server.use(
+      
+        http.post("/api/clients", () => {
+          counter += 1
+          return HttpResponse.json(
+              responseError
+            )
+        })
+      )
+
       await setupAdd();
       //await waitForAjax();
       expect(counter).toBe(0);
@@ -331,13 +272,12 @@ describe.skip("User edit page", () => {
       const password_confirmation = screen.queryByPlaceholderText("password confirmation");
       await userEvent.type( password_confirmation , 'abc');
 
-
-      const buttonSubmit = screen.queryByRole("button_save_edit_client" );
-      await userEvent.click(buttonSubmit);
-      expect(counter).toBe(1);      
-
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect( alertDangerAfter ).not.toBeInTheDocument();
+
+      const buttonSubmit = screen.queryByRole("button_save_edit_client" );    
+      await userEvent.click(buttonSubmit);
+      expect(counter).toBe(1);      
 
       await waitFor(() => {    
         const alertDangerAfter2 = screen.queryByRole("alert_danger");
