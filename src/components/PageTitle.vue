@@ -3,8 +3,8 @@
         <div class="row test-page">                
           <div role="edit_page" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }"  @click="inEditPage(p.id)"><i class="far fa-edit cursor-pointer"></i></div>
           <div role="del_page" class="ml-2 col-1"  :class="{ 'disabled-if-loader': pre_loader }" @click="inDelPage(p.id)"><i class="fas fa-trash cursor-pointer"></i></div>
-          <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="inPositionPage('down', p.id)"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"/></div>
-          <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="inPositionPage('up', p.id)"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"/></div>                      
+          <div  role="down_page"  :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="inPositionPage('down', p.id)"><i class="fas fa-arrow-down cursor-pointer"  aria-hidden="true"></i></div>
+          <div  role="up_page" :class="{ 'disabled-if-loader': pre_loader }" class="ml-2 col-1"  @click="inPositionPage('up', p.id)"><i class="fas fa-arrow-up cursor-pointer"  aria-hidden="true"></i></div>                      
           <span class="col">
             <span v-if="showPageId" >
               {{ p.short_title[lang]+" ("+ p.id +")" }}
@@ -39,6 +39,7 @@
         this.$emit( 'execEditPage', pId);
       },
       async inDelPage(pId){
+        //console.log('_________del_page________')
         this.$emit('execDelPage', pId);
       },
 
