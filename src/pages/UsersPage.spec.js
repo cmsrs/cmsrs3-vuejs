@@ -1,16 +1,14 @@
-import {
-  render, 
-  screen,
-  waitFor,  
-  waitForElementToBeRemoved
-} from "@testing-library/vue";
-import UsersPage from "./UsersPage.vue";
-import { createStore } from "vuex";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
-import userEvent from "@testing-library/user-event";
+import { render, router, screen, waitFor, waitForElementToBeRemoved } from '../../test/helper.js'
+import '../../test/afterlogin.js'
 
-global.window.confirm = jest.fn(() => true);
+import UsersPage from "./UsersPage.vue";
+import { setupServer } from "msw/node"
+import {  HttpResponse, http } from "msw"
+import userEvent from "@testing-library/user-event"
+import { afterAll, beforeAll } from 'vitest'
+
+const confirmSpy = vi.spyOn(window, 'confirm')
+
 
 const responseGetClients = {
   success: 1,
@@ -68,44 +66,32 @@ const responseGetClients = {
 
 
 let server = setupServer(
-  rest.get("/api/clients/created_at/desc", (req, res, ctx) => {
+  http.get("/api/clients/created_at/desc", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json(
-        responseGetClients
-      )
-    );  
+    return HttpResponse.json(
+      responseGetClients
+    )
   }),
 
-  rest.get("/api/clients/name/asc", (req, res, ctx) => {
+  http.get("/api/clients/name/asc", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json(
-        responseGetClients
-      )
-    );  
+    return HttpResponse.json(
+      responseGetClients
+    )
   }),
 
-  rest.get("/api/clients/name/desc", (req, res, ctx) => {
+  http.get("/api/clients/name/desc", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json(
-        responseGetClients
-      )
-    );  
+    return HttpResponse.json(
+      responseGetClients
+    )
   }),
 
-  rest.delete("/api/clients/1", (req, res, ctx) => {
+  http.delete("/api/clients/1", () => {
     counter += 1;
-    return res(
-      ctx.status(200),
-      ctx.json({
-        success: true
-      })
-    );
+    return HttpResponse.json({
+      success: true
+    })
   }),
 
 );  
@@ -121,38 +107,12 @@ beforeEach(() => {
   server.resetHandlers();
 });
 
-
-const jsonStore = {
-  auth: {
-    isLoggedIn: true,
-    token:  "abcde12345",
-    email: "user_rs@mail.com",
-    password: "PasswordRs"
-  },
-  config: {
-    page_types: ['cms', 'gallery', 'main_page'],
-    langs: ['en'], //!!
-    defaultLang: 'en', //!!
-    cache_enable: 1
-  }
-};
-
-const store = createStore({
-  state: jsonStore,
-});
+afterAll(() => server.close())
 
 const setup = async () => {
-  render(UsersPage, {
-    global: {
-      plugins: [store],
-      mocks: {
-        $router: {
-          push: () => {},
-        },
-      },
-    },
-  });
+  render(UsersPage);
 };
+
 
 const waitForAjax = async () => {
   const spinner = screen.queryByRole("pre_loader_add_client");
@@ -236,6 +196,7 @@ describe("Users page", () => {
     }); 
     
     it( 'delete client', async ()  => {
+      confirmSpy.mockReturnValueOnce(true)
       await setup();
       await waitForAjax();
 

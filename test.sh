@@ -1,5 +1,6 @@
-npm run test    ./src/pages/UserEditPage.spec.js -- -t 'load client data'
+#npm run test ./src/pages/UserEditPage.spec.js -- -t 'load client data'
 
+npm run test ./src/pages/UsersPage.spec.js 
 
 
 
@@ -29,5 +30,6 @@ npm run test    ./src/pages/UserEditPage.spec.js -- -t 'load client data'
 
 
 #./node_modules/jest/bin/jest.js  --verbose -t 'retrieveParamsFromUrl'   ./src/helpers/functions.spec.js
+
 
 

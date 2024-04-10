@@ -119,7 +119,7 @@ export default {
 
     const { token } = functions.retrieveParamsFromStorage( storage );
     return {
-      token: this.$store.state.auth.token || token,
+      token: token,
       msgWrong: '',
       msgGood: '',
 
@@ -229,7 +229,7 @@ export default {
   },
 
   async mounted() {
-      if(!this.$store.state.auth.isLoggedIn){
+      if(!this.token){
           this.$router.push("/");
       }
 
