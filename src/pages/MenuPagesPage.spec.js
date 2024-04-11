@@ -212,7 +212,7 @@ let counter2 = 0;
 let counterMenu = 0;
 let server = setupServer(
   //?token=abcde12345
-  http.post("/api/pages", () => {
+  http.post("/api/pages", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -226,7 +226,7 @@ let server = setupServer(
     )
   }),
 
-  http.put("/api/pages/3", () => {
+  http.put("/api/pages/3",  async () => {
     counter2 += 1;
     return HttpResponse.json({
       success: true
@@ -235,7 +235,7 @@ let server = setupServer(
 
 
 
-  http.post("/api/menus", () => {
+  http.post("/api/menus",  async () => {
     counterMenu += 1;
     return HttpResponse.json({
       success: true
@@ -243,7 +243,7 @@ let server = setupServer(
   //return res(ctx.status(200));
   }),
 
-  http.get("/api/pages", () => {
+  http.get("/api/pages",  async () => {
     //counter2 += 1;
     const jsonRes = {
       success: true,
@@ -258,7 +258,7 @@ let server = setupServer(
     //return res(ctx.status(200));
   }),
     
-  http.get("/api/menus", () => {
+  http.get("/api/menus",  async () => {
     //counter2 += 1;
 
     const jsonRes ={
@@ -273,7 +273,7 @@ let server = setupServer(
     //return res(ctx.status(200));
   }),
 
-  http.put("/api/menus/1", () => {
+  http.put("/api/menus/1",  async () => {
     //counter2 += 1;
     return HttpResponse.json({
       success: true
@@ -282,37 +282,37 @@ let server = setupServer(
     //return res(ctx.status(200));
   }),
 
-  http.delete("/api/menus/1", () => {
+  http.delete("/api/menus/1",  async () => {
     return HttpResponse.json({
       success: true
   })
 }),
 
-  http.delete("/api/pages/3", () => {
+  http.delete("/api/pages/3",  async () => {
     return HttpResponse.json({
       success: true
   })
 }),
 
-  http.get("/api/menus/position/down/1", () => {
+  http.get("/api/menus/position/down/1", async  () => {
     return HttpResponse.json({
       success: true
   })
 }),
 
-  http.get("/api/menus/position/up/2", () => {
+  http.get("/api/menus/position/up/2",  async  () => {
     return HttpResponse.json({
       success: true
   })
 }),
 
-  http.get("/api/pages/position/down/3", () => {
+  http.get("/api/pages/position/down/3", async  () => {
     return HttpResponse.json({
       success: true
   })
 }),
 
-  http.get("/api/pages/position/up/3", () => {
+  http.get("/api/pages/position/up/3", async  () => {
     return HttpResponse.json({
       success: true
   })
@@ -1218,7 +1218,7 @@ describe("Pages page", () => {
       //server.resetHandlers();
       //let server2 = setupServer(
       server.use(        
-        http.get("/api/pages", () => {
+        http.get("/api/pages", async  () => {
           //counter2 += 1;
 
           const jsonRes = {
@@ -1230,7 +1230,7 @@ describe("Pages page", () => {
             jsonRes
           )
         }),
-        http.get("/api/menus", () => {
+        http.get("/api/menus", async  () => {
           const jsonRes = {
             success: true,
             data: menus2

@@ -211,15 +211,16 @@
 
                 <div class="mt-3" v-if="page_type !== 'main_page'">
                   <!--
-                  tu bedzie wyswierlac sie dla innych stron niz main_page:
+                  it is show 
                   1. menus
                   2. parent_page                  
+                  for page_type different then main_page
                   -->
 
                   <div class="form-group mt-3">
                     <label for="menu_items" class="text-secondary">Menu:</label>
                     <select role="menu_items"  class="rs-select form-control" v-model="menu_id" @change="handleMenuChange">
-                      <option  value="" ></option> <!-- Pusta wartość -->                      
+                      <option  value="" ></option>
                       <option v-for="menu in menus" :key="menu.id" :value="menu.id">
                         {{ menu.name[lang] }}
                       </option>
@@ -230,7 +231,7 @@
                   <div class="form-group mt-3">
                     <label for="page"  class="text-secondary">Parent page:</label>
                     <select role="page_items"  class="rs-select form-control" v-model="page_id">
-                      <option   value="" ></option> <!-- Pusta wartość -->
+                      <option   value="" ></option>
                       <option v-for="page in rootPagesBelongToMenu" :key="page.id" :value="page.id">
                         {{ page.short_title[lang] }}
                       </option>
@@ -245,7 +246,7 @@
                     <br>
                     <ckeditor :editor="editor" v-model="content[lang]" :config="editorConfig"></ckeditor>
                     <!--
-                    tu bedzie contentCKE: CKEditor (dla: 'cms', 'inner', 'privacy_policy' )
+                    we show contentCKE: CKEditor (for: 'cms', 'inner', 'privacy_policy' )
                     -->
                   </div>
                   <div class="form-group" v-else>
@@ -753,7 +754,7 @@
       
       /**
        * todo move this function to functions
-       * only root pages withot children (copy from react)
+       * only root pages without children (copy from react)
        * get root pages belongs to given menu, and get pages without children
        */
       getRootPages( menuId ){

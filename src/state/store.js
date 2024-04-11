@@ -30,7 +30,8 @@ export const useAuthStore = defineStore('auth', () => {
   const auth = reactive(initialState)
   const config = reactive(initialConfig)
 
-  function setLoggedIn(data) {
+  //function setLoggedIn(data) {
+  function setAuth(data) {    
     auth.token = data.token
     //auth.id = data.id
     //auth.username = data.username
@@ -63,7 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
 
-  return { auth, setLoggedIn, logout }
+  return { auth, setAuth, setConfig, logout }
 })
 
 

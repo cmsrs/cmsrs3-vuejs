@@ -1,16 +1,8 @@
 import storage from "../src/state/storage.js"
+import jsonStoreModule from "./jsonStore.js"
 
-const jsonStore = {
-    auth: {
-      token:  "abcde12345",
-    },
-    config: {
-      page_types: ['cms', 'gallery', 'main_page'],
-      langs: ['en'], //!!
-      defaultLang: 'en', //!!
-      cache_enable: 1
-    }
-};
+const jsonStore = jsonStoreModule.getJsonStore()
+
     
 beforeEach(() => {
     storage.setItem('auth', jsonStore.auth )

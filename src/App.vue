@@ -1,11 +1,13 @@
 <template>
-  <NavBar v-if="$store.state.auth.isLoggedIn" />
+  <NavBar v-if="token" />
   <div class="container">
     <router-view />
   </div>
 </template>
 
 <script>
+import functions from "../helpers/functions.js";
+import storage from "../state/storage";
 import NavBar from "./components/NavBar";
 
 export default {
@@ -14,15 +16,19 @@ export default {
     NavBar,
   },
   data() {
+    const { token } = functions.retrieveParamsFromStorage( storage );
     return {
-      path: window.location.pathname,
+      token: token
+      //path: window.location.pathname,
     };
-  },
+  }
+  /*
   methods: {
     onClickLink(event) {
       this.path = event.currentTarget.attributes.href.value;
       window.history.pushState({}, "", this.path);
     },
   },
+  */
 }
 </script>

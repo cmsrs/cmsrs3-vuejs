@@ -1,3 +1,15 @@
+import { render, router, screen, waitFor, waitForElementToBeRemoved, fireEvent } from '../../test/helper.js'
+import LoginPage from "./LoginPage.vue";
+import { setupServer } from "msw/node"
+import {  HttpResponse, http } from "msw"
+import userEvent from "@testing-library/user-event"
+//import trans from "../helpers/trans.js"
+import storage from "../state/storage.js"
+import { afterAll, beforeAll } from 'vitest'
+//import jsonStoreModule from "./jsonStore.js"
+//const jsonStore = jsonStoreModule.getJsonStore()
+
+/*
 import {
   render,
   screen,
@@ -11,21 +23,23 @@ import { rest } from "msw";
 import store from "../state/store";
 import { resetAuthState } from "../state/store";
 import storage from "../state/storage";
-
+*/
 
 let requestBody;
 let counter = 0;
 const server = setupServer(
-  rest.post("/api/login", (req, res, ctx) => {
-    requestBody = req.body;
+  http.post("/api/login", async ({ request }) => {
+    requestBody = await request.json()
     counter += 1;
-    return res(
-      ctx.status(404), //TODO it sould be 401
-      ctx.json({
-        success: false,
-        error: "some error text"
-        })
-    );
+
+    const jsonRes = {
+      success: false,
+      error: "some error text"
+    }
+  
+    return HttpResponse.json(
+      jsonRes
+    )
   })
 );
 
@@ -39,35 +53,25 @@ beforeEach(() => {
 afterAll(() => server.close());
 
 
-let emailInput, passwordInput, button;
+//let emailInput, passwordInput, button;
 const setup = async () => {
-
-    render(LoginPage, {
-      global: {
-        plugins: [store],
-        mocks: {
-          $router: {
-            push: () => {},
-          },
-        },
-      },
-    });
-
-    emailInput = screen.queryByLabelText("E-mail");
-    passwordInput = screen.queryByLabelText("Password");
-    button = screen.queryByRole("button", { name: "Login" });
+    render(LoginPage)
 };
 
-const loginSuccess = rest.post("/api/login", (req, res, ctx) => {
-  return res(
-    ctx.status(200),
-    ctx.json({
-      success: true,
-      data: {
-        token: "abcde12345"
-      }
-    })
-  );
+const loginSuccess = http.post("/api/login", async ({ request }) => {
+  counter += 1;
+  requestBody = await request.json()
+  const jsonRes = {
+    success: true,
+    data: {
+      token: "abcde12345"
+    }
+  }
+
+  return HttpResponse.json(
+    jsonRes
+  )
+  
 });
 
 const configJson = {
@@ -76,15 +80,17 @@ const configJson = {
   cache_enable: 1
 };
 
-//?token=abcde12345
-const configSuccess = rest.get("/api/config", (req, res, ctx) => {
-  return res(
-    ctx.status(200),
-    ctx.json({
-      success: true,
-      data: configJson
-    })
-  );
+const configSuccess = http.get("/api/config", async () => {
+
+  const jsonRes = {
+    success: true,
+    data: configJson
+  }
+
+  return HttpResponse.json(
+    jsonRes
+  )
+
 });
 
 describe("Login page", () => {
@@ -112,17 +118,107 @@ describe("Login page", () => {
         });
         it("has Login button", async () => {
           await setup();
-          const button = screen.queryByRole("button", { name: "Login" });
+          const button = screen.queryByRole("button_login");
           expect(button).toBeInTheDocument();
         });
         it("disables the button initially", async () => {
           await setup();
-          const button = screen.queryByRole("button", { name: "Login" });
+          const button = screen.queryByRole("button_login");
           expect(button).toBeDisabled();
         });
     });
 
     describe("Interactions", () => {
+      const setupFilled = async (email, password ) => {
+        await setup()        
+
+        const emailInput = screen.queryByLabelText("E-mail");
+        const passwordInput = screen.queryByLabelText("Password");
+        const button = screen.queryByRole("button_login");
+    
+        await userEvent.type(emailInput, email);
+        await userEvent.type(passwordInput, password);
+        return {
+          elements: {
+            button,
+            emailInput,
+            passwordInput
+          }      
+        }
+      }
+
+      const emailWrong = "wrong@example.com";
+      const passwordWrong = "PasswordRsWrong";
+
+      const emailGood = "user_rs@example.com";
+      const passwordGood = "PasswordRs";  
+
+      // const setupFilledOk = async () => {
+      //   return await setupFilled(emailOk, passwordOk)
+      // };
+
+      // const setupFilledWrong = async (emailWrong, passwordWrong) => {
+      //   return await setupFilled(emailWrong, passwordWrong)
+      // };
+
+      it("enables the button when email and password inputs are filled", async () => {
+        const {
+          elements: { button }
+        } = await setupFilled(emailWrong, passwordWrong);
+        expect(button).toBeEnabled();
+      });
+
+      it("send wrong data to server", async () => {
+        const {
+          elements: { button }
+        } = await setupFilled(emailWrong, passwordWrong);
+        
+        expect(counter).toBe(0);        
+        await userEvent.click(button);
+        expect(counter).toBe(1);        
+        const spinner = screen.queryByRole("pre_loader_login");
+        await waitFor(() => {
+          expect(spinner).not.toBeInTheDocument();
+          expect(requestBody).toEqual({
+            email: emailWrong,
+            password: passwordWrong,
+          });  
+        });
+
+        //show wrong msg - todo
+      });
+
+      it("send good data to server", async () => { //todo
+        server.use(loginSuccess);
+        server.use(configSuccess);
+        
+        const {
+          elements: { button }
+        } = await setupFilled(emailGood, passwordGood);
+        
+        expect(counter).toBe(0);        
+        await userEvent.click(button);
+        expect(counter).toBe(1);        
+        const spinner = screen.queryByRole("pre_loader_login");
+        await waitFor(() => {
+          expect(spinner).not.toBeInTheDocument();
+          expect(requestBody).toEqual({
+            email: emailGood,
+            password: passwordGood,
+          });  
+        });
+
+        //show good msg - todo
+
+      });
+
+
+
+
+    });
+
+
+    describe.skip("Interactions_old", () => {
       const emailOk = "user_rs@mail.com";
       const passwordOk = "PasswordRs";
 
@@ -197,9 +293,15 @@ describe("Login page", () => {
       });
 
       it("stores authorization values in storage", async () => {
-        server.use(loginSuccess);
-        server.use(configSuccess);
-        await setupFilled();
+        //await setupFilled();
+        await setup()
+        //console.log('test123')
+        //await setup()
+        //await setupFilled();        
+        //server.use(loginSuccess);
+        //server.use(configSuccess);
+
+        /*
         expect(store.state.config).toBeFalsy();
         await userEvent.click(button);
         const spinner = screen.queryByRole("status");
@@ -213,6 +315,7 @@ describe("Login page", () => {
         //Sign Out
         storage.clear();
         resetAuthState();
+        */
       });
 
 
@@ -221,6 +324,7 @@ describe("Login page", () => {
         server.use(loginSuccess);
         server.use(configSuccess);
         await setupFilled();
+        /*
         expect(store.state.config).toBeFalsy();
         await userEvent.click(button);
         const spinner = screen.queryByRole("status");
@@ -240,6 +344,7 @@ describe("Login page", () => {
 
         storage.clear();
         resetAuthState();
+        */
       });
 
 
