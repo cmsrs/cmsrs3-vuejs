@@ -86,8 +86,6 @@ export default {
             this.pre_loader = true;
 
             try {
-                console.log('___________post___________')
-
                 const post = {
                     email: this.email,
                     password: this.password,
@@ -97,27 +95,30 @@ export default {
                 if(responseAuth.data.success){
                 
                     const token = responseAuth.data.data.token;
-
-                    console.log(token)
-
                     if(token){
                         const responseConfig = await config(token);
-                        console.log('bbb')
+                        if(responseConfig.data.success){
+                            //console.log('________jestem_zalogowany_ok_zapis_sessi_todo____________________________');
+                            this.$router.push("/pages");
+                        }
 
+
+                        //console.log('bbb')                        
                         //setAuth(response.data.data)
                         //setConfig(responseConfig.data.data)
                         //console.log(responseConfig.data.data);
                         //this.$store.commit("setConfig", responseConfig.data.data);
+
+                        
                     }
+                }else{
+                    this.msgWrong = responseAuth.data.error;    
                 }
-                
-                this.$router.push("/pages");
-                
+                                            
             } catch (error) {
-                this.msgGood = 'Invalid login credentials';
+                this.msgWrong = 'Invalid login credentials';
                 console.log('_is_error__', error);
             }
-            console.log('________ustawiamy_na_false________')
             this.pre_loader = false;
         },
 

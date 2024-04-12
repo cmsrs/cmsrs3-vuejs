@@ -58,14 +58,16 @@ const setup = async () => {
     render(LoginPage)
 };
 
+const authJson = {
+  token: "abcde12345"
+}
+
 const loginSuccess = http.post("/api/login", async ({ request }) => {
   counter += 1;
   requestBody = await request.json()
   const jsonRes = {
     success: true,
-    data: {
-      token: "abcde12345"
-    }
+    data: authJson
   }
 
   return HttpResponse.json(
@@ -153,14 +155,6 @@ describe("Login page", () => {
       const emailGood = "user_rs@example.com";
       const passwordGood = "PasswordRs";  
 
-      // const setupFilledOk = async () => {
-      //   return await setupFilled(emailOk, passwordOk)
-      // };
-
-      // const setupFilledWrong = async (emailWrong, passwordWrong) => {
-      //   return await setupFilled(emailWrong, passwordWrong)
-      // };
-
       it("enables the button when email and password inputs are filled", async () => {
         const {
           elements: { button }
@@ -185,7 +179,8 @@ describe("Login page", () => {
           });  
         });
 
-        //show wrong msg - todo
+        const alertDanger = screen.queryByRole("alert_danger");
+        expect( alertDanger ).toBeInTheDocument();
       });
 
       it("send good data to server", async () => { //todo
@@ -208,146 +203,14 @@ describe("Login page", () => {
           });  
         });
 
-        //show good msg - todo
+        const auth = storage.getItem('auth');
+        const config = storage.getItem('config');
+
+        expect(auth).toEqual(authJson)
+        expect(config).toEqual(configJson)
 
       });
-
-
-
-
     });
 
-
-    describe.skip("Interactions_old", () => {
-      const emailOk = "user_rs@mail.com";
-      const passwordOk = "PasswordRs";
-
-      const setupFilled = async () => {
-        await setup();
-        await userEvent.type(emailInput, emailOk);
-        await userEvent.type(passwordInput, passwordOk);
-      };
-
-      it("enables the button when email and password inputs are filled", async () => {
-        await setupFilled();
-        expect(button).toBeEnabled();
-      });
-
-      it("displays spinner after clicking the button", async () => {
-        await setupFilled();
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
-        await userEvent.click(button);
-        expect(screen.queryByRole("status")).toBeInTheDocument();
-      });
-
-      it("hides spinner after api call finishes with fail response", async () => {
-        await setupFilled();
-        await userEvent.click(button);
-        const spinner = screen.queryByRole("status");
-        await waitFor(() => {
-          expect(spinner).not.toBeInTheDocument();
-        });
-      });
-
-      it("send token from backend after clicking the button", async () => {
-        await setupFilled();
-        await userEvent.click(button);
-        const spinner = screen.queryByRole("status");
-        await waitForElementToBeRemoved(spinner);
-        expect(requestBody).toEqual({
-          email: "user_rs@mail.com",
-          password: "PasswordRs",
-        });
-      });
-
-      it("disables the button when there is an api call", async () => {
-        await setupFilled();
-        await userEvent.click(button);
-        await userEvent.click(button);
-        const spinner = screen.queryByRole("status");
-        await waitForElementToBeRemoved(spinner);
-        expect(counter).toBe(1);
-      });
-
-      it("displays authentication fail message", async () => {
-        await setupFilled();
-        await userEvent.click(button);
-        const errorMessage = await screen.findByText("Invalid login credentials");
-        expect(errorMessage).toBeInTheDocument();
-      });
-
-      it("clears authentication fail message when email field is changed", async () => {
-        await setupFilled();
-        await userEvent.click(button);
-        const errorMessage = await screen.findByText("Invalid login credentials");
-        await userEvent.type(emailInput, "new@mail.com");
-        expect(errorMessage).not.toBeInTheDocument();
-      });
-
-      it("clears authentication fail message when password field is changed", async () => {
-        await setupFilled();
-        await userEvent.click(button);
-        const errorMessage = await screen.findByText("Invalid login credentials");
-        await userEvent.type(passwordInput, "Newpassword");
-        expect(errorMessage).not.toBeInTheDocument();
-      });
-
-      it("stores authorization values in storage", async () => {
-        //await setupFilled();
-        await setup()
-        //console.log('test123')
-        //await setup()
-        //await setupFilled();        
-        //server.use(loginSuccess);
-        //server.use(configSuccess);
-
-        /*
-        expect(store.state.config).toBeFalsy();
-        await userEvent.click(button);
-        const spinner = screen.queryByRole("status");
-        await waitForElementToBeRemoved(spinner);
-        const storedState = storage.getItem("auth");
-        expect(storedState.token).toBe("abcde12345");
-        expect(storedState.email).toBe(emailOk);
-        expect(storedState.password).toBe(passwordOk);
-        //expect(store.state.config).toMatchObject(configJson);    
-
-        //Sign Out
-        storage.clear();
-        resetAuthState();
-        */
-      });
-
-
-      // * it is not working propobly user is still login - todo
-      it("stores config in storage", async () => {        
-        server.use(loginSuccess);
-        server.use(configSuccess);
-        await setupFilled();
-        /*
-        expect(store.state.config).toBeFalsy();
-        await userEvent.click(button);
-        const spinner = screen.queryByRole("status");
-        await waitForElementToBeRemoved(spinner);
-        //expect(store.state.config).toMatchObject(configJson);
-        expect(store.state.config.page_types).toMatchObject(configJson.page_types);
-        expect(store.state.config.langs).toMatchObject(configJson.langs);
-        expect(store.state.config.cache_enable).toBe(1);
-        expect(store.state.config.defaultLang).toBe('en');
-
-        const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disaapear
-        expect(storedStateConfig.page_types).toMatchObject(configJson.page_types);
-        expect(storedStateConfig.langs).toMatchObject(configJson.langs);
-        expect(storedStateConfig.cache_enable).toBe(1);
-        expect(storedStateConfig.defaultLang).toBe('en');
-        
-
-        storage.clear();
-        resetAuthState();
-        */
-      });
-
-
-    });
 
 });

@@ -441,6 +441,11 @@ describe("Pages page", () => {
       const button = screen.queryByRole("button_save_edit_page" );
       await userEvent.click(button);
     
+
+      const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
+      await waitFor(() => {
+        expect(spinnerAfterClick).not.toBeInTheDocument();
+      });
       //const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       //expect(spinnerAfterClick).not.toBeNull();
       //await waitForElementToBeRemoved(spinnerAfterClick); //todo!!! - in webpack it is working - manual testing required
@@ -499,9 +504,12 @@ describe("Pages page", () => {
       const button = screen.queryByRole("button_save_edit_page" );
       await userEvent.click(button);
 
-      //const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
-      //expect(spinnerAfterClick).not.toBeNull();
+      const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");  
+      await waitFor(() => {
+        expect(spinnerAfterClick).not.toBeInTheDocument();
+      });
       //await waitForElementToBeRemoved(spinnerAfterClick); //todo!!! - in webpack it is working - manual testing required
+      //expect(spinnerAfterClick).not.toBeNull();
 
       expect(counter).toBe(1);      
 
@@ -639,7 +647,11 @@ describe("Pages page", () => {
     it( 'save new menu - display good message and click add menu button', async ()  => {
       await setup();
       await waitForAjaxes();
-      //const spinner = screen.queryByRole("pre_loader_save_edit_page");
+      const spinner = screen.queryByRole("pre_loader_save_edit_page");
+      await waitFor(() => {
+        expect(spinner).not.toBeInTheDocument();
+      });
+
       //expect(spinner).not.toBeNull();
       //await waitForElementToBeRemoved(spinner);
     
@@ -661,7 +673,10 @@ describe("Pages page", () => {
       const icon = screen.queryByRole("save_menu_0");
       await userEvent.click(icon);
 
-      //const spinnerAfterClick = screen.queryByRole("pre_loader_add_menu");
+      const spinnerAfterClick = screen.queryByRole("pre_loader_add_menu");
+      await waitFor(() => {
+        expect(spinnerAfterClick).not.toBeInTheDocument();
+      });
       //expect(spinnerAfterClick).not.toBeNull();
       //await waitForElementToBeRemoved(spinnerAfterClick); //todo
 
@@ -994,7 +1009,11 @@ describe("Pages page", () => {
       const button = screen.queryByRole("button_save_edit_page" );
       await userEvent.click(button);
 
-      //const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
+      const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
+      await waitFor(() => {
+        expect(spinnerAfterClick).not.toBeInTheDocument();
+      });
+
       //expect(spinnerAfterClick).not.toBeNull();
       //await waitForElementToBeRemoved(spinnerAfterClick); //todo
 
