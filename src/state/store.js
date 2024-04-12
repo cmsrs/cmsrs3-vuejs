@@ -41,6 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
   function setConfig(data) {
     config.page_types = data.page_types
     config.langs = data.langs
+    config.default_lang = data.default_lang
     config.cache_enable = data.cache_enable
   }
 

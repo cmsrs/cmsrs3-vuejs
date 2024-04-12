@@ -6,24 +6,9 @@ import userEvent from "@testing-library/user-event"
 //import trans from "../helpers/trans.js"
 import storage from "../state/storage.js"
 import { afterAll, beforeAll } from 'vitest'
-//import jsonStoreModule from "./jsonStore.js"
-//const jsonStore = jsonStoreModule.getJsonStore()
+import jsonStoreModule from "../../test/jsonStore.js"
+const jsonStore = jsonStoreModule.getJsonStore()
 
-/*
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved
-} from "@testing-library/vue";
-import LoginPage from "./LoginPage.vue";
-import userEvent from "@testing-library/user-event";
-import { setupServer } from "msw/node";
-import { rest } from "msw";
-import store from "../state/store";
-import { resetAuthState } from "../state/store";
-import storage from "../state/storage";
-*/
 
 let requestBody;
 let counter = 0;
@@ -58,10 +43,7 @@ const setup = async () => {
     render(LoginPage)
 };
 
-const authJson = {
-  token: "abcde12345"
-}
-
+const authJson = jsonStore.auth
 const loginSuccess = http.post("/api/login", async ({ request }) => {
   counter += 1;
   requestBody = await request.json()
@@ -76,12 +58,7 @@ const loginSuccess = http.post("/api/login", async ({ request }) => {
   
 });
 
-const configJson = {
-  page_types: ['cms', 'gallery'],
-  langs: ['en', 'pl'],
-  cache_enable: 1
-};
-
+const configJson = jsonStore.config
 const configSuccess = http.get("/api/config", async () => {
 
   const jsonRes = {
@@ -164,7 +141,7 @@ describe("Login page", () => {
 
       it("send wrong data to server", async () => {
         const {
-          elements: { button }
+          elements: { button, emailInput }
         } = await setupFilled(emailWrong, passwordWrong);
         
         expect(counter).toBe(0);        
@@ -181,6 +158,12 @@ describe("Login page", () => {
 
         const alertDanger = screen.queryByRole("alert_danger");
         expect( alertDanger ).toBeInTheDocument();
+
+        //when we type sth for example in the email input, the alert_danger should be removed
+        await userEvent.type(emailInput, 'c');
+        const alertDangerAfter = screen.queryByRole("alert_danger");
+        expect( alertDangerAfter ).not.toBeInTheDocument();
+
       });
 
       it("send good data to server", async () => { //todo

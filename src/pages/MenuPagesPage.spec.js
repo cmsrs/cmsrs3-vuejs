@@ -11,26 +11,6 @@ import { afterAll, beforeAll } from 'vitest'
 
 const confirmSpy = vi.spyOn(window, 'confirm')
 
-/*
-import {
-  render, 
-  screen, 
-  waitFor,
-  waitForElementToBeRemoved,
-  fireEvent
-} from "@testing-library/vue";
-import MenuPagesPage from "./MenuPagesPage.vue";
-import trans from "../helpers/trans.js";
-
-import userEvent from "@testing-library/user-event";
-import { setupServer } from "msw/node";
-import { http } from "msw";
-//import store from "../state/store";
-import { createStore } from "vuex";
-
-// Mock the window.confirm method
-global.window.confirm = jest.fn(() => true);
-*/
 
 const pages  = [
   {

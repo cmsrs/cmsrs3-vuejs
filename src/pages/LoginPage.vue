@@ -14,7 +14,7 @@
         <input
             id="e-mail"
             class="form-control"
-            v-model="email"
+            v-model="formData.email"
             type="text"
         />
         </div>
@@ -24,7 +24,7 @@
         <input
             id="password"
             class="form-control"
-            v-model="password"
+            v-model="formData.password"
             type="password"
         />
         </div>
@@ -42,96 +42,66 @@
     </form><!-- container -->
 
 </template>
-<script>
+<script setup>
 import Msg from "../components/Msg.vue";
+import { ref, computed, reactive, watch } from 'vue'
 import { login, config } from "../api/apiCalls.js";
-//import { useAuthStore } from "../state/store.js"
-//const { setAuth, setConfig } = useAuthStore()
+import { useRouter } from 'vue-router'
+import { useAuthStore } from "../state/store.js"
+const { setAuth, setConfig } = useAuthStore()
 
+const router = useRouter()
 
-export default {
-    name: "LoginPage",
-    components: {
-        Msg
-    },
-    data() {
-        return {
-            msgWrong: '',
-            msgGood: '',
-            pre_loader: false,          
+const msgWrong = ref('')
+const msgGood = ref('') //it is unused in this form, because we redirect but component Msg use this variable
+const pre_loader = ref(false)          
+const formData = reactive({ email: '', password: '' })
 
-            email: "",
-            password: "",
-            //errFields: [], //todo ?
-        };
-    },
-    computed: {
-        isDisabled() {
-            return !(this.email && this.password);
-        },
-    },
-    methods: {
-        clearMsg(){
-            this.msgWrong = '';
-            this.msgGood = '';
-            //this.errFields = []; //todo ?
-        },
+const submit = async () => {
+    msgWrong.value = ''
+    pre_loader.value = false
 
-        async submit() {
-            this.clearMsg();
-            this.pre_loader = true;
-
-            try {
-                const post = {
-                    email: this.email,
-                    password: this.password,
-                };
-                
-                const responseAuth = await login(post);
-                if(responseAuth.data.success){
-                
-                    const token = responseAuth.data.data.token;
-                    if(token){
-                        const responseConfig = await config(token);
-                        if(responseConfig.data.success){
-                            //console.log('________jestem_zalogowany_ok_zapis_sessi_todo____________________________');
-                            this.$router.push("/pages");
-                        }
-
-
-                        //console.log('bbb')                        
-                        //setAuth(response.data.data)
-                        //setConfig(responseConfig.data.data)
-                        //console.log(responseConfig.data.data);
-                        //this.$store.commit("setConfig", responseConfig.data.data);
-
-                        
-                    }
-                }else{
-                    this.msgWrong = responseAuth.data.error;    
+    try {
+        
+        const responseAuth = await login(formData)
+        if(responseAuth.data.success){
+        
+            const token = responseAuth.data.data.token;
+            if(token){
+                const responseConfig = await config(token);
+                if(responseConfig.data.success){
+                    setAuth(responseAuth.data.data)
+                    setConfig(responseConfig.data.data)
+                    router.push('/pages')
                 }
-                                            
-            } catch (error) {
-                this.msgWrong = 'Invalid login credentials';
-                console.log('_is_error__', error);
             }
-            this.pre_loader = false;
-        },
-
-    },
-    watch: {
-        email() {
-            this.clearMsg();
-        },
-        password() {
-            this.clearMsg();
-        },
-    },
-    mounted() {
-        if(this.token){
-            this.$router.push("/pages");
-        }
+        }else{
+            msgWrong.value = responseAuth.data.error;    
+        }                                    
+    } catch (error) {
+        msgWrong.value = 'Invalid login credentials';
+        console.log('_is_error__', error);
+    } finally {
+        pre_loader.value = false;
     }
 }
+
+watch(
+  () => formData.email,
+  () => {
+    msgWrong.value = ''
+  }
+)
+
+watch(
+  () => formData.password,
+  () => {
+    msgWrong.value = ''
+  }
+)
+
+const isDisabled = computed(() => {
+  return !(formData.password && formData.email)
+})
 
 </script>
