@@ -43,8 +43,6 @@
 
 </template>
 <script>
-import Input from "../components/Input.vue";
-import ButtonWithProgress from "../components/ButtonWithProgress.vue";
 import Msg from "../components/Msg.vue";
 import { login, config } from "../api/apiCalls.js";
 //import { useAuthStore } from "../state/store.js"
@@ -54,9 +52,7 @@ import { login, config } from "../api/apiCalls.js";
 export default {
     name: "LoginPage",
     components: {
-        Msg,
-        Input,
-        ButtonWithProgress
+        Msg
     },
     data() {
         return {
