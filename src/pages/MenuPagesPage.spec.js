@@ -191,7 +191,6 @@ let counter = 0;
 let counter2 = 0;
 let counterMenu = 0;
 let server = setupServer(
-  //?token=abcde12345
   http.post("/api/pages", async () => {
     counter += 1;
     const jsonRes = {
@@ -210,21 +209,17 @@ let server = setupServer(
     counter2 += 1;
     return HttpResponse.json({
       success: true
-  })
-}),
-
-
+    })
+  }),
 
   http.post("/api/menus",  async () => {
     counterMenu += 1;
     return HttpResponse.json({
       success: true
-  })
-  //return res(ctx.status(200));
+    })
   }),
 
-  http.get("/api/pages",  async () => {
-    //counter2 += 1;
+  http.get("/api/pages",  async () => {  
     const jsonRes = {
       success: true,
       data: pages
@@ -235,11 +230,9 @@ let server = setupServer(
       jsonRes
     )
   
-    //return res(ctx.status(200));
   }),
     
   http.get("/api/menus",  async () => {
-    //counter2 += 1;
 
     const jsonRes ={
       success: true,
@@ -250,7 +243,6 @@ let server = setupServer(
       jsonRes
     )
   
-    //return res(ctx.status(200));
   }),
 
   http.put("/api/menus/1",  async () => {
@@ -259,7 +251,6 @@ let server = setupServer(
       success: true
   })
 
-    //return res(ctx.status(200));
   }),
 
   http.delete("/api/menus/1",  async () => {
@@ -300,28 +291,6 @@ let server = setupServer(
 
 );
 
-/*
-const getPages = http.get("/api/pages", () => {
-  return res(
-    ctx.status(200),
-    ctx.json({
-      success: true,
-      data: pages
-    })
-  );
-});
-
-//don't use
-const getMenus = http.get("/api/menus", () => {
-  return res(
-    ctx.status(200),
-    ctx.json({
-      success: true,
-      data: menus
-    })
-  );
-});
-*/
 
 beforeAll(() => {
   server.listen();
@@ -336,39 +305,6 @@ beforeEach(() => {
 
 afterAll(() => server.close())
 
-/*
-const jsonStore = {
-  auth: {
-    isLoggedIn: true,
-    token:  "abcde12345",
-    email: "user_rs@mail.com",
-    password: "PasswordRs"
-  },
-  config: {
-    page_types: ['cms', 'gallery', 'main_page'],
-    langs: ['en'], //!!
-    defaultLang: 'en', //!!
-    cache_enable: 1
-  }
-};
-
-const store = createStore({
-  state: jsonStore,
-});
-
-const setup = async () => {
-  render(MenuPagesPage, {
-    global: {
-      plugins: [store],
-      mocks: {
-        $router: {
-          push: () => {},
-        },
-      },
-    },
-  });
-};
-*/
 
 const setup = async () => {
   render(MenuPagesPage );
@@ -405,7 +341,7 @@ describe("Pages page", () => {
       
       expect(auth.token).toBe( 'abcde12345' );
       expect(config.langs[0]).toEqual('en');
-      expect(config.defaultLang).toEqual(config.langs[0]);
+      expect(config.default_lang).toEqual(config.langs[0]);
     });
 
     it( 'create some page', async ()  => {
@@ -1138,7 +1074,7 @@ describe("Pages page", () => {
       config: {
         page_types: ['cms', 'gallery', 'main_page'],
         langs: ['pl', 'en'], //!!
-        defaultLang: 'pl', //!!
+        default_lang: 'pl', //!!
         cache_enable: 1
       }
     };
@@ -1152,26 +1088,6 @@ describe("Pages page", () => {
       render(MenuPagesPage);
     };
 
-
-    
-    /*
-    const store2 = createStore({
-      state: jsonStore2,
-    });
-    
-    const setup2 = async () => {
-      render(MenuPagesPage, {
-        global: {
-          plugins: [store2],
-          mocks: {
-            $router: {
-              push: () => {},
-            },
-          },
-        },
-      });
-    };
-    */
 
     it( 'show langs', async ()  => {
       await setup2();
@@ -1198,27 +1114,8 @@ describe("Pages page", () => {
       ];
 
 
-/*
-    const jsonRes = {
-      success: true,
-      data: {
-        pageId: 8
-      }
-    }
-
-    return HttpResponse.json(
-      jsonRes
-    )
-*/
-
-
-
-  
-      //server.resetHandlers();
-      //let server2 = setupServer(
       server.use(        
         http.get("/api/pages", async  () => {
-          //counter2 += 1;
 
           const jsonRes = {
             success: true,
@@ -1238,12 +1135,8 @@ describe("Pages page", () => {
           return HttpResponse.json(
             jsonRes
           )
-        }),
-        
-      
+        }),              
       );
-      //server2.listen();
-    
   
       await setup();
       await waitForAjaxes();
@@ -1263,8 +1156,6 @@ describe("Pages page", () => {
           
       });    
   
-  
-      //server2.resetHandlers();
     });
         
   });
