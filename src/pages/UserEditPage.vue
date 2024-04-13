@@ -65,7 +65,7 @@
 </template>
 <script>
 import functions from "../helpers/functions.js";
-import storage from "../state/storage";
+//import storage from "../state/storage";
 import { getClient, postClient, putClient } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
@@ -85,7 +85,7 @@ export default {
   },  
 
   data() {
-    const { token } = functions.retrieveParamsFromStorage( storage );
+    const { token } = functions.retrieveParamsFromStorage( );
     return {
       token: token,
       msgWrong: '',

@@ -1,6 +1,9 @@
 import functions from "./functions.js";
 import storage from "../state/storage";
 
+import jsonStoreModule from "../../test/jsonStore.js"
+const jsonStore = jsonStoreModule.getJsonStore()
+
 
 describe("functions", () => {
 
@@ -98,36 +101,25 @@ describe("functions", () => {
 
 describe("retrieveParamsFromStorage", () => {
    
-  const jsonStore = {
-    auth: {
-      isLoggedIn: true,
-      token:  "abcde12345",
-      email: "user_rs@mail.com",
-      password: "PasswordRs"
-    },
-    config: {
-      page_types: ['cms', 'gallery', 'main_page'],
-      langs: ['en'], //!!
-      defaultLang: 'en', //!!
-      cache_enable: 1
-    }
-  };
-
-  storage.setItem("auth", jsonStore.auth);
-  storage.setItem("config", jsonStore.config);
+  beforeEach(() => {
+    storage.setItem("auth", jsonStore.auth);
+    storage.setItem("config", jsonStore.config);
+  })
 
   it( 'get all params', async ()  => {
-    const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage( storage );        
+    const { configLangs, configDefaultLang, pageTypes, cacheEnable, token } = functions.retrieveParamsFromStorage();        
 
     expect(configLangs).toEqual(jsonStore.config.langs);
-    expect(configDefaultLang).toBe(jsonStore.config.defaultLang );
+    expect(configDefaultLang).toBe(jsonStore.config.default_lang );
     expect(pageTypes).toEqual(jsonStore.config.page_types );    
+    expect(cacheEnable).toEqual(jsonStore.config.cache_enable );        
+
     expect(token).toBe(jsonStore.auth.token );
 
   });          
 
   it( 'get one param', async ()  => {
-    const { token } = functions.retrieveParamsFromStorage( storage );        
+    const { token } = functions.retrieveParamsFromStorage();        
     expect(token).toBe(jsonStore.auth.token );
   });          
 

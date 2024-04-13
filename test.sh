@@ -11,6 +11,9 @@ else
 
     #npm run test  ./src/pages/MenuPagesPage.spec.js 
 
-    npm run test    ./src/pages/LoginPage.spec.js 
+    #npm run test    ./src/pages/LoginPage.spec.js 
+
+    npm run test   ./src/helpers/functions.spec.js 
 
 fi
+

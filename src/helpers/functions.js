@@ -1,4 +1,5 @@
- 
+import storage from "../state/storage";
+
   const  parseError = async ( errStrOrJson ) => {
     if (typeof errStrOrJson === 'object' && errStrOrJson !== null) {
       //const firstKey = Object.keys(errStrOrJson)[0];
@@ -50,16 +51,18 @@
     return isNotEmpty;
   };
 
-  const retrieveParamsFromStorage = (storage) => {
+  const retrieveParamsFromStorage = () => {
     const storedStateConfig = storage.getItem("config"); //when we refresh /pages the config not disappear
     let configLangs = [];
     let configDefaultLang = '';
     let pageTypes = [];
+    let cacheEnable = 0    
 
     if(storedStateConfig){
       configLangs = storedStateConfig.langs;
-      configDefaultLang = storedStateConfig.langs[0] || '';    //storedStateConfig.defaultLang ? ;
+      configDefaultLang = storedStateConfig.default_lang
       pageTypes = storedStateConfig.page_types;
+      cacheEnable = storedStateConfig.cache_enable
     }
 
     const storedState = storage.getItem("auth");
@@ -68,7 +71,7 @@
       token = storedState.token;
     }
 
-    return { configLangs, configDefaultLang, pageTypes, token };
+    return { configLangs, configDefaultLang, pageTypes, cacheEnable, token };
   };
 
   const retrieveParamsFromUrl = (url, param) => {

@@ -285,7 +285,7 @@
   import {SERVER_URL} from '../config.js';  
   import functions from "../helpers/functions.js";
   import trans from "../helpers/trans.js";
-  import storage from "../state/storage";
+  //import storage from "../state/storage";
   import PageTitle from "../components/PageTitle.vue";
   import Msg from "../components/Msg.vue";
   import { postPage, putPage, getPages, postMenu, getMenus, putMenu, deleteMenu, setMenuPosition, deletePage, setPagePosition, uploadImage, getImages, deleteImage, setImagePosition } from "../api/apiCalls";
@@ -303,7 +303,7 @@
 
     data() {
 
-        const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage( storage );
+        const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage( );
         //const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;     
 
         return {

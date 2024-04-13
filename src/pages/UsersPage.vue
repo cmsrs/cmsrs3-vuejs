@@ -103,7 +103,7 @@
 </template>
 <script>
 import functions from "../helpers/functions.js";
-import storage from "../state/storage";
+//import storage from "../state/storage";
 import { getClients, deleteClient } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import TableSort from "../components/TableSort.vue";
@@ -117,7 +117,7 @@ export default {
 
   data() {
 
-    const { token } = functions.retrieveParamsFromStorage( storage );
+    const { token } = functions.retrieveParamsFromStorage( );
     return {
       token: token,
       msgWrong: '',
