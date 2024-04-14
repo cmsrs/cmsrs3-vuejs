@@ -2,7 +2,7 @@
   <div class="shadow-sm bg-light mb-3">
     <nav class="navbar navbar-expand navbar-light container">
       <div class="container-fluid p-0">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto">
           <router-link class="nav-link" to="/pages" v-if="token"
             >Pages
           </router-link>

@@ -431,7 +431,7 @@
                 :class="{ 'disabled-if-loader': pre_loader }"
                 @click="delImage(image.id)"
               >
-                <i class="fas fa-trash cursor-pointer" aria-hidden="true" ></i>
+                <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
               </div>
               <div
                 role="down_image"
@@ -450,7 +450,10 @@
                 class="ml-2 col-1"
                 @click="positionImage('up', image.id)"
               >
-                <i class="fas fa-arrow-up cursor-pointer" aria-hidden="true" ></i>
+                <i
+                  class="fas fa-arrow-up cursor-pointer"
+                  aria-hidden="true"
+                ></i>
               </div>
             </div>
           </form>
