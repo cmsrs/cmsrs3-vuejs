@@ -6,13 +6,13 @@
             <router-link
               class="nav-link"
               to="/pages"
-              v-if="$store.state.auth.isLoggedIn"
+              v-if="token"
               >Pages
             </router-link>
             <router-link
               class="nav-link"
               to="/users"
-              v-if="$store.state.auth.isLoggedIn"
+              v-if="token"
               >Users
             </router-link>
           </ul>
@@ -29,14 +29,25 @@
     </div>
   </template>
 <script>
-import { resetAuthState } from "../state/store";
-import storage from "../state/storage";
+import functions from "../helpers/functions.js";
+//import { resetAuthState } from "../state/store";
+//import storage from "../state/storage";
 export default {
+  data() {
+
+    const { token } = functions.retrieveParamsFromStorage( );
+    return {
+      token: token,
+      //pre_loader: false
+    };
+  },  
+
   methods: {
         signOut() {
-          storage.clear();
-          resetAuthState();
-          this.$router.push("/");
+          console.log('________todo_signout___')
+          //storage.clear();
+          //resetAuthState();
+          //this.$router.push("/");
         },
     },
 }

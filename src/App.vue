@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import functions from "../helpers/functions.js";
-import storage from "../state/storage";
-import NavBar from "./components/NavBar";
+import functions from "./helpers/functions.js";
+import storage from "./state/storage";
+import NavBar from "./components/NavBar.vue";
 
 export default {
   name: 'App',

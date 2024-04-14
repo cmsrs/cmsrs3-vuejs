@@ -9,17 +9,17 @@
     <form @submit.prevent="submit" class="container">
         <div class="card">
     
-        <div class="mb-3">
+        <div class="m-4">
         <label for="e-mail" class="form-label">E-mail</label>
         <input
             id="e-mail"
-            class="form-control"
+            class="form-control  pb-2"
             v-model="formData.email"
             type="text"
         />
         </div>
 
-        <div class="mb-3">
+        <div class="m-4">
         <label for="password" class="form-label">Password</label>
         <input
             id="password"
@@ -29,7 +29,7 @@
         />
         </div>
 
-        <div class="text-center">
+        <div class="text-center m-4">
             <button type="submit" role="button_login" class="btn btn-primary mt-2 mb-2" :disabled="pre_loader || isDisabled">
                 <i v-if="!pre_loader" class="fas fa-plus"></i>
                 <span role="pre_loader_login" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>              
