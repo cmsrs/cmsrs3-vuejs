@@ -1,107 +1,107 @@
 <template>
-    <h3>Login</h3>  
+  <h3>Login</h3>
 
-    <Msg 
-        :msgGood="msgGood"                        
-        :msgWrong="msgWrong"
-    ></Msg>
+  <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
-    <form @submit.prevent="submit" class="container">
-        <div class="card">
-    
-        <div class="m-4">
+  <form @submit.prevent="submit" class="container">
+    <div class="card">
+      <div class="m-4">
         <label for="e-mail" class="form-label">E-mail</label>
         <input
-            id="e-mail"
-            class="form-control  pb-2"
-            v-model="formData.email"
-            type="text"
+          id="e-mail"
+          class="form-control pb-2"
+          v-model="formData.email"
+          type="text"
         />
-        </div>
+      </div>
 
-        <div class="m-4">
+      <div class="m-4">
         <label for="password" class="form-label">Password</label>
         <input
-            id="password"
-            class="form-control"
-            v-model="formData.password"
-            type="password"
+          id="password"
+          class="form-control"
+          v-model="formData.password"
+          type="password"
         />
-        </div>
+      </div>
 
-        <div class="text-center m-4">
-            <button type="submit" role="button_login" class="btn btn-primary mt-2 mb-2" :disabled="pre_loader || isDisabled">
-                <i v-if="!pre_loader" class="fas fa-plus"></i>
-                <span role="pre_loader_login" v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>              
-                Login
-            </button>
-
-        </div>
-
-        </div>
-    </form><!-- container -->
-
+      <div class="text-center m-4">
+        <button
+          type="submit"
+          role="button_login"
+          class="btn btn-primary mt-2 mb-2"
+          :disabled="pre_loader || isDisabled"
+        >
+          <i v-if="!pre_loader" class="fas fa-plus"></i>
+          <span
+            role="pre_loader_login"
+            v-if="pre_loader"
+            class="spinner-grow spinner-grow-sm"
+          ></span>
+          Login
+        </button>
+      </div>
+    </div>
+  </form>
+  <!-- container -->
 </template>
 <script setup>
 import Msg from "../components/Msg.vue";
-import { ref, computed, reactive, watch } from 'vue'
+import { ref, computed, reactive, watch } from "vue";
 import { login, config } from "../api/apiCalls.js";
-import { useRouter } from 'vue-router'
-import { useAuthStore } from "../state/store.js"
-const { setAuth, setConfig } = useAuthStore()
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../state/store.js";
+const { setAuth, setConfig } = useAuthStore();
 
-const router = useRouter()
+const router = useRouter();
 
-const msgWrong = ref('')
-const msgGood = ref('') //it is unused in this form, because we redirect but component Msg use this variable
-const pre_loader = ref(false)          
-const formData = reactive({ email: '', password: '' })
+const msgWrong = ref("");
+const msgGood = ref(""); //it is unused in this form, because we redirect but component Msg use this variable
+const pre_loader = ref(false);
+const formData = reactive({ email: "", password: "" });
 
 const submit = async () => {
-    msgWrong.value = ''
-    pre_loader.value = false
+  msgWrong.value = "";
+  pre_loader.value = false;
 
-    try {
-        
-        const responseAuth = await login(formData)
-        if(responseAuth.data.success){
-        
-            const token = responseAuth.data.data.token;
-            if(token){
-                const responseConfig = await config(token);
-                if(responseConfig.data.success){
-                    setAuth(responseAuth.data.data)
-                    setConfig(responseConfig.data.data)
-                    router.push('/pages')
-                }
-            }
-        }else{
-            msgWrong.value = responseAuth.data.error;    
-        }                                    
-    } catch (error) {
-        msgWrong.value = 'Invalid login credentials';
-        console.log('_is_error__', error);
-    } finally {
-        pre_loader.value = false;
+  try {
+    const responseAuth = await login(formData);
+    if (responseAuth.data.success) {
+      const token = responseAuth.data.data.token;
+      if (token) {
+        const responseConfig = await config(token);
+        if (responseConfig.data.success) {
+          setAuth(responseAuth.data.data);
+          setConfig(responseConfig.data.data);
+          router.push("/pages");
+        }
+      }
+    } else {
+      msgWrong.value = responseAuth.data.error;
     }
-}
+  } catch (error) {
+    msgWrong.value = "Invalid login credentials";
+    console.log("_is_error__", error);
+  } finally {
+    pre_loader.value = false;
+  }
+};
 
 watch(
   () => formData.email,
   () => {
-    msgWrong.value = ''
-  }
-)
+    msgWrong.value = "";
+  },
+);
 
 watch(
   () => formData.password,
   () => {
-    msgWrong.value = ''
-  }
-)
+    msgWrong.value = "";
+  },
+);
 
 const isDisabled = computed(() => {
-  return !(formData.password && formData.email)
-})
-
+  return !(formData.password && formData.email);
+});
 </script>

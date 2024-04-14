@@ -11,17 +11,17 @@ import storage from "./state/storage";
 import NavBar from "./components/NavBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     NavBar,
   },
   data() {
-    const { token } = functions.retrieveParamsFromStorage( storage );
+    const { token } = functions.retrieveParamsFromStorage(storage);
     return {
-      token: token
+      token: token,
       //path: window.location.pathname,
     };
-  }
+  },
   /*
   methods: {
     onClickLink(event) {
@@ -30,5 +30,5 @@ export default {
     },
   },
   */
-}
+};
 </script>

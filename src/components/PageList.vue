@@ -1,9 +1,6 @@
 <template>
-    <div>
-      Page List
-    </div>
+  <div>Page List</div>
 </template>
 <script>
-  export default {
-  };
+export default {};
 </script>

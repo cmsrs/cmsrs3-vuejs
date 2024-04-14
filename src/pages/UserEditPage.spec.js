@@ -1,13 +1,19 @@
-import { render, router, screen, waitFor, waitForElementToBeRemoved } from '../../test/helper.js'
-import '../../test/afterlogin.js'
+import {
+  render,
+  router,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "../../test/helper.js";
+import "../../test/afterlogin.js";
 
-import UserEditPage from "./UserEditPage.vue"
-import { setupServer } from "msw/node"
-import {  HttpResponse, http } from "msw"
-import userEvent from "@testing-library/user-event"
-import trans from "../helpers/trans.js"
-import storage from "../state/storage.js"
-import { afterAll, beforeAll } from 'vitest'
+import UserEditPage from "./UserEditPage.vue";
+import { setupServer } from "msw/node";
+import { HttpResponse, http } from "msw";
+import userEvent from "@testing-library/user-event";
+import trans from "../helpers/trans.js";
+import storage from "../state/storage.js";
+import { afterAll, beforeAll } from "vitest";
 
 const responseGetClient = {
   success: 1,
@@ -18,66 +24,63 @@ const responseGetClient = {
     email_verified_at: null,
     role: "client",
     created_at: "2024-04-04T09:50:48.000000Z",
-    updated_at: "2024-04-04T09:50:48.000000Z"
-  }  
+    updated_at: "2024-04-04T09:50:48.000000Z",
+  },
 };
 
-
 let server = setupServer(
-
   http.get("/api/clients/1", () => {
     counter += 1;
-    return HttpResponse.json(
-        responseGetClient
-    )
+    return HttpResponse.json(responseGetClient);
   }),
 
   http.put("/api/clients/1", () => {
     counter += 1;
     return HttpResponse.json({
-        success: true
-    })
+      success: true,
+    });
   }),
 
   http.post("/api/clients", () => {
-    counter += 1
+    counter += 1;
     return HttpResponse.json({
-        success: true
-      })
+      success: true,
+    });
   }),
 );
 
-
-let counter = 0;  
+let counter = 0;
 
 beforeAll(() => {
   server.listen();
-})
+});
 
 beforeEach(() => {
   counter = 0;
   server.resetHandlers();
-})
+});
 
-afterAll(() => server.close())
+afterAll(() => server.close());
 
 const setupAdd = async () => {
-  router.push('/user/add/')
-  await router.isReady()
+  router.push("/user/add/");
+  await router.isReady();
   return render(UserEditPage, {
     props: {
-      mode: 'add'
-    }})
+      mode: "add",
+    },
+  });
 };
 
 const setupEdit = async () => {
-  router.push('/user/edit/1')
-  await router.isReady()
+  router.push("/user/edit/1");
+  await router.isReady();
   return render(UserEditPage, {
     props: {
-      mode: 'edit',
-      id: '1'
-    }})
+      mode: "edit",
+      id: "1",
+    },
+  });
 };
 
 const waitForAjax = async () => {
@@ -88,48 +91,45 @@ const waitForAjax = async () => {
   await waitForElementToBeRemoved(spinner);
 };
 
-
-describe.skip("empty token", () => { //TODO
-  it( 'has user redirect', async ()  => {
-      
-    storage.setItem('auth', { token: '' } )
+describe.skip("empty token", () => {
+  //TODO
+  it("has user redirect", async () => {
+    storage.setItem("auth", { token: "" });
     await setupAdd();
     const header = screen.queryByRole("heading", { name: "Add client" });
     expect(header).not.toBeInTheDocument();
   });
 });
 
-
 describe("User edit page", () => {
   describe("Layout", () => {
-    it( 'has edit client header', async ()  => {
+    it("has edit client header", async () => {
       await setupEdit();
       const header = screen.queryByRole("heading", { name: "Edit client" });
       expect(header).toBeInTheDocument();
     });
 
-    it( 'has add client header', async ()  => {
+    it("has add client header", async () => {
       await setupAdd();
       const header = screen.queryByRole("heading", { name: "Add client" });
       expect(header).toBeInTheDocument();
     });
   });
 
-  
   describe("Interactions", () => {
-    it( 'load client data', async ()  => {
+    it("load client data", async () => {
       await setupEdit();
 
       await waitForAjax();
-      expect(counter).toBe(1); //mount      
+      expect(counter).toBe(1); //mount
     });
 
-    it( 'new data', async ()  => {
+    it("new data", async () => {
       await setupAdd();
-      expect(counter).toBe(0); 
+      expect(counter).toBe(0);
     });
 
-    it( 'load edit client', async ()  => {
+    it("load edit client", async () => {
       await setupEdit();
       await waitForAjax();
       expect(counter).toBe(1);
@@ -143,11 +143,13 @@ describe("User edit page", () => {
       const password = screen.queryByPlaceholderText("password");
       expect(password).toHaveValue("");
 
-      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
+      const password_confirmation = screen.queryByPlaceholderText(
+        "password confirmation",
+      );
       expect(password_confirmation).toHaveValue("");
     });
 
-    it( 'load add client', async ()  => {
+    it("load add client", async () => {
       await setupAdd();
       expect(counter).toBe(0);
 
@@ -160,79 +162,71 @@ describe("User edit page", () => {
       const password = screen.queryByPlaceholderText("password");
       expect(password).toHaveValue("");
 
-      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
+      const password_confirmation = screen.queryByPlaceholderText(
+        "password confirmation",
+      );
       expect(password_confirmation).toHaveValue("");
     });
 
-
-    it( 'edit client by click', async ()  => {
+    it("edit client by click", async () => {
       await setupEdit();
       await waitForAjax();
       expect(counter).toBe(1);
 
       const email = screen.queryByPlaceholderText("email");
-      await userEvent.type( email , 'aaaa@example.com');//email is not changeable in edit mode
-
+      await userEvent.type(email, "aaaa@example.com"); //email is not changeable in edit mode
 
       const name = screen.queryByPlaceholderText("name");
-      await userEvent.type( name , 'aaaaaaaaaaaaa');
+      await userEvent.type(name, "aaaaaaaaaaaaa");
 
       const password = screen.queryByPlaceholderText("password");
-      await userEvent.type( password , 'abc');
+      await userEvent.type(password, "abc");
 
-      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
-      await userEvent.type( password_confirmation , 'abc');
-
-
-      const buttonSubmit = screen.queryByRole("button_save_edit_client" );
-      await userEvent.click(buttonSubmit);
-      expect(counter).toBe(2);      
-
-      const successMsg = trans.ttt( 'success_client_edit' );
-      expect( successMsg ).not.toBe( '');
-      await screen.findByText(
-       successMsg
+      const password_confirmation = screen.queryByPlaceholderText(
+        "password confirmation",
       );
+      await userEvent.type(password_confirmation, "abc");
 
+      const buttonSubmit = screen.queryByRole("button_save_edit_client");
+      await userEvent.click(buttonSubmit);
+      expect(counter).toBe(2);
+
+      const successMsg = trans.ttt("success_client_edit");
+      expect(successMsg).not.toBe("");
+      await screen.findByText(successMsg);
     });
 
-
-    it( 'add client by click', async ()  => {
+    it("add client by click", async () => {
       await setupAdd();
       //await waitForAjax();
       expect(counter).toBe(0);
 
       const email = screen.queryByPlaceholderText("email");
-      await userEvent.type( email , 'aaaabb@example.com');//email is not changeable in edit mode
-
+      await userEvent.type(email, "aaaabb@example.com"); //email is not changeable in edit mode
 
       const name = screen.queryByPlaceholderText("name");
-      await userEvent.type( name , 'aaaaaaaaaaaaa');
+      await userEvent.type(name, "aaaaaaaaaaaaa");
 
       const password = screen.queryByPlaceholderText("password");
-      await userEvent.type( password , 'abc2');
+      await userEvent.type(password, "abc2");
 
-      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
-      await userEvent.type( password_confirmation , 'abc2');
-
-      const buttonSubmit = screen.queryByRole("button_save_edit_client" );
-      await userEvent.click(buttonSubmit);
-      expect(counter).toBe(1);      
-
-      const successMsg = trans.ttt( 'success_client_add' );
-      expect( successMsg ).not.toBe('');
-      await screen.findByText(
-       successMsg
+      const password_confirmation = screen.queryByPlaceholderText(
+        "password confirmation",
       );
+      await userEvent.type(password_confirmation, "abc2");
+
+      const buttonSubmit = screen.queryByRole("button_save_edit_client");
+      await userEvent.click(buttonSubmit);
+      expect(counter).toBe(1);
+
+      const successMsg = trans.ttt("success_client_add");
+      expect(successMsg).not.toBe("");
+      await screen.findByText(successMsg);
     });
-
-
   });
 
   describe("Interactions validation errors", () => {
-
-    it( 'add client with errors', async ()  => {
-
+    it("add client with errors", async () => {
       const responseError = {
         success: false,
         error: {
@@ -240,66 +234,61 @@ describe("User edit page", () => {
           email: ["The email has already been taken."],
           password: [
             "The password must be at least 8 characters.",
-            "The password confirmation does not match."
-          ]
-        }
+            "The password confirmation does not match.",
+          ],
+        },
       };
-  
+
       server.use(
-      
         http.post("/api/clients", () => {
-          counter += 1
-          return HttpResponse.json(
-              responseError
-            )
-        })
-      )
+          counter += 1;
+          return HttpResponse.json(responseError);
+        }),
+      );
 
       await setupAdd();
       //await waitForAjax();
       expect(counter).toBe(0);
 
       const email = screen.queryByPlaceholderText("email");
-      await userEvent.type( email , 'aaaabb@example.com');//email is not changeable in edit mode
-
+      await userEvent.type(email, "aaaabb@example.com"); //email is not changeable in edit mode
 
       const name = screen.queryByPlaceholderText("name");
-      await userEvent.type( name , 'aaaaaaaaaaaaa');
+      await userEvent.type(name, "aaaaaaaaaaaaa");
 
       const password = screen.queryByPlaceholderText("password");
-      await userEvent.type( password , 'abc');
+      await userEvent.type(password, "abc");
 
-      const password_confirmation = screen.queryByPlaceholderText("password confirmation");
-      await userEvent.type( password_confirmation , 'abc');
+      const password_confirmation = screen.queryByPlaceholderText(
+        "password confirmation",
+      );
+      await userEvent.type(password_confirmation, "abc");
 
       const alertDangerAfter = screen.queryByRole("alert_danger");
-      expect( alertDangerAfter ).not.toBeInTheDocument();
+      expect(alertDangerAfter).not.toBeInTheDocument();
 
-      const buttonSubmit = screen.queryByRole("button_save_edit_client" );    
+      const buttonSubmit = screen.queryByRole("button_save_edit_client");
       await userEvent.click(buttonSubmit);
-      expect(counter).toBe(1);      
+      expect(counter).toBe(1);
 
-      await waitFor(() => {    
+      await waitFor(() => {
         const alertDangerAfter2 = screen.queryByRole("alert_danger");
-        expect( alertDangerAfter2 ).toBeInTheDocument();
-  
+        expect(alertDangerAfter2).toBeInTheDocument();
+
         const email2 = screen.queryByPlaceholderText("email");
-        expect(email2).toHaveClass("is-invalid");      
+        expect(email2).toHaveClass("is-invalid");
 
         const name2 = screen.queryByPlaceholderText("name");
-        expect(name2).toHaveClass("is-invalid");      
+        expect(name2).toHaveClass("is-invalid");
 
         const password2 = screen.queryByPlaceholderText("password");
-        expect(password2).toHaveClass("is-invalid");      
+        expect(password2).toHaveClass("is-invalid");
 
-        const password_confirmation2 = screen.queryByPlaceholderText("password confirmation");
-        expect(password_confirmation2).toHaveClass("is-invalid");              
-  
+        const password_confirmation2 = screen.queryByPlaceholderText(
+          "password confirmation",
+        );
+        expect(password_confirmation2).toHaveClass("is-invalid");
       });
     });
-
-
   });
-
-
 });

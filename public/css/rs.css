@@ -3,9 +3,9 @@ select.rs-select {
 }
 
 .disabled-if-loader {
-    pointer-events: none; /* Wyłącza możliwość interakcji, np. klikania */
-    opacity: 0.1; /* Możesz dostosować przezroczystość, aby zaznaczyć, że element jest wyłączony */
-    cursor: not-allowed; /* Zmienia kursor na "not-allowed" dla lepszej sygnalizacji */
+    pointer-events: none;
+    opacity: 0.1;
+    cursor: not-allowed;
 } 
 
 .msg-info {
@@ -33,4 +33,8 @@ input[type="file"] {
 
 .custom-file-upload i {
   margin-right: 5px;
+}
+
+.textarea-rs {
+  font-size: 10pt;
 }
