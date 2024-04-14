@@ -7,7 +7,6 @@
 
 <script>
 import functions from "./helpers/functions.js";
-import storage from "./state/storage";
 import NavBar from "./components/NavBar.vue";
 
 export default {
@@ -16,7 +15,7 @@ export default {
     NavBar,
   },
   data() {
-    const { token } = functions.retrieveParamsFromStorage(storage);
+    const { token } = functions.retrieveParamsFromStorage();
     return {
       token: token,
       //path: window.location.pathname,
