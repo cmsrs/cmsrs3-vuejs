@@ -1,49 +1,51 @@
 <template>
-  <h3>Login</h3>
+  <div class="col-lg-6 offset-lg-3 col-sm-8 offset-sm-2" data-testid="login-page">
+    <h3>Login</h3>
 
-  <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
+    <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
-  <form @submit.prevent="submit" class="container">
-    <div class="card">
-      <div class="m-4">
-        <label for="e-mail" class="form-label">E-mail</label>
-        <input
-          id="e-mail"
-          class="form-control pb-2"
-          v-model="formData.email"
-          type="text"
-        />
+    <form @submit.prevent="submit" class="container">
+      <div class="card">
+        <div class="m-4">
+          <label for="e-mail" class="form-label">E-mail</label>
+          <input
+            id="e-mail"
+            class="form-control pb-2"
+            v-model="formData.email"
+            type="text"
+          />
+        </div>
+
+        <div class="m-4">
+          <label for="password" class="form-label">Password</label>
+          <input
+            id="password"
+            class="form-control"
+            v-model="formData.password"
+            type="password"
+          />
+        </div>
+
+        <div class="text-center m-4">
+          <button
+            type="submit"
+            role="button_login"
+            class="btn btn-primary mt-2 mb-2"
+            :disabled="pre_loader || isDisabled"
+          >
+            <i v-if="!pre_loader" class="fas fa-plus"></i>
+            <span
+              role="pre_loader_login"
+              v-if="pre_loader"
+              class="spinner-grow spinner-grow-sm"
+            ></span>
+            Login
+          </button>
+        </div>
       </div>
-
-      <div class="m-4">
-        <label for="password" class="form-label">Password</label>
-        <input
-          id="password"
-          class="form-control"
-          v-model="formData.password"
-          type="password"
-        />
-      </div>
-
-      <div class="text-center m-4">
-        <button
-          type="submit"
-          role="button_login"
-          class="btn btn-primary mt-2 mb-2"
-          :disabled="pre_loader || isDisabled"
-        >
-          <i v-if="!pre_loader" class="fas fa-plus"></i>
-          <span
-            role="pre_loader_login"
-            v-if="pre_loader"
-            class="spinner-grow spinner-grow-sm"
-          ></span>
-          Login
-        </button>
-      </div>
-    </div>
-  </form>
-  <!-- container -->
+    </form>
+    <!-- container -->
+  </div>
 </template>
 <script setup>
 import Msg from "../components/Msg.vue";

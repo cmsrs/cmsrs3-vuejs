@@ -8,6 +8,10 @@ export const config = (token) => {
   return axios.get("/api/config?token=" + token);
 };
 
+export const logout = (token) => {
+  return axios.get("/api/logout?token=" + token);
+};
+
 export const postPage = (post, token) => {
   //console.log('____________________postPage___________');
   const ret = axios.post("/api/pages?token=" + token, post);

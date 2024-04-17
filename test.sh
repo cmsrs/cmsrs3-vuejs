@@ -4,6 +4,8 @@ if [ "$1" = "all" ]; then
     exit
 
 else
+    
+    npm run test ./src/App.spec.js  -- -t 'sign out'
 
     #npm run test ./src/pages/UserEditPage.spec.js -- -t 'load client data'
 
@@ -13,7 +15,7 @@ else
 
     #npm run test    ./src/pages/LoginPage.spec.js 
 
-    npm run test   ./src/helpers/functions.spec.js 
+    #npm run test   ./src/helpers/functions.spec.js 
 
 fi
 
