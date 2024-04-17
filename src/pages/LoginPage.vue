@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-6 offset-lg-3 col-sm-8 offset-sm-2" data-testid="login-page">
+  <div class="mt-3 col-lg-6 offset-lg-3 col-sm-8 offset-sm-2" data-testid="login-page">
     <h3>Login</h3>
 
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
