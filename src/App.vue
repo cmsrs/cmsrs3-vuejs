@@ -1,33 +1,10 @@
 <template>
-  <NavBar v-if="token" />
+  <NavBar/>
   <div class="container">
     <router-view />
   </div>
 </template>
 
-<script>
-import functions from "./helpers/functions.js";
+<script setup>
 import NavBar from "./components/NavBar.vue";
-
-export default {
-  name: "App",
-  components: {
-    NavBar,
-  },
-  data() {
-    const { token } = functions.retrieveParamsFromStorage();
-    return {
-      token: token,
-      //path: window.location.pathname,
-    };
-  },
-  /*
-  methods: {
-    onClickLink(event) {
-      this.path = event.currentTarget.attributes.href.value;
-      window.history.pushState({}, "", this.path);
-    },
-  },
-  */
-};
 </script>

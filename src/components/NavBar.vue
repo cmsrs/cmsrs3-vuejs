@@ -1,7 +1,7 @@
 <template>
-  <div class="shadow-sm bg-light mb-3">
+  <div class="shadow-sm bg-light mb-3" v-if="auth.token">
     <nav class="navbar navbar-expand navbar-light container">
-      <div class="container-fluid p-0 row"  v-if="token">
+      <div class="container-fluid p-0 row">
         <ul class="navbar-nav ms-auto col-10" >
           <router-link class="nav-link" to="/pages"
             >Pages
@@ -20,29 +20,20 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
-import functions from "../helpers/functions.js";
+import { ref } from "vue";
 import { logout } from "../api/apiCalls.js";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
-const { logout: logoutStore } = useAuthStore();
+const { auth, logout: logoutStore } = useAuthStore();
 
 const router = useRouter()
-const token = ref(functions.retrieveParamsFromStorage().token);
-//console.log(token.value);
 const pre_loader = ref(false);
-
-//onMounted (() => {
-//  const { token } = functions.retrieveParamsFromStorage();
-//  dataToken.value = token  
-//})
 
 const signOut = async () => {
   pre_loader.value = true;
 
   try {
-    //const { token } = functions.retrieveParamsFromStorage();
-    const responseLogout = await logout(token.value);
+    const responseLogout = await logout(auth.token);
     if(!responseLogout.data.success){
       console.log( 'sth wrong with logout in server site' );
     }
