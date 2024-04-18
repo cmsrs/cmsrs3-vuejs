@@ -95,127 +95,109 @@
     <!--  container -->
   </div>
 </template>
-<script>
+<script setup>
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-//import storage from "../state/storage";
 import { getClient, postClient, putClient } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
-//import { useRouter } from 'vue-router'
 
-export default {
-  name: "UserEditPage",
-  components: {
-    Msg,
-  },
-  props: {
-    mode: String, //edit or add
-    id: {
-      //optional parameter
-      type: String,
-      default: "",
-    },
-  },
+const router = useRouter();
 
-  data() {
-    const { token } = functions.retrieveParamsFromStorage();
-    return {
-      token: token,
-      msgWrong: "",
-      msgGood: "",
-      errFields: [], //optional
+const { token } = functions.retrieveParamsFromStorage();
+const mode = router.currentRoute.value.params.mode;
 
-      pre_loader: false,
-      client: {},
-    };
-  },
+const msgWrong = ref("");
+const msgGood = ref("");
+const errFields = ref([]);
 
-  methods: {
-    back() {
-      this.$router.push({ name: "users" });
-    },
+const pre_loader = ref(false);
+let client = reactive({});
 
-    clearMsg() {
-      this.msgWrong = "";
-      this.msgGood = "";
-    },
-
-    getEmptyClient() {
-      return {
-        id: "",
-        name: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
-      };
-    },
-
-    async addEditClient() {
-      this.clearMsg();
-      this.pre_loader = true;
-      try {
-        const retClient = this.client.id
-          ? await putClient(this.client, this.token)
-          : await postClient(this.client, this.token);
-        if (retClient.data.success) {
-          this.msgGood = this.client.id
-            ? trans.ttt("success_client_edit")
-            : trans.ttt("success_client_add");
-        } else if (retClient.data.success === false) {
-          this.msgWrong = await functions.parseError(retClient.data.error);
-          this.errFields = await functions.getErrorFields(retClient.data.error);
-        } else {
-          this.msgWrong =
-            "Something wrong with add or edit client - check response status";
-        }
-      } catch (error) {
-        console.log("_is_error__", error);
-      }
-      this.pre_loader = false;
-    },
-
-    async loadClient(id) {
-      try {
-        const responseC = await getClient(id, this.token);
-        if (responseC.data.success) {
-          const client = responseC.data.data;
-          this.client.id = client.id;
-          this.client.name = client.name;
-          this.client.email = client.email;
-          return true;
-        } else {
-          this.msgWrong = "Sth wrong with get client";
-          console.log("error get client=", responseC.data);
-        }
-      } catch (error) {
-        this.msgWrong = "Sth wrong with get client (error)";
-        console.log("error get client=", error);
-      }
-      return false;
-    },
-  },
-
-  async mounted() {
-    //console.log('token='+this.token);
-    if (!this.token) {
-      this.$router.push("/");
-    }
-
-    if (this.mode !== "edit" && this.mode !== "add") {
-      this.$router.push("/"); //TODO test manually
-    }
-
-    this.clearMsg();
-    this.client = this.getEmptyClient();
-
-    if (this.mode === "edit") {
-      this.pre_loader = true;
-      const loadC = await this.loadClient(this.id);
-
-      if (loadC) {
-        this.pre_loader = false;
-      }
-    }
-  },
+const back = () => {
+  router.push({ name: "users" });
 };
+
+const clearMsg = () => {
+  msgWrong.value = "";
+  msgGood.value = "";
+};
+
+const getEmptyClient = () => {
+  return {
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  };
+};
+
+const addEditClient = async () => {
+  clearMsg();
+  pre_loader.value = true;
+  try {
+    const retClient = client.id //client.value.id
+      ? await putClient(client, token)
+      : await postClient(client, token);
+    if (retClient.data.success) {
+      msgGood.value = client.id
+        ? trans.ttt("success_client_edit")
+        : trans.ttt("success_client_add");
+    } else if (retClient.data.success === false) {
+      msgWrong.value = await functions.parseError(retClient.data.error);
+      errFields.value = await functions.getErrorFields(retClient.data.error);
+    } else {
+      msgWrong.value =
+        "Something wrong with add or edit client - check response status";
+    }
+  } catch (error) {
+    console.log("_is_error__", error);
+  }
+  pre_loader.value = false;
+};
+
+const loadClient = async (id) => {
+  try {
+    const responseC = await getClient(id, token);
+    if (responseC.data.success) {
+      const clientData = responseC.data.data;
+      client.id = clientData.id;
+      client.name = clientData.name;
+      client.email = clientData.email;
+      return true;
+    } else {
+      msgWrong.value = "Sth wrong with get client";
+      console.log("error get client=", responseC.data);
+    }
+  } catch (error) {
+    msgWrong.value = "Sth wrong with get client (error)";
+    console.log("error get client=", error);
+  }
+  return false;
+};
+
+onMounted(async () => {
+  if (!token) {
+    router.push("/");
+  }
+
+  if (mode !== "edit" && mode !== "add") {
+    router.push("/"); //TODO test manually
+  }
+
+  clearMsg();
+  client = getEmptyClient();
+
+  if (mode === "edit") {
+    const id = router.currentRoute.value.params.id
+    pre_loader.value = true;
+    const loadC = await loadClient(id);
+
+    if (loadC) {
+      pre_loader.value = false;
+    }
+  }
+});
 </script>
