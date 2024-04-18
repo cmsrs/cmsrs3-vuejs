@@ -142,153 +142,145 @@
     <!--  container -->
   </div>
 </template>
-<script>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-//import storage from "../state/storage";
 import { getClients, deleteClient } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import TableSort from "../components/TableSort.vue";
 
-export default {
-  name: "UserPage",
-  components: {
-    Msg,
-    TableSort,
-  },
 
-  data() {
-    const { token } = functions.retrieveParamsFromStorage();
-    return {
-      token: token,
-      msgWrong: "",
-      msgGood: "",
+const router = useRouter();
 
-      pre_loader: false,
-      clients: [],
+const { token } = functions.retrieveParamsFromStorage();
 
-      //search params for:
-      //api/clients/$column/$direction?token=$token&search=abc
-      column: "",
-      direction: "",
-      page: "",
-      search: "", //after click button
-      searchValue: "", // current value
-    };
-  },
+const msgWrong = ref("");
+const msgGood = ref("");
+const pre_loader = ref(false);
+const clients = ref([]);
 
-  methods: {
-    addClient() {
-      this.$router.push({ name: "user", params: { mode: "add" } });
-    },
-    editClient(id) {
-      this.$router.push({ name: "user", params: { mode: "edit", id: id } });
-    },
+//search params for:
+//api/clients/$column/$direction?token=$token&search=abc
+const column = ref("");
+const direction = ref("");
+const page = ref("");
+const search = ref(""); //after click button
+const searchValue = ref(""); // current value
 
-    async searchClients() {
-      this.pre_loader = true;
-      this.search = this.searchValue;
+const addClient = () => {
+  router.push({ name: "user", params: { mode: "add" } });
+};
 
-      const refreshC = await this.refreshClients();
+const editClient = (id) => {
+  router.push({ name: "user", params: { mode: "edit", id: id } });
+};
 
-      if (refreshC) {
-        this.pre_loader = false;
-      }
-    },
+const searchClients = async () => {
+  pre_loader.value = true;
+  search.value = searchValue.value;
 
-    async delClient(id) {
-      this.clearMsg();
-      if (window.confirm("Are you sure you wish to delete this item?")) {
-        this.pre_loader = true;
+  const refreshC = await refreshClients();
 
-        try {
-          const response = await deleteClient(id, this.token);
-          if (response.data.success) {
-            const ret = await this.refreshClients();
-            if (ret) {
-              this.msgGood = "Client has been deleted";
-              this.pre_loader = false;
-            }
-          }
-        } catch (error) {
-          console.log("_is_error__", error);
-          this.msgWrong = "Delete client problem = " + error;
+  if (refreshC) {
+    pre_loader.value = false;
+  }
+};
+
+const delClient = async (id) => {
+  clearMsg();
+  if (window.confirm("Are you sure you wish to delete this item?")) {
+    pre_loader.value = true;
+
+    try {
+      const response = await deleteClient(id, token);
+      if (response.data.success) {
+        const ret = await refreshClients();
+        if (ret) {
+          msgGood.value = "Client has been deleted";
+          pre_loader.value = false;
         }
       }
-    },
-    async changePageByUrl(url) {
-      this.pre_loader = true;
-      this.page = functions.retrieveParamsFromUrl(url, "page");
-
-      const refreshC = await this.refreshClients();
-
-      if (refreshC) {
-        this.pre_loader = false;
-      }
-    },
-
-    async sortingAsc(column) {
-      this.sorting(column, "asc");
-    },
-
-    async sortingDesc(column) {
-      this.sorting(column, "desc");
-    },
-
-    async sorting(column, direction) {
-      this.pre_loader = true;
-      this.column = column;
-      this.direction = direction;
-      this.page = "1";
-
-      const refreshC = await this.refreshClients();
-
-      if (refreshC) {
-        this.pre_loader = false;
-      }
-    },
-
-    clearMsg() {
-      this.msgWrong = "";
-      this.msgGood = "";
-    },
-
-    async refreshClients() {
-      this.clearMsg();
-      try {
-        const responseC = await getClients(
-          this.column,
-          this.direction,
-          this.token,
-          this.page,
-          this.search,
-        );
-        this.clients = responseC.data.data;
-        return true;
-      } catch (error) {
-        console.log("error get clients=", error);
-      }
-      return false;
-    },
-  },
-
-  async mounted() {
-    if (!this.token) {
-      this.$router.push("/");
+    } catch (error) {
+      console.log("_is_error__", error);
+      msgWrong.value = "Delete client problem = " + error;
     }
-
-    this.pre_loader = true;
-
-    //set up sorting on the start
-    this.column = "created_at";
-    this.direction = "desc";
-    this.page = "1";
-    this.search = "";
-
-    const refreshC = await this.refreshClients();
-
-    if (refreshC) {
-      this.pre_loader = false;
-    }
-  },
+  }
 };
+
+const changePageByUrl = async (url) => {
+  pre_loader.value = true;
+  page.value = functions.retrieveParamsFromUrl(url, "page");
+
+  const refreshC = await refreshClients();
+
+  if (refreshC) {
+    pre_loader.value = false;
+  }
+};
+
+const sortingAsc = async (column) => {
+  sorting(column, "asc");
+};
+
+const sortingDesc = async (column) => {
+  sorting(column, "desc");
+};
+
+const sorting = async (col, dir) => {
+  pre_loader.value = true;
+  column.value = col;
+  direction.value = dir;
+  page.value = "1";
+
+  const refreshC = await refreshClients();
+
+  if (refreshC) {
+    pre_loader.value = false;
+  }
+};
+
+const clearMsg = () => {
+  msgWrong.value = "";
+  msgGood.value = "";
+};
+
+const refreshClients = async () => {
+  clearMsg();
+  try {
+    const responseC = await getClients(
+      column.value,
+      direction.value,
+      token,
+      page.value,
+      search.value
+    );
+    clients.value = responseC.data.data;
+    return true;
+  } catch (error) {
+    console.log("error get clients=", error);
+  }
+  return false;
+};
+
+onMounted( async() => {
+  if (!token) {
+    router.push("/");
+  }
+
+  pre_loader.value = true;
+
+  // set up sorting on the start
+  column.value = "created_at";
+  direction.value = "desc";
+  page.value = "1";
+  search.value = "";
+
+  const refreshC = await refreshClients();
+
+  if (refreshC) {
+    pre_loader.value = false;
+  }
+});
+
 </script>
