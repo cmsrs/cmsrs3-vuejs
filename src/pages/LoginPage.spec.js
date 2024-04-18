@@ -3,8 +3,8 @@ import {
   router,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
-  fireEvent,
+  //waitForElementToBeRemoved,
+  //fireEvent,
 } from "../../test/helper.js";
 import LoginPage from "./LoginPage.vue";
 import { setupServer } from "msw/node";
@@ -180,6 +180,7 @@ describe("Login page", () => {
           email: emailGood,
           password: passwordGood,
         });
+        expect(router.currentRoute.value.path).toBe('/pages')
       });
 
       const auth = storage.getItem("auth");
