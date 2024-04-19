@@ -3,8 +3,8 @@ import {
   router,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
-  fireEvent,
+  //waitForElementToBeRemoved,
+  //fireEvent,
 } from "../test/helper.js";
 import "../test/afterlogin.js";
 import functions from "./helpers/functions.js";
@@ -27,6 +27,24 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
+  http.get("/api/pages", async () => {
+    const jsonRes = {
+      success: true,
+      data: [],
+    };
+
+    return HttpResponse.json(jsonRes);
+  }),
+
+  http.get("/api/menus", async () => {
+    const jsonRes = {
+      success: true,
+      data: [],
+    };
+
+    return HttpResponse.json(jsonRes);
+  }),
+
 );
 
 beforeAll(() => {
@@ -40,33 +58,50 @@ beforeEach(() => {
 
 afterAll(() => server.close());
 
-const setup = async () => {
+const setup = async (path) => {
+  router.push(path)
+  await router.isReady()
   render(App);
 };
 
 describe("sign out", () => {
   it("sign out exist", async () => {
-    await setup();
+    await setup('/');
     const linkSignOut = await screen.findByRole("link_sign_out");
     expect(linkSignOut).toBeInTheDocument();
   });    
 
   it("click sign out link", async () => {
-    await setup();
+    await setup('/pages');
     const { token } = functions.retrieveParamsFromStorage();
     expect(token).not.toBe(0);
-
     const linkSignOut = await screen.findByRole("link_sign_out");
     expect(counter).toBe(0);
+    expect(router.currentRoute.value.path).toBe('/pages')
     await userEvent.click(linkSignOut);
     await waitFor(() => {
       expect(counter).toBe(1);
       const { token } = functions.retrieveParamsFromStorage();
       expect(token).toBe(0);
       expect(screen.queryByTestId('login-page')).toBeInTheDocument()
+      expect(router.currentRoute.value.path).toBe('/')
     })
   });    
 
-
 })  
+
+describe("prevent redirect when user is auth", () => {
+  it("prevent redirect lo login page when user is auth", async () => {
+    await setup('/');
+    const { token } = functions.retrieveParamsFromStorage();
+    expect(token).not.toBe(0);
+
+    await waitFor(() => {    
+      expect(screen.queryByTestId('pages-page')).toBeInTheDocument()
+      expect(router.currentRoute.value.path).toBe('/pages')  
+    })
+  });    
+  
+  
+})
 

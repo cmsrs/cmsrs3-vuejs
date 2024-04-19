@@ -7,6 +7,11 @@ import {
   //fireEvent,
 } from "../../test/helper.js";
 import LoginPage from "./LoginPage.vue";
+import MenuPagesPage from "./MenuPagesPage.vue";
+import UsersPage from "./UsersPage.vue";
+import UserEditPage from "./UserEditPage.vue";
+
+
 import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
@@ -189,5 +194,46 @@ describe("Login page", () => {
       expect(auth).toEqual(authJson);
       expect(config).toEqual(configJson);
     });
+  });
+
+  describe("prevent go to another pages when user is not auth", () => {  
+    const setupTmp = async (path, objPage) => {
+      router.push(path)
+      await router.isReady()
+      render(objPage);
+    };
+    
+    it("try to redirect to pages", async () => {
+      await setupTmp('/pages', MenuPagesPage)
+      expect(screen.queryByTestId('pages-page')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/')      
+      });      
+    });      
+
+    it("try to redirect to users", async () => {
+      await setupTmp('/users', UsersPage)      
+      expect(screen.queryByTestId('users-page')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/')
+      });      
+    });      
+
+    it("try to redirect to user add page", async () => {
+      await setupTmp('/user/add', UserEditPage)      
+      expect(screen.queryByTestId('user-edit-page')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/')
+      });      
+    });      
+
+    it("try to redirect to user edit page", async () => {
+      await setupTmp('/user/edit/1001', UserEditPage)      
+      expect(screen.queryByTestId('user-edit-page')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/')
+      });      
+    });      
+
   });
 });

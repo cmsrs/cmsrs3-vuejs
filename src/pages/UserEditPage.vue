@@ -1,5 +1,5 @@
 <template>
-  <div data-testid="users-page-edit">
+  <div data-testid="user-edit-page">
     <h3 v-if="mode === 'edit'">Edit client</h3>
     <h3 v-else>Add client</h3>
 
