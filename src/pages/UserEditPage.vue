@@ -181,6 +181,7 @@ const loadClient = async (id) => {
 onMounted(async () => {
   if (!token) {
     router.push("/");
+    return false;
   }
 
   if (mode !== "edit" && mode !== "add") {

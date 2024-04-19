@@ -266,6 +266,7 @@ const refreshClients = async () => {
 onMounted( async() => {
   if (!token) {
     router.push("/");
+    return false;
   }
 
   pre_loader.value = true;

@@ -1110,6 +1110,7 @@ export default {
   async mounted() {
     if (!this.token) {
       this.$router.push("/");
+      return false;
     }
 
     this.pre_loader = true;

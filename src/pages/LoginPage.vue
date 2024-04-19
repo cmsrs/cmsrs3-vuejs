@@ -49,11 +49,11 @@
 </template>
 <script setup>
 import Msg from "../components/Msg.vue";
-import { ref, computed, reactive, watch } from "vue";
+import { ref, computed, reactive, watch, onMounted } from "vue";
 import { login, config } from "../api/apiCalls.js";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
-const { setAuth, setConfig } = useAuthStore();
+const { auth, setAuth, setConfig } = useAuthStore();
 
 const router = useRouter();
 
@@ -88,6 +88,13 @@ const submit = async () => {
     pre_loader.value = false;
   }
 };
+
+onMounted(async () => {
+  if (auth.token) {
+    router.push("/pages");
+    return false;
+  }
+});
 
 watch(
   () => formData.email,
