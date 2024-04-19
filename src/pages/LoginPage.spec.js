@@ -235,5 +235,14 @@ describe("Login page", () => {
       });      
     });      
 
+    it("try to redirect fake page", async () => {
+      router.push('/fake123')
+      await router.isReady()
+      await waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/fake123')
+      });      
+    });      
+
+
   });
 });

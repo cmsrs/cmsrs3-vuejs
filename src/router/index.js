@@ -31,6 +31,12 @@ const router = createRouter({
       props: true,
     },
     // {
+    //   path: "/*",
+    //   component: LoginPage,
+    //   catchAll: true, 
+    // },
+
+    // {
     //   path: "/users",
     //   component: SignUpPage,
     // },
