@@ -463,13 +463,12 @@
     <!-- container -->
   </div>
 </template>
-<script>
+<script setup>
+import { ref, computed, watch, onMounted,  defineComponent  } from 'vue';
+import { useRouter } from 'vue-router';
 import { SERVER_URL } from "../config.js";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
-//import storage from "../state/storage";
-import PageTitle from "../components/PageTitle.vue";
-import Msg from "../components/Msg.vue";
 import {
   postPage,
   putPage,
@@ -482,402 +481,434 @@ import {
   deletePage,
   setPagePosition,
   uploadImage,
-  getImages,
+  getImages as ApiGetImages,
   deleteImage,
   setImagePosition,
 } from "../api/apiCalls";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-export default {
-  name: "MenuPages",
-  components: {
-    Msg,
-    PageTitle,
-    ckeditor: CKEditor.component,
+import PageTitle from "../components/PageTitle.vue";
+import Msg from "../components/Msg.vue";
+
+
+// Data
+const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage();
+const langs = ref(configLangs);
+const lang = ref(configDefaultLang);
+const defaultLang = ref(configDefaultLang);
+const page_types = ref(pageTypes);
+//const token = ref(token);
+
+const msgWrong = ref("");
+const msgGood = ref("");
+const pre_loader = ref(false);
+const errFields = ref([]);
+
+const allPages = ref([]);
+const notRelatedPages = ref(false);
+const innerPages = ref(false);
+const pagesBelongsToMenus = ref([]);
+const pagesBelongsToPages = ref([]);
+
+const title = ref({});
+const short_title = ref({});
+const description = ref({});
+const content = ref({});
+const page_type = ref("cms");
+const published = ref(false);
+const commented = ref(false);
+const after_login = ref(false);
+const menu_id = ref("");
+const page_id = ref("");
+const images = ref([]);
+
+const rootPagesBelongToMenu = ref([]);
+const isAddMenu = ref(false);
+const new_menu_name = ref({});
+const menus = ref([]);
+const menus_error_new = ref(false);
+const currentPageId = ref(false);
+
+const editor = ref(ClassicEditor);
+const editorConfig = ref({
+});
+
+
+
+editor.value = ClassicEditor
+const ckeditor = CKEditor.component
+
+/*
+//import CKEditor from "@ckeditor/ckeditor5-vue";
+//import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+const editor = ref(ClassicEditor);
+const editorConfig = ref({
+});
+
+const  ckeditor =  CKEditor.component;
+*/
+
+/*
+export default defineComponent({
+  setup() {
+    // Deklaracja ref dla ClassicEditor i konfiguracji
+    const editor = ref(ClassicEditor);
+    const editorConfig = ref({
+      // Konfiguracja edytora
+    });
+
+    // Deklaracja aliasu ckeditor dla CKEditor.component
+    const ckeditor = CKEditor.component;
+
+    return { editor, editorConfig, ckeditor };
   },
+})
+*/
 
-  data() {
-    const { configLangs, configDefaultLang, pageTypes, token } =
-      functions.retrieveParamsFromStorage();
-    //const defaultLang = this.$store.state.config.defaultLang || configDefaultLang;
 
+/*
+setup() {
+    // Ref dla ClassicEditor
+    const editor = ref(ClassicEditor);
+
+    // Zwracanie potrzebnych danych lub funkcji
     return {
-      //from storage
-      langs: configLangs,
-      lang: configDefaultLang, //it is changeable
-      defaultLang: configDefaultLang,
-      page_types: pageTypes,
-      token: token,
-
-      //some constants
-      msgWrong: "",
-      msgGood: "",
-      pre_loader: false,
-      errFields: [], //optional
-
-      allPages: [],
-      notRelatedPages: false,
-      innerPages: false,
-      pagesBelongsToMenus: [],
-      pagesBelongsToPages: [],
-
-      //page fields
-      title: {},
-      short_title: {},
-      description: {},
-      content: {},
-      page_type: "cms",
-      published: false,
-      commented: false,
-      after_login: false,
-      menu_id: "",
-      page_id: "",
-      images: [],
-
-      rootPagesBelongToMenu: [],
-      isAddMenu: false,
-      new_menu_name: {},
-      menus: [],
-      menus_error_new: false,
-      currentPageId: false,
-
-      editor: ClassicEditor,
-      editorConfig: {
-        // The configuration of the editor.
-      },
+      editor,
     };
-  },
+}
+*/
 
-  computed: {
-    SERVER_URL() {
-      return SERVER_URL;
-    },
-  },
 
-  methods: {
-    async saveEditPage() {
-      if (!this.startLoading()) {
+// Computed
+//const SERVER_URL = computed(() => SERVER_URL);
+
+// Methods
+const saveEditPage = async () => {
+  if (!startLoading()) {
+    return false;
+  }
+
+  try {
+    const post = {
+      title: title.value,
+      short_title: short_title.value,
+      description: description.value,
+      type: page_type.value,
+      content: content.value,
+      published: published.value,
+      commented: commented.value,
+      after_login: after_login.value,
+      menu_id: menu_id.value,
+      page_id: page_id.value,
+      images: images.value,
+    };
+
+    const retPage = currentPageId.value
+      ? await putPage(post, currentPageId.value, token.value)
+      : await postPage(post, token.value);
+
+    if (retPage.data.success) {
+      if (!currentPageId.value) {
+        currentPageId.value = retPage.data.data.pageId;
+        msgGood.value = trans.ttt("success_page_add");
+      } else {
+        msgGood.value = trans.ttt("success_page_edit");
+      }
+    } else if (retPage.data.success === false) {
+      msgWrong.value = await functions.parseError(retPage.data.error);
+      errFields.value = await functions.getErrorFields(retPage.data.error);
+    } else {
+      msgWrong.value = "Something wrong";
+    }
+
+    const ret = await refreshPages();
+    if (ret) {
+      pre_loader.value = false;
+    }
+  } catch (error) {
+    console.log("_is_error__", error);
+  }
+  pre_loader.value = false;
+};
+
+const clearDataPage = () => {
+  if (!startLoading()) {
+    return false;
+  }
+
+  title.value = {};
+  short_title.value = {};
+  description.value = {};
+  content.value = {};
+  page_type.value = "cms";
+  published.value = false;
+  commented.value = false;
+  after_login.value = false;
+  menu_id.value = "";
+  page_id.value = "";
+  images.value = [];
+
+  currentPageId.value = false;
+
+  pre_loader.value = false;
+};
+
+async function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function handleUploadFile(event) {
+  if (pre_loader.value) {
+    return false;
+  }
+
+  const files = event.target.files || event.dataTransfer.files;
+  if (!files.length) {
+    return false;
+  }
+
+  if (!currentPageId.value) {
+    return false;
+  }
+
+  if (!startLoading()) {
+    return false;
+  }
+
+  const images = await getImages(files);
+
+  for (let i = 0; i < images.length; i++) {
+    let ret = uploadImage(
+      images[i],
+      "page",
+      currentPageId.value,
+      token
+    );
+    await delay(6000);
+
+    if (ret) {
+      msgGood.value =
+        "Images has been uploaded " + (i + 1) + "/" + images.length;
+    }
+  }
+
+  const dbImages = await ApiGetImages("page", currentPageId.value, token);
+  if (dbImages.data.success) {
+    // Assuming msgGood is a ref object
+    msgGood.value = "Images has been uploaded";
+    pre_loader.value = false;
+  }
+}
+
+async function getImages(files) {
+  const promises = [];
+  for (let i = 0; i < files.length; i++) {
+    promises.push(
+      new Promise((resolve, reject) => {
+        let name = files[i].name;
+        let reader = new FileReader();
+
+        reader.readAsDataURL(files[i]);
+        reader.onload = (e) => {
+          resolve({ data: e.target.result, name: name });
+        };
+        reader.onerror = (error) => {
+          reject(error);
+        };
+      }),
+    );
+  }
+  return Promise.all(promises);
+}
+
+function changeLang(lang) {
+  lang.value = lang;
+}
+
+function getNotRelatedPages(pages) {
+  let out = [];
+  for (let page of pages) {
+    if (!page.menu_id && "inner" !== page.type) {
+      out.push(page);
+    }
+  }
+  return out;
+}
+
+function getInnerPages(pages) {
+  let out = [];
+  for (let page of pages) {
+    if ("inner" === page.type) {
+      out.push(page);
+    }
+  }
+  return out;
+}
+function     getPagesBelongsToMenus(pages) {
+  let out = [];
+  for (let page of pages) {
+    if (page.menu_id && !page.page_id) {
+      if ("undefined" === typeof out[page.menu_id]) {
+        out[page.menu_id] = [];
+      }
+      out[page.menu_id].push(page);
+    }
+  }
+  return out;
+}
+function     getPagesBelongsToMenu(menuId) {
+  if ("undefined" === typeof this.pagesBelongsToMenus[menuId]) {
+    return false;
+  }
+  return this.pagesBelongsToMenus[menuId];
+}
+function     getPagesBelongsToPages(pages) {
+  let out = [];
+  for (let page of pages) {
+    if (page.page_id) {
+      if ("undefined" === typeof out[page.page_id]) {
+        out[page.page_id] = [];
+      }
+      out[page.page_id].push(page);
+    }
+  }
+  return out;
+}
+function  getPagesBelongsToPage(parentPageId) {
+  if ("undefined" === typeof this.pagesBelongsToPages[parentPageId]) {
+    return false;
+  }
+  return this.pagesBelongsToPages[parentPageId];
+}
+
+
+function addMenu() {
+      clearMsg();
+      isAddMenu.value = true;
+      menus_error_new.value = false;
+      new_menu_name.value = {};
+    }
+
+
+async function saveMenu(index) {
+  clearMsg();
+  if ("new" === index) {
+    new_menu_name.value = false;
+    for (let lang of langs) {
+      if (!new_menu_name.value[lang]) {
+        msgWrong.value = "Add menu name"; // for '+lang+' lang';
+        new_menu_name.value = true;
+        break;
+      }
+    }
+    if (!msgWrong.value) {
+      if (!startLoading()) {
         return false;
       }
 
       try {
         const post = {
-          title: this.title,
-          short_title: this.short_title,
-          description: this.description,
-          type: this.page_type, //!
-          content: this.content,
-          published: this.published,
-
-          commented: this.commented,
-          after_login: this.after_login,
-          menu_id: this.menu_id,
-          page_id: this.page_id,
-          images: this.images,
+          name: new_menu_name.value,
         };
-
-        const retPage = this.currentPageId
-          ? await putPage(post, this.currentPageId, this.token)
-          : await postPage(post, this.token);
-
-        //console.log(retPage.data);
-
-        if (retPage.data.success) {
-          //this.msgGood = this.currentPageId ? trans.ttt( 'success_page_edit' ) : trans.ttt( 'success_page_add' );
-          if (!this.currentPageId) {
-            //console.log( this.currentPageId);
-            //console.log(retPage.data);
-            this.currentPageId = retPage.data.data.pageId;
-            this.msgGood = trans.ttt("success_page_add");
-          } else {
-            this.msgGood = trans.ttt("success_page_edit");
+        const addMenu = await postMenu(post, token);
+        if (addMenu.data.success) {
+          const ret = await refreshMenus();
+          if (ret) {
+            isAddMenu.value = false;
+            msgGood.value = "Menu has been added";
           }
-        } else if (retPage.data.success === false) {
-          this.msgWrong = await functions.parseError(retPage.data.error);
-          this.errFields = await functions.getErrorFields(retPage.data.error);
-        } else {
-          this.msgWrong = "Something wrong";
-        }
-
-        const ret = await this.refreshPages();
-        if (ret) {
-          this.pre_loader = false;
         }
       } catch (error) {
-        //this.failMessage = 'Invalid save page';
         console.log("_is_error__", error);
+        msgWrong.value = "Add menu problem = " + error;
       }
-      this.pre_loader = false;
-    },
+      pre_loader.value = false;
+    }
+  } else {
+    if (!menus.value[index]["name"]) {
+      console.log("sth wrong i cant find menu with index=" + index);
+      return false;
+    }
+    const menuByLangs = menus.value[index]["name"];
+    for (let lang of langs.value) {
+      if (!menuByLangs[lang]) {
+        msgWrong.value = "Add menu name"; // for '+lang+' lang';
+        break;
+      }
+    }
 
-    clearDataPage() {
-      if (!this.startLoading()) {
+    if (!msgWrong.value) {
+      if (!startLoading()) {
         return false;
       }
 
-      this.title = {};
-      this.short_title = {};
-      this.description = {};
-      this.content = {};
-      this.page_type = "cms";
-      this.published = false;
+      try {
+        const post = {
+          id: menus.value[index]["id"],
+          name: menuByLangs,
+        };
+        const updateMenu = await putMenu(post, token.value);
+        if (updateMenu.data.success) {
+          msgGood.value = "Menu has been changed";
+        }
+      } catch (error) {
+        console.log("_is_error__", error);
+        msgWrong.value = "Add menu problem = " + error;
+      }
+      pre_loader.value = false;
+    }
+  }
+}
 
-      this.commented = false;
-      this.after_login = false;
-      this.menu_id = "";
-      this.page_id = "";
-      this.images = [];
-
-      this.currentPageId = false; //!
-
-      this.pre_loader = false;
-    },
-
-    delay(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
-
-    async handleUploadFile(event) {
-      if (this.pre_loader) {
+async function delMenu(index) {
+  clearMsg();
+  if ("new" === index) {
+    isAddMenu.value = false;
+  } else {
+    if (window.confirm("Are you sure you wish to delete this item?")) {
+      if (!startLoading()) {
         return false;
       }
 
-      const files = event.target.files || event.dataTransfer.files;
-      if (!files.length) {
-        return false;
-      }
-
-      if (!this.currentPageId) {
-        return false;
-      }
-
-      if (!this.startLoading()) {
-        return false;
-      }
-
-      const images = await this.getImages(files);
-
-      for (let i = 0; i < images.length; i++) {
-        let ret = uploadImage(
-          images[i],
-          "page",
-          this.currentPageId,
-          this.token,
-        );
-        await this.delay(6000);
-
-        if (ret) {
-          this.msgGood =
-            "Images has been uploaded " + (i + 1) + "/" + images.length;
-        }
-      }
-
-      const dbImages = await getImages("page", this.currentPageId, this.token);
-      if (dbImages.data.success) {
-        this.images = dbImages.data.data;
-        this.pre_loader = false;
-      }
-    },
-
-    async getImages(files) {
-      const promises = [];
-      for (let i = 0; i < files.length; i++) {
-        promises.push(
-          new Promise((resolve, reject) => {
-            let name = files[i].name;
-            let reader = new FileReader();
-
-            reader.readAsDataURL(files[i]);
-            reader.onload = (e) => {
-              resolve({ data: e.target.result, name: name });
-            };
-            reader.onerror = (error) => {
-              reject(error);
-            };
-          }),
-        );
-      }
-      return Promise.all(promises);
-    },
-
-    changeLang(lang) {
-      this.lang = lang;
-    },
-    getNotRelatedPages(pages) {
-      let out = [];
-      for (let page of pages) {
-        if (!page.menu_id && "inner" !== page.type) {
-          out.push(page);
-        }
-      }
-      return out;
-    },
-    getInnerPages(pages) {
-      let out = [];
-      for (let page of pages) {
-        if ("inner" === page.type) {
-          out.push(page);
-        }
-      }
-      return out;
-    },
-    getPagesBelongsToMenus(pages) {
-      let out = [];
-      for (let page of pages) {
-        if (page.menu_id && !page.page_id) {
-          if ("undefined" === typeof out[page.menu_id]) {
-            out[page.menu_id] = [];
-          }
-          out[page.menu_id].push(page);
-        }
-      }
-      return out;
-    },
-    getPagesBelongsToMenu(menuId) {
-      if ("undefined" === typeof this.pagesBelongsToMenus[menuId]) {
-        return false;
-      }
-      return this.pagesBelongsToMenus[menuId];
-    },
-    getPagesBelongsToPages(pages) {
-      let out = [];
-      for (let page of pages) {
-        if (page.page_id) {
-          if ("undefined" === typeof out[page.page_id]) {
-            out[page.page_id] = [];
-          }
-          out[page.page_id].push(page);
-        }
-      }
-      return out;
-    },
-    getPagesBelongsToPage(parentPageId) {
-      if ("undefined" === typeof this.pagesBelongsToPages[parentPageId]) {
-        return false;
-      }
-      return this.pagesBelongsToPages[parentPageId];
-    },
-
-    addMenu() {
-      this.clearMsg();
-      this.isAddMenu = true;
-      this.menus_error_new = false;
-      this.new_menu_name = {};
-    },
-    async saveMenu(index) {
-      this.clearMsg();
-      if ("new" === index) {
-        this.menus_error_new = false;
-        for (let lang of this.langs) {
-          if (!this.new_menu_name[lang]) {
-            this.msgWrong = "Add menu name"; // for '+lang+' lang';
-            this.menus_error_new = true;
-            break;
+      try {
+        const menuId = menus.value[index]["id"];
+        const objDeleteMenu = await deleteMenu(menuId, token.value);
+        if (objDeleteMenu.data.success) {
+          const ret = await refreshMenus();
+          if (ret) {
+            msgGood.value = "Menu has been deleted";
+            pre_loader.value = false;
           }
         }
-        if (!this.msgWrong) {
-          if (!this.startLoading()) {
-            return false;
-          }
-
-          try {
-            const post = {
-              name: this.new_menu_name,
-            };
-            const addMenu = await postMenu(post, this.token);
-            if (addMenu.data.success) {
-              const ret = await this.refreshMenus();
-              if (ret) {
-                this.isAddMenu = false;
-                this.msgGood = "Menu has been added";
-              }
-            }
-          } catch (error) {
-            console.log("_is_error__", error);
-            this.msgWrong = "Add menu problem = " + error;
-          }
-          this.pre_loader = false;
-        }
-      } else {
-        if (!this.menus[index]["name"]) {
-          console.log("sth wrong i cant find menu with index=" + index);
-          return false;
-        }
-        const menuByLangs = this.menus[index]["name"];
-        //console.log('po zmianie i tu jest blad w testach i w przegladarce jak sie reczenie testuje', menuByLangs); //not change, why
-        for (let lang of this.langs) {
-          if (!menuByLangs[lang]) {
-            this.msgWrong = "Add menu name"; // for '+lang+' lang';
-            break;
-          }
-        }
-
-        if (!this.msgWrong) {
-          if (!this.startLoading()) {
-            return false;
-          }
-
-          try {
-            const post = {
-              id: this.menus[index]["id"],
-              name: menuByLangs,
-            };
-            const updateMenu = await putMenu(post, this.token);
-            if (updateMenu.data.success) {
-              //await this.refreshMenus();
-              this.msgGood = "Menu has been changed";
-            }
-          } catch (error) {
-            console.log("_is_error__", error);
-            this.msgWrong = "Add menu problem = " + error;
-          }
-          this.pre_loader = false;
-        }
+      } catch (error) {
+        console.log("_is_error__", error);
+        msgWrong.value = "Delete menu problem = " + error;
       }
-    },
-    async delMenu(index) {
-      this.clearMsg();
-      if ("new" === index) {
-        this.isAddMenu = false;
-      } else {
-        if (window.confirm("Are you sure you wish to delete this item?")) {
-          if (!this.startLoading()) {
-            return false;
-          }
+    }
+  }
+}
 
-          try {
-            const menuId = this.menus[index]["id"];
-            const objDeleteMenu = await deleteMenu(menuId, this.token);
-            if (objDeleteMenu.data.success) {
-              const ret = await this.refreshMenus();
-              if (ret) {
-                this.msgGood = "Menu has been deleted";
-                this.pre_loader = false;
-              }
-            }
-          } catch (error) {
-            console.log("_is_error__", error);
-            this.msgWrong = "Delete menu problem = " + error;
-          }
-        }
-      }
-    },
-    clearMsg() {
-      this.msgWrong = "";
-      this.msgGood = "";
-      this.errFields = [];
-    },
-    async startLoading() {
-      this.clearMsg();
-      if (this.pre_loader) {
-        return false;
-      }
-      this.pre_loader = true;
-      return true;
-    },
-    async positionMenu(direction, menuId) {
-      if (!this.startLoading()) {
+function clearMsg() {
+  msgWrong.value = "";
+  msgGood.value = "";
+  errFields.value = [];
+}
+
+
+const startLoading = async () => {
+  clearMsg();
+  if (pre_loader.value) {
+    return false;
+  }
+  pre_loader.value = true;
+  return true;
+}
+
+
+
+const positionMenu = async  (direction, menuId)  => {
+      if (!startLoading()) {
         return false;
       }
       try {
@@ -886,24 +917,24 @@ export default {
         if (pos.data.success) {
           const ret = await this.refreshMenus();
           if (ret) {
-            this.msgGood = "Position menu has been changed";
-            this.pre_loader = false;
+            msgGood.value = "Position menu has been changed";
+            pre_loader.value = false;
           }
         }
       } catch (error) {
         console.log("_is_error__", error);
-        this.msgWrong = "Position menu problem = " + error;
+        msgWrong.value = "Position menu problem = " + error;
       }
-    },
+    }
 
-    async delImage(id) {
-      if (!this.currentPageId) {
+    const delImage = async (id) => {
+      if (!currentPageId.value) {
         console.log("cant find page_id");
         return false;
       }
 
       if (window.confirm("Are you sure you wish to delete this item?")) {
-        if (!this.startLoading()) {
+        if (!startLoading()) {
           return false;
         }
 
@@ -912,29 +943,29 @@ export default {
           if (objDeleteImage.data.success) {
             const images = await getImages(
               "page",
-              this.currentPageId,
-              this.token,
+              currentPageId.value,
+              token,
             );
             if (images.data.success) {
-              this.images = images.data.data;
-              this.msgGood = "Image has been deleted";
-              this.pre_loader = false;
+              images.value = images.data.data;
+              msgGood.value = "Image has been deleted";
+              pre_loader.value = false;
             }
           }
         } catch (error) {
           console.log("_is_error_del_image_", error);
-          this.msgWrong = "Delete menu problem = " + error;
+          msgWrong.value = "Delete menu problem = " + error;
         }
       }
-    },
+    }
 
-    async positionImage(direction, imageId) {
-      if (!this.currentPageId) {
+    const positionImage = async  (direction, imageId)  => {
+      if (!currentPageId.value) {
         console.log("cant find page_id");
         return false;
       }
 
-      if (!this.startLoading()) {
+      if (!startLoading()) {
         return false;
       }
       try {
@@ -943,32 +974,32 @@ export default {
         if (pos.data.success) {
           const images = await getImages(
             "page",
-            this.currentPageId,
-            this.token,
+            currentPageId.value,
+            token,
           );
           if (images.data.success) {
-            this.images = images.data.data;
-            this.msgGood = "Position image has been changed";
-            this.pre_loader = false;
+            images.value = images.data.data;
+            msgGood.value = "Position image has been changed";
+            pre_loader.value = false;
           }
         }
       } catch (error) {
         console.log("_is_error_pos_image_", error);
-        this.msgWrong = "Position image problem = " + error;
+        msgWrong.value = "Position image problem = " + error;
       }
-    },
+    }
 
     /**
      * todo move this function to functions
      * only root pages without children (copy from react)
      * get root pages belongs to given menu, and get pages without children
      */
-    getRootPages(menuId) {
+    function getRootPages(menuId) {
       menuId = parseInt(menuId);
-      const pageId = this.currentPageId ? parseInt(this.currentPageId) : false;
+      const pageId = currentPageId.value ? parseInt(currentPageId.value) : false;
 
       let parentIds = []; //get children
-      for (let p of this.allPages) {
+      for (let p of allPages.value) {
         if (p.menu_id === menuId && p.page_id) {
           parentIds.push(p.page_id);
         }
@@ -993,42 +1024,43 @@ export default {
       }
 
       return pages;
-    },
+    }
 
-    handleMenuChange() {
-      this.rootPagesBelongToMenu = this.menu_id
-        ? this.getRootPages(this.menu_id)
+    const handleMenuChange = () => {
+      rootPagesBelongToMenu.value = menu_id.value
+        ? getRootPages(menu_id.value)
         : [];
-    },
+    }
 
-    editPage(pageId) {
-      this.clearMsg();
+    const editPage = (pageId) => {
+      clearMsg();
       const p = this.allPages.find((page) => page.id === pageId);
 
-      this.currentPageId = p.id;
+      currentPageId.value = p.id;
 
-      this.rootPagesBelongToMenu = p.menu_id
-        ? this.getRootPages(p.menu_id)
+      rootPagesBelongToMenu.value = p.menu_id
+        ? getRootPages(p.menu_id)
         : [];
-      this.title = p.title;
-      this.short_title = p.short_title;
-      this.description = p.description;
-      this.page_type = p.type; //!
-      this.content = p.content[this.lang]
+      title.value = p.title;
+      short_title.value = p.short_title;
+      description.value = p.description;
+      page_type.value = p.type; //!
+      content.value = p.content[lang.value]
         ? p.content
-        : functions.createEmptyObj(this.langs);
-      this.published = p.published;
+        : functions.createEmptyObj(langs.value);
+      published.value = p.published;
 
-      this.commented = p.commented;
-      this.after_login = p.after_login;
-      this.menu_id = p.menu_id;
-      this.page_id = p.page_id;
-      this.images = p.images;
-    },
-    async delPage(pageId) {
+      commented.value = p.commented;
+      after_login.value = p.after_login;
+      menu_id.value = p.menu_id;
+      page_id.value = p.page_id;
+      images.value = p.images;
+    }
+
+     const delPage = async (pageId) => {
       this.clearMsg();
       if (window.confirm("Are you sure you wish to delete this item?")) {
-        if (!this.startLoading()) {
+        if (!startLoading()) {
           return false;
         }
 
@@ -1037,109 +1069,165 @@ export default {
           if (objDeletePage.data.success) {
             const ret = await this.refreshPages();
             if (ret) {
-              this.msgGood = "Page has been deleted";
-              this.pre_loader = false;
+              msgGood.value = "Page has been deleted";
+              pre_loader.value = false;
             }
           }
         } catch (error) {
           console.log("_is_error__", error);
-          this.msgWrong = "Delete menu problem = " + error;
+          msgWrong.value = "Delete menu problem = " + error;
         }
       }
-    },
+    }
 
-    async positionPageUp(pageId) {
-      this.positionPage("up", pageId);
-    },
-    async positionPageDown(pageId) {
-      this.positionPage("down", pageId);
-    },
+    const positionPageUp = async  (pageId) => {
+      positionPage("up", pageId);
+    }
+    const positionPageDown = async  (pageId) => {
+      positionPage("down", pageId);
+    }
 
-    async positionPage(direction, pageId) {
-      if (!this.startLoading()) {
+    const positionPage = async  (direction, pageId)  => {
+      if (!startLoading()) {
         return false;
       }
 
       try {
-        const pos = await setPagePosition(direction, pageId, this.token);
+        const pos = await setPagePosition(direction, pageId, token);
         if (pos.data.success) {
           const ret = await this.refreshPages();
           if (ret) {
-            this.msgGood = "Position page has been changed";
-            this.pre_loader = false;
+            msgGood.value = "Position page has been changed";
+            pre_loader.value = false;
           }
         }
       } catch (error) {
         console.log("_is_error__", error);
-        this.msgWrong = "Position page problem = " + error;
+        msgWrong.value = "Position page problem = " + error;
       }
-    },
-
-    async refreshMenus() {
-      try {
-        const responseM = await getMenus(this.token);
-        this.menus = responseM.data.data;
-        return true;
-      } catch (error) {
-        console.log("error get menu=", error);
-      }
-      return false;
-    },
-
-    async refreshPages() {
-      try {
-        const responseP = await getPages(this.token);
-        this.allPages = responseP.data.data;
-        this.pagesBelongsToMenus = this.getPagesBelongsToMenus(
-          responseP.data.data,
-        );
-        this.pagesBelongsToPages = this.getPagesBelongsToPages(
-          responseP.data.data,
-        );
-
-        this.notRelatedPages = this.getNotRelatedPages(responseP.data.data);
-        this.innerPages = this.getInnerPages(responseP.data.data);
-        return true;
-      } catch (error) {
-        console.log("error get pages=", error);
-      }
-      return false;
-    },
-  },
-
-  async mounted() {
-    if (!this.token) {
-      this.$router.push("/");
-      return false;
     }
 
-    this.pre_loader = true;
-    const refreshM = await this.refreshMenus();
-    const refreshP = await this.refreshPages();
 
-    if (refreshM && refreshP) {
-      this.pre_loader = false;
-    }
-  },
-
-  watch: {
-    new_menu_name: {
-      handler: function () {
-        this.clearMsg();
-      },
-      deep: true,
-    },
-    menus: {
-      handler: function () {
-        this.clearMsg();
-      },
-      deep: true,
-    },
-    lang: {
-      handler: function () {
-        this.clearMsg();
-      },
-    },
-  },
+const refreshMenus = async () => {
+  try {
+    const responseM = await getMenus(token);
+    menus.value = responseM.data.data;
+    return true;
+  } catch (error) {
+    console.log("error get menu=", error);
+  }
+  return false;
 };
+
+const refreshPages = async () => {
+  try {
+    const responseP = await getPages(token.value);
+    allPages.value = responseP.data.data;
+    pagesBelongsToMenus.value = getPagesBelongsToMenus(responseP.data.data);
+    pagesBelongsToPages.value = getPagesBelongsToPages(responseP.data.data);
+
+    notRelatedPages.value = getNotRelatedPages(responseP.data.data);
+    innerPages.value = getInnerPages(responseP.data.data);
+    return true;
+  } catch (error) {
+    console.log("error get pages=", error);
+  }
+  return false;
+};
+/*
+const getPagesBelongsToMenus = (pages) => {
+  let out = [];
+  for (let page of pages) {
+    if (page.menu_id && !page.page_id) {
+      if ("undefined" === typeof out[page.menu_id]) {
+        out[page.menu_id] = [];
+      }
+      out[page.menu_id].push(page);
+    }
+  }
+  return out;
+};
+
+const getPagesBelongsToPages = (pages) => {
+  let out = [];
+  for (let page of pages) {
+    if (page.page_id) {
+      if ("undefined" === typeof out[page.page_id]) {
+        out[page.page_id] = [];
+      }
+      out[page.page_id].push(page);
+    }
+  }
+  return out;
+};
+
+const getNotRelatedPages = (pages) => {
+  let out = [];
+  for (let page of pages) {
+    if (!page.menu_id && "inner" !== page.type) {
+      out.push(page);
+    }
+  }
+  return out;
+};
+
+const getInnerPages = (pages) => {
+  let out = [];
+  for (let page of pages) {
+    if ("inner" === page.type) {
+      out.push(page);
+    }
+  }
+  return out;
+};
+*/
+
+// Other methods...
+
+// Lifecycle hooks
+onMounted( async  () => {
+  if (!token) {
+    useRouter().push("/");
+    return false;
+  }
+
+  pre_loader.value = true;
+  const refreshM = await refreshMenus();
+  const refreshP =await  refreshPages();
+
+  if (refreshM && refreshP) {
+      pre_loader.value = false;
+    }  
+
+})
+
+
+
+   
+    watch(new_menu_name, () => {
+      clearMsg();
+    }, { deep: true });
+
+   
+    watch(menus, () => {
+      clearMsg();
+    }, { deep: true });
+
+   
+    watch(lang, () => {
+      clearMsg();
+    });
+
+
+
+
+/*
+// Watchers
+watch([new_menu_name, menus, lang], () => {
+  clearMsg();
+});
+*/
+
+// Other watchers...
+
 </script>
