@@ -605,8 +605,8 @@ const saveEditPage = async () => {
     };
 
     const retPage = currentPageId.value
-      ? await putPage(post, currentPageId.value, token.value)
-      : await postPage(post, token.value);
+      ? await putPage(post, currentPageId.value, token)
+      : await postPage(post, token);
 
     if (retPage.data.success) {
       if (!currentPageId.value) {
@@ -722,8 +722,8 @@ async function getImages(files) {
   return Promise.all(promises);
 }
 
-function changeLang(lang) {
-  lang.value = lang;
+function changeLang(inLang) {
+  lang.value = inLang;
 }
 
 function getNotRelatedPages(pages) {
@@ -794,23 +794,22 @@ function addMenu() {
 async function saveMenu(index) {
   clearMsg();
   if ("new" === index) {
-    //console.log('_____________________sss0___________________');
-    new_menu_name.value = false;
+
+    menus_error_new.value = false;
     for (let lang of langs.value) {
       if (!new_menu_name.value[lang]) {
-        msgWrong.value = "Add menu name"; // for '+lang+' lang';
-        new_menu_name.value = true;
+        msgWrong.value = "Add menu name"; // for lang = "+lang;
+        menus_error_new.value = true;
         break;
       }
     }
-    //console.log('_____________________sss1___________________');    
+
     if (!msgWrong.value) {
       if (!startLoading()) {
         return false;
       }
 
       try {
-        //console.log('_____________________sss2___________________');
         const post = {
           name: new_menu_name.value,
         };
@@ -851,7 +850,7 @@ async function saveMenu(index) {
           id: menus.value[index]["id"],
           name: menuByLangs,
         };
-        const updateMenu = await putMenu(post, token.value);
+        const updateMenu = await putMenu(post, token);
         if (updateMenu.data.success) {
           msgGood.value = "Menu has been changed";
         }
@@ -876,7 +875,7 @@ async function delMenu(index) {
 
       try {
         const menuId = menus.value[index]["id"];
-        const objDeleteMenu = await deleteMenu(menuId, token.value);
+        const objDeleteMenu = await deleteMenu(menuId, token);
         if (objDeleteMenu.data.success) {
           const ret = await refreshMenus();
           if (ret) {
@@ -1124,7 +1123,7 @@ const refreshMenus = async () => {
 
 const refreshPages = async () => {
   try {
-    const responseP = await getPages(token.value);
+    const responseP = await getPages(token);
     allPages.value = responseP.data.data;
     pagesBelongsToMenus.value = getPagesBelongsToMenus(responseP.data.data);
     pagesBelongsToPages.value = getPagesBelongsToPages(responseP.data.data);
@@ -1227,19 +1226,16 @@ watch: {
 */
    
     watch(new_menu_name, () => {
-      //console.log(  'new_menu_name' );
       clearMsg();
     }, { deep: true });
 
    
     watch(menus, () => {
-      //console.log(  'menus' );
       clearMsg();
     }, { deep: true });
 
    
     watch(lang, () => {
-      //console.log(  'langs' );
       clearMsg();
     });
 
