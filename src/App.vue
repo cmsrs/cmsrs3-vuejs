@@ -1,5 +1,5 @@
 <template>
-  <NavBar/>
+  <NavBar />
   <div class="container">
     <router-view />
   </div>
@@ -10,6 +10,6 @@ import NavBar from "./components/NavBar.vue";
 </script>
 
 <style>
-@import '../node_modules/bootstrap/dist/css/bootstrap.css';
-@import './assets/styles.css';
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "./assets/styles.css";
 </style>

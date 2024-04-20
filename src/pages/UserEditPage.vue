@@ -192,7 +192,7 @@ onMounted(async () => {
   client = getEmptyClient();
 
   if (mode === "edit") {
-    const id = router.currentRoute.value.params.id
+    const id = router.currentRoute.value.params.id;
     pre_loader.value = true;
     const loadC = await loadClient(id);
 

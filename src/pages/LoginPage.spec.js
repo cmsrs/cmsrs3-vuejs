@@ -11,7 +11,6 @@ import MenuPagesPage from "./MenuPagesPage.vue";
 import UsersPage from "./UsersPage.vue";
 import UserEditPage from "./UserEditPage.vue";
 
-
 import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
@@ -185,7 +184,7 @@ describe("Login page", () => {
           email: emailGood,
           password: passwordGood,
         });
-        expect(router.currentRoute.value.path).toBe('/pages')
+        expect(router.currentRoute.value.path).toBe("/pages");
       });
 
       const auth = storage.getItem("auth");
@@ -196,53 +195,51 @@ describe("Login page", () => {
     });
   });
 
-  describe("prevent go to another pages when user is not auth", () => {  
+  describe("prevent go to another pages when user is not auth", () => {
     const setupTmp = async (path, objPage) => {
-      router.push(path)
-      await router.isReady()
+      router.push(path);
+      await router.isReady();
       render(objPage);
     };
-    
+
     it("try to redirect to pages", async () => {
-      await setupTmp('/pages', MenuPagesPage)
-      expect(screen.queryByTestId('pages-page')).toBeInTheDocument()
+      await setupTmp("/pages", MenuPagesPage);
+      expect(screen.queryByTestId("pages-page")).toBeInTheDocument();
       await waitFor(() => {
-        expect(router.currentRoute.value.path).toBe('/')      
-      });      
-    });      
+        expect(router.currentRoute.value.path).toBe("/");
+      });
+    });
 
     it("try to redirect to users", async () => {
-      await setupTmp('/users', UsersPage)      
-      expect(screen.queryByTestId('users-page')).toBeInTheDocument()
+      await setupTmp("/users", UsersPage);
+      expect(screen.queryByTestId("users-page")).toBeInTheDocument();
       await waitFor(() => {
-        expect(router.currentRoute.value.path).toBe('/')
-      });      
-    });      
+        expect(router.currentRoute.value.path).toBe("/");
+      });
+    });
 
     it("try to redirect to user add page", async () => {
-      await setupTmp('/user/add', UserEditPage)      
-      expect(screen.queryByTestId('user-edit-page')).toBeInTheDocument()
+      await setupTmp("/user/add", UserEditPage);
+      expect(screen.queryByTestId("user-edit-page")).toBeInTheDocument();
       await waitFor(() => {
-        expect(router.currentRoute.value.path).toBe('/')
-      });      
-    });      
+        expect(router.currentRoute.value.path).toBe("/");
+      });
+    });
 
     it("try to redirect to user edit page", async () => {
-      await setupTmp('/user/edit/1001', UserEditPage)      
-      expect(screen.queryByTestId('user-edit-page')).toBeInTheDocument()
+      await setupTmp("/user/edit/1001", UserEditPage);
+      expect(screen.queryByTestId("user-edit-page")).toBeInTheDocument();
       await waitFor(() => {
-        expect(router.currentRoute.value.path).toBe('/')
-      });      
-    });      
+        expect(router.currentRoute.value.path).toBe("/");
+      });
+    });
 
     it("try to redirect fake page", async () => {
-      router.push('/fake123')
-      await router.isReady()
+      router.push("/fake123");
+      await router.isReady();
       await waitFor(() => {
-        expect(router.currentRoute.value.path).toBe('/fake123')
-      });      
-    });      
-
-
+        expect(router.currentRoute.value.path).toBe("/fake123");
+      });
+    });
   });
 });

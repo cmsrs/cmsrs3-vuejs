@@ -464,8 +464,8 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, watch, onMounted,  defineComponent  } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, watch, onMounted, defineComponent } from "vue";
+import { useRouter } from "vue-router";
 import { SERVER_URL } from "../config.js";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
@@ -491,9 +491,9 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import PageTitle from "../components/PageTitle.vue";
 import Msg from "../components/Msg.vue";
 
-
 // Data
-const { configLangs, configDefaultLang, pageTypes, token } = functions.retrieveParamsFromStorage();
+const { configLangs, configDefaultLang, pageTypes, token } =
+  functions.retrieveParamsFromStorage();
 const langs = ref(configLangs);
 const lang = ref(configDefaultLang);
 const defaultLang = ref(configDefaultLang);
@@ -531,13 +531,10 @@ const menus_error_new = ref(false);
 const currentPageId = ref(false);
 
 const editor = ref(ClassicEditor);
-const editorConfig = ref({
-});
+const editorConfig = ref({});
 
-
-
-editor.value = ClassicEditor
-const ckeditor = CKEditor.component
+editor.value = ClassicEditor;
+const ckeditor = CKEditor.component;
 
 /*
 //import CKEditor from "@ckeditor/ckeditor5-vue";
@@ -566,7 +563,6 @@ export default defineComponent({
 })
 */
 
-
 /*
 setup() {
     // Ref dla ClassicEditor
@@ -578,7 +574,6 @@ setup() {
     };
 }
 */
-
 
 // Computed
 //const SERVER_URL = computed(() => SERVER_URL);
@@ -679,12 +674,7 @@ async function handleUploadFile(event) {
   const images = await getImages(files);
 
   for (let i = 0; i < images.length; i++) {
-    let ret = uploadImage(
-      images[i],
-      "page",
-      currentPageId.value,
-      token
-    );
+    let ret = uploadImage(images[i], "page", currentPageId.value, token);
     await delay(6000);
 
     if (ret) {
@@ -745,7 +735,7 @@ function getInnerPages(pages) {
   }
   return out;
 }
-function     getPagesBelongsToMenus(pages) {
+function getPagesBelongsToMenus(pages) {
   let out = [];
   for (let page of pages) {
     if (page.menu_id && !page.page_id) {
@@ -757,13 +747,13 @@ function     getPagesBelongsToMenus(pages) {
   }
   return out;
 }
-function     getPagesBelongsToMenu(menuId) {
+function getPagesBelongsToMenu(menuId) {
   if ("undefined" === typeof pagesBelongsToMenus.value[menuId]) {
     return false;
   }
   return pagesBelongsToMenus.value[menuId];
 }
-function     getPagesBelongsToPages(pages) {
+function getPagesBelongsToPages(pages) {
   let out = [];
   for (let page of pages) {
     if (page.page_id) {
@@ -775,26 +765,23 @@ function     getPagesBelongsToPages(pages) {
   }
   return out;
 }
-function  getPagesBelongsToPage(parentPageId) {
+function getPagesBelongsToPage(parentPageId) {
   if ("undefined" === typeof pagesBelongsToPages.value[parentPageId]) {
     return false;
   }
   return pagesBelongsToPages.value[parentPageId];
 }
 
-
 function addMenu() {
-      clearMsg();
-      isAddMenu.value = true;
-      menus_error_new.value = false;
-      new_menu_name.value = {};
-    }
-
+  clearMsg();
+  isAddMenu.value = true;
+  menus_error_new.value = false;
+  new_menu_name.value = {};
+}
 
 async function saveMenu(index) {
   clearMsg();
   if ("new" === index) {
-
     menus_error_new.value = false;
     for (let lang of langs.value) {
       if (!new_menu_name.value[lang]) {
@@ -897,7 +884,6 @@ function clearMsg() {
   errFields.value = [];
 }
 
-
 const startLoading = async () => {
   clearMsg();
   if (pre_loader.value) {
@@ -905,210 +891,197 @@ const startLoading = async () => {
   }
   pre_loader.value = true;
   return true;
+};
+
+const positionMenu = async (direction, menuId) => {
+  if (!startLoading()) {
+    return false;
+  }
+  try {
+    const pos = await setMenuPosition(direction, menuId, token);
+
+    if (pos.data.success) {
+      const ret = await refreshMenus();
+      if (ret) {
+        msgGood.value = "Position menu has been changed";
+        pre_loader.value = false;
+      }
+    }
+  } catch (error) {
+    console.log("_is_error__", error);
+    msgWrong.value = "Position menu problem = " + error;
+  }
+};
+
+const delImage = async (id) => {
+  if (!currentPageId.value) {
+    console.log("cant find page_id");
+    return false;
+  }
+
+  if (window.confirm("Are you sure you wish to delete this item?")) {
+    if (!startLoading()) {
+      return false;
+    }
+
+    try {
+      const objDeleteImage = await deleteImage(id, token);
+      if (objDeleteImage.data.success) {
+        const images = await getImages("page", currentPageId.value, token);
+        if (images.data.success) {
+          images.value = images.data.data;
+          msgGood.value = "Image has been deleted";
+          pre_loader.value = false;
+        }
+      }
+    } catch (error) {
+      console.log("_is_error_del_image_", error);
+      msgWrong.value = "Delete menu problem = " + error;
+    }
+  }
+};
+
+const positionImage = async (direction, imageId) => {
+  if (!currentPageId.value) {
+    console.log("cant find page_id");
+    return false;
+  }
+
+  if (!startLoading()) {
+    return false;
+  }
+  try {
+    const pos = await setImagePosition(direction, imageId, token);
+
+    if (pos.data.success) {
+      const images = await getImages("page", currentPageId.value, token);
+      if (images.data.success) {
+        images.value = images.data.data;
+        msgGood.value = "Position image has been changed";
+        pre_loader.value = false;
+      }
+    }
+  } catch (error) {
+    console.log("_is_error_pos_image_", error);
+    msgWrong.value = "Position image problem = " + error;
+  }
+};
+
+/**
+ * todo move this function to functions
+ * only root pages without children (copy from react)
+ * get root pages belongs to given menu, and get pages without children
+ */
+function getRootPages(menuId) {
+  menuId = parseInt(menuId);
+  const pageId = currentPageId.value ? parseInt(currentPageId.value) : false;
+
+  let parentIds = []; //get children
+  for (let p of allPages.value) {
+    if (p.menu_id === menuId && p.page_id) {
+      parentIds.push(p.page_id);
+    }
+  }
+
+  let pages = [];
+
+  //only one level of depth
+  if (parentIds.includes(pageId)) {
+    return pages;
+  }
+
+  for (let p of allPages.value) {
+    //edit
+    if (p.menu_id === menuId && !p.page_id && pageId && p.id !== pageId) {
+      pages.push(p);
+    }
+    //new
+    if (p.menu_id === menuId && !p.page_id && !pageId) {
+      pages.push(p);
+    }
+  }
+
+  return pages;
 }
 
+const handleMenuChange = () => {
+  rootPagesBelongToMenu.value = menu_id.value
+    ? getRootPages(menu_id.value)
+    : [];
+};
 
+const editPage = (pageId) => {
+  clearMsg();
+  const p = allPages.value.find((page) => page.id === pageId);
 
-const positionMenu = async  (direction, menuId)  => {
-      if (!startLoading()) {
-        return false;
-      }
-      try {
-        const pos = await setMenuPosition(direction, menuId, token);
+  currentPageId.value = p.id;
 
-        if (pos.data.success) {
-          const ret = await refreshMenus();
-          if (ret) {
-            msgGood.value = "Position menu has been changed";
-            pre_loader.value = false;
-          }
-        }
-      } catch (error) {
-        console.log("_is_error__", error);
-        msgWrong.value = "Position menu problem = " + error;
-      }
+  rootPagesBelongToMenu.value = p.menu_id ? getRootPages(p.menu_id) : [];
+  title.value = p.title;
+  short_title.value = p.short_title;
+  description.value = p.description;
+  page_type.value = p.type; //!
+  content.value = p.content[lang.value]
+    ? p.content
+    : functions.createEmptyObj(langs.value);
+  published.value = p.published;
+
+  commented.value = p.commented;
+  after_login.value = p.after_login;
+  menu_id.value = p.menu_id;
+  page_id.value = p.page_id;
+  images.value = p.images;
+};
+
+const delPage = async (pageId) => {
+  clearMsg();
+  if (window.confirm("Are you sure you wish to delete this item?")) {
+    if (!startLoading()) {
+      return false;
     }
 
-    const delImage = async (id) => {
-      if (!currentPageId.value) {
-        console.log("cant find page_id");
-        return false;
-      }
-
-      if (window.confirm("Are you sure you wish to delete this item?")) {
-        if (!startLoading()) {
-          return false;
-        }
-
-        try {
-          const objDeleteImage = await deleteImage(id, token);
-          if (objDeleteImage.data.success) {
-            const images = await getImages(
-              "page",
-              currentPageId.value,
-              token,
-            );
-            if (images.data.success) {
-              images.value = images.data.data;
-              msgGood.value = "Image has been deleted";
-              pre_loader.value = false;
-            }
-          }
-        } catch (error) {
-          console.log("_is_error_del_image_", error);
-          msgWrong.value = "Delete menu problem = " + error;
+    try {
+      const objDeletePage = await deletePage(pageId, token);
+      if (objDeletePage.data.success) {
+        const ret = await refreshPages();
+        if (ret) {
+          msgGood.value = "Page has been deleted";
+          pre_loader.value = false;
         }
       }
+    } catch (error) {
+      console.log("_is_error__", error);
+      msgWrong.value = "Delete menu problem = " + error;
     }
+  }
+};
 
-    const positionImage = async  (direction, imageId)  => {
-      if (!currentPageId.value) {
-        console.log("cant find page_id");
-        return false;
-      }
+const positionPageUp = async (pageId) => {
+  positionPage("up", pageId);
+};
+const positionPageDown = async (pageId) => {
+  positionPage("down", pageId);
+};
 
-      if (!startLoading()) {
-        return false;
-      }
-      try {
-        const pos = await setImagePosition(direction, imageId, token);
+const positionPage = async (direction, pageId) => {
+  if (!startLoading()) {
+    return false;
+  }
 
-        if (pos.data.success) {
-          const images = await getImages(
-            "page",
-            currentPageId.value,
-            token,
-          );
-          if (images.data.success) {
-            images.value = images.data.data;
-            msgGood.value = "Position image has been changed";
-            pre_loader.value = false;
-          }
-        }
-      } catch (error) {
-        console.log("_is_error_pos_image_", error);
-        msgWrong.value = "Position image problem = " + error;
+  try {
+    const pos = await setPagePosition(direction, pageId, token);
+    if (pos.data.success) {
+      const ret = await refreshPages();
+      if (ret) {
+        msgGood.value = "Position page has been changed";
+        pre_loader.value = false;
       }
     }
-
-    /**
-     * todo move this function to functions
-     * only root pages without children (copy from react)
-     * get root pages belongs to given menu, and get pages without children
-     */
-    function getRootPages(menuId) {
-      menuId = parseInt(menuId);
-      const pageId = currentPageId.value ? parseInt(currentPageId.value) : false;
-
-      let parentIds = []; //get children
-      for (let p of allPages.value) {
-        if (p.menu_id === menuId && p.page_id) {
-          parentIds.push(p.page_id);
-        }
-      }
-
-      let pages = [];
-
-      //only one level of depth
-      if (parentIds.includes(pageId)) {
-        return pages;
-      }
-
-      for (let p of allPages.value) {
-        //edit
-        if (p.menu_id === menuId && !p.page_id && pageId && p.id !== pageId) {
-          pages.push(p);
-        }
-        //new
-        if (p.menu_id === menuId && !p.page_id && !pageId) {
-          pages.push(p);
-        }
-      }
-
-      return pages;
-    }
-
-    const handleMenuChange = () => {
-      rootPagesBelongToMenu.value = menu_id.value
-        ? getRootPages(menu_id.value)
-        : [];
-    }
-
-    const editPage = (pageId) => {
-      clearMsg();
-      const p = allPages.value.find((page) => page.id === pageId);
-
-      currentPageId.value = p.id;
-
-      rootPagesBelongToMenu.value = p.menu_id
-        ? getRootPages(p.menu_id)
-        : [];
-      title.value = p.title;
-      short_title.value = p.short_title;
-      description.value = p.description;
-      page_type.value = p.type; //!
-      content.value = p.content[lang.value]
-        ? p.content
-        : functions.createEmptyObj(langs.value);
-      published.value = p.published;
-
-      commented.value = p.commented;
-      after_login.value = p.after_login;
-      menu_id.value = p.menu_id;
-      page_id.value = p.page_id;
-      images.value = p.images;
-    }
-
-     const delPage = async (pageId) => {
-      clearMsg();
-      if (window.confirm("Are you sure you wish to delete this item?")) {
-        if (!startLoading()) {
-          return false;
-        }
-
-        try {
-          const objDeletePage = await deletePage(pageId, token);
-          if (objDeletePage.data.success) {
-            const ret = await refreshPages();
-            if (ret) {
-              msgGood.value = "Page has been deleted";
-              pre_loader.value = false;
-            }
-          }
-        } catch (error) {
-          console.log("_is_error__", error);
-          msgWrong.value = "Delete menu problem = " + error;
-        }
-      }
-    }
-
-    const positionPageUp = async  (pageId) => {
-      positionPage("up", pageId);
-    }
-    const positionPageDown = async  (pageId) => {
-      positionPage("down", pageId);
-    }
-
-    const positionPage = async  (direction, pageId)  => {
-      if (!startLoading()) {
-        return false;
-      }
-
-      try {
-        const pos = await setPagePosition(direction, pageId, token);
-        if (pos.data.success) {
-          const ret = await refreshPages();
-          if (ret) {
-            msgGood.value = "Position page has been changed";
-            pre_loader.value = false;
-          }
-        }
-      } catch (error) {
-        console.log("_is_error__", error);
-        msgWrong.value = "Position page problem = " + error;
-      }
-    }
-
+  } catch (error) {
+    console.log("_is_error__", error);
+    msgWrong.value = "Position page problem = " + error;
+  }
+};
 
 const refreshMenus = async () => {
   try {
@@ -1187,7 +1160,7 @@ const getInnerPages = (pages) => {
 // Other methods...
 
 // Lifecycle hooks
-onMounted( async  () => {
+onMounted(async () => {
   if (!token) {
     useRouter().push("/");
     return false;
@@ -1195,13 +1168,12 @@ onMounted( async  () => {
 
   pre_loader.value = true;
   const refreshM = await refreshMenus();
-  const refreshP =await  refreshPages();
+  const refreshP = await refreshPages();
 
   if (refreshM && refreshP) {
-      pre_loader.value = false;
-    }  
-
-})
+    pre_loader.value = false;
+  }
+});
 
 /*
 watch: {
@@ -1224,23 +1196,26 @@ watch: {
     },
   }
 */
-   
-    watch(new_menu_name, () => {
-      clearMsg();
-    }, { deep: true });
 
-   
-    watch(menus, () => {
-      clearMsg();
-    }, { deep: true });
+watch(
+  new_menu_name,
+  () => {
+    clearMsg();
+  },
+  { deep: true },
+);
 
-   
-    watch(lang, () => {
-      clearMsg();
-    });
+watch(
+  menus,
+  () => {
+    clearMsg();
+  },
+  { deep: true },
+);
 
-
-
+watch(lang, () => {
+  clearMsg();
+});
 
 /*
 // Watchers
@@ -1250,5 +1225,4 @@ watch([new_menu_name, menus, lang], () => {
 */
 
 // Other watchers...
-
 </script>

@@ -10,7 +10,7 @@ export const useAuthStore = defineStore("auth", () => {
     page_types: [],
     langs: [],
     cache_enable: 0,
-    default_lang: ''
+    default_lang: "",
   };
 
   const storedState = localStorage.getItem("auth");
@@ -50,7 +50,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.page_types = [];
     config.langs = [];
     config.cache_enable = 0;
-    config.default_lang = '';
+    config.default_lang = "";
 
     //auth.id = 0
     //delete auth.username

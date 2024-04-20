@@ -1,12 +1,12 @@
 select.rs-select {
-    appearance: auto;
+  appearance: auto;
 }
 
 .disabled-if-loader {
-    pointer-events: none;
-    opacity: 0.1;
-    cursor: not-allowed;
-} 
+  pointer-events: none;
+  opacity: 0.1;
+  cursor: not-allowed;
+}
 
 .msg-info {
   min-height: 50px;

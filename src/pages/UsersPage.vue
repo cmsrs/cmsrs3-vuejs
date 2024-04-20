@@ -150,7 +150,6 @@ import { getClients, deleteClient } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import TableSort from "../components/TableSort.vue";
 
-
 const router = useRouter();
 
 const { token } = functions.retrieveParamsFromStorage();
@@ -253,7 +252,7 @@ const refreshClients = async () => {
       direction.value,
       token,
       page.value,
-      search.value
+      search.value,
     );
     clients.value = responseC.data.data;
     return true;
@@ -263,7 +262,7 @@ const refreshClients = async () => {
   return false;
 };
 
-onMounted( async() => {
+onMounted(async () => {
   if (!token) {
     router.push("/");
     return false;
@@ -283,5 +282,4 @@ onMounted( async() => {
     pre_loader.value = false;
   }
 });
-
 </script>

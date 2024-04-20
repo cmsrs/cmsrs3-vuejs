@@ -9,7 +9,7 @@ import UserEditPage from "../pages/UserEditPage.vue";
 
 const router = createRouter({
   //history:  is_test ?  createMemoryHistory(import.meta.env.BASE_URL)  : createWebHistory(import.meta.env.BASE_URL),
-  history:  createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
@@ -33,7 +33,7 @@ const router = createRouter({
     // {
     //   path: "/*",
     //   component: LoginPage,
-    //   catchAll: true, 
+    //   catchAll: true,
     // },
 
     // {
