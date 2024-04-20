@@ -758,10 +758,10 @@ function     getPagesBelongsToMenus(pages) {
   return out;
 }
 function     getPagesBelongsToMenu(menuId) {
-  if ("undefined" === typeof this.pagesBelongsToMenus[menuId]) {
+  if ("undefined" === typeof pagesBelongsToMenus.value[menuId]) {
     return false;
   }
-  return this.pagesBelongsToMenus[menuId];
+  return pagesBelongsToMenus.value[menuId];
 }
 function     getPagesBelongsToPages(pages) {
   let out = [];
@@ -776,10 +776,10 @@ function     getPagesBelongsToPages(pages) {
   return out;
 }
 function  getPagesBelongsToPage(parentPageId) {
-  if ("undefined" === typeof this.pagesBelongsToPages[parentPageId]) {
+  if ("undefined" === typeof pagesBelongsToPages.value[parentPageId]) {
     return false;
   }
-  return this.pagesBelongsToPages[parentPageId];
+  return pagesBelongsToPages.value[parentPageId];
 }
 
 
@@ -794,20 +794,23 @@ function addMenu() {
 async function saveMenu(index) {
   clearMsg();
   if ("new" === index) {
+    //console.log('_____________________sss0___________________');
     new_menu_name.value = false;
-    for (let lang of langs) {
+    for (let lang of langs.value) {
       if (!new_menu_name.value[lang]) {
         msgWrong.value = "Add menu name"; // for '+lang+' lang';
         new_menu_name.value = true;
         break;
       }
     }
+    //console.log('_____________________sss1___________________');    
     if (!msgWrong.value) {
       if (!startLoading()) {
         return false;
       }
 
       try {
+        //console.log('_____________________sss2___________________');
         const post = {
           name: new_menu_name.value,
         };
@@ -912,10 +915,10 @@ const positionMenu = async  (direction, menuId)  => {
         return false;
       }
       try {
-        const pos = await setMenuPosition(direction, menuId, this.token);
+        const pos = await setMenuPosition(direction, menuId, token);
 
         if (pos.data.success) {
-          const ret = await this.refreshMenus();
+          const ret = await refreshMenus();
           if (ret) {
             msgGood.value = "Position menu has been changed";
             pre_loader.value = false;
@@ -939,7 +942,7 @@ const positionMenu = async  (direction, menuId)  => {
         }
 
         try {
-          const objDeleteImage = await deleteImage(id, this.token);
+          const objDeleteImage = await deleteImage(id, token);
           if (objDeleteImage.data.success) {
             const images = await getImages(
               "page",
@@ -969,7 +972,7 @@ const positionMenu = async  (direction, menuId)  => {
         return false;
       }
       try {
-        const pos = await setImagePosition(direction, imageId, this.token);
+        const pos = await setImagePosition(direction, imageId, token);
 
         if (pos.data.success) {
           const images = await getImages(
@@ -1012,7 +1015,7 @@ const positionMenu = async  (direction, menuId)  => {
         return pages;
       }
 
-      for (let p of this.allPages) {
+      for (let p of allPages.value) {
         //edit
         if (p.menu_id === menuId && !p.page_id && pageId && p.id !== pageId) {
           pages.push(p);
@@ -1034,7 +1037,7 @@ const positionMenu = async  (direction, menuId)  => {
 
     const editPage = (pageId) => {
       clearMsg();
-      const p = this.allPages.find((page) => page.id === pageId);
+      const p = allPages.value.find((page) => page.id === pageId);
 
       currentPageId.value = p.id;
 
@@ -1058,16 +1061,16 @@ const positionMenu = async  (direction, menuId)  => {
     }
 
      const delPage = async (pageId) => {
-      this.clearMsg();
+      clearMsg();
       if (window.confirm("Are you sure you wish to delete this item?")) {
         if (!startLoading()) {
           return false;
         }
 
         try {
-          const objDeletePage = await deletePage(pageId, this.token);
+          const objDeletePage = await deletePage(pageId, token);
           if (objDeletePage.data.success) {
-            const ret = await this.refreshPages();
+            const ret = await refreshPages();
             if (ret) {
               msgGood.value = "Page has been deleted";
               pre_loader.value = false;
@@ -1095,7 +1098,7 @@ const positionMenu = async  (direction, menuId)  => {
       try {
         const pos = await setPagePosition(direction, pageId, token);
         if (pos.data.success) {
-          const ret = await this.refreshPages();
+          const ret = await refreshPages();
           if (ret) {
             msgGood.value = "Position page has been changed";
             pre_loader.value = false;
@@ -1201,20 +1204,42 @@ onMounted( async  () => {
 
 })
 
-
-
+/*
+watch: {
+    new_menu_name: {
+      handler: function () {
+        this.clearMsg();
+      },
+      deep: true,
+    },
+    menus: {
+      handler: function () {
+        this.clearMsg();
+      },
+      deep: true,
+    },
+    lang: {
+      handler: function () {
+        this.clearMsg();
+      },
+    },
+  }
+*/
    
     watch(new_menu_name, () => {
+      //console.log(  'new_menu_name' );
       clearMsg();
     }, { deep: true });
 
    
     watch(menus, () => {
+      //console.log(  'menus' );
       clearMsg();
     }, { deep: true });
 
    
     watch(lang, () => {
+      //console.log(  'langs' );
       clearMsg();
     });
 
