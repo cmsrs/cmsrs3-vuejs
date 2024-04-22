@@ -301,6 +301,28 @@ const setup = async () => {
   render(MenuPagesPage);
 };
 
+const setup_display_message_err = async () => {
+  const button = screen.queryByRole("button_add_menu");
+  await userEvent.click(button);
+
+  //const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
+  //await userEvent.type(addMenuPlaceholder, 'New menu name');
+  const alertDangerBefore = screen.queryByRole("alert_danger");
+  expect(alertDangerBefore).not.toBeInTheDocument();
+
+  const icon = screen.queryByRole("save_menu_0");
+  await userEvent.click(icon);
+
+  const alertDangerAfter = screen.queryByRole("alert_danger");
+  expect(alertDangerAfter).toBeInTheDocument();
+
+  const inputNewMenu = screen.queryByRole("new_menu");
+  expect(inputNewMenu).toHaveClass("is-invalid");
+
+  //const errorMsg = "Add menu name";
+  //await screen.findByText(errorMsg);
+};
+
 const waitForAjaxes = async () => {
   const spinner = screen.queryByRole("pre_loader_save_edit_page");
   expect(spinner).not.toBeNull();
@@ -473,6 +495,7 @@ describe("Pages page", () => {
       expect(newMenuAfterClick).toBe(null);
     });
 
+    /*
     const setup_display_message_err = async () => {
       const button = screen.queryByRole("button_add_menu");
       await userEvent.click(button);
@@ -490,13 +513,29 @@ describe("Pages page", () => {
 
       const inputNewMenu = screen.queryByRole("new_menu");
       expect(inputNewMenu).toHaveClass("is-invalid");
+
+      const errorMsg = "Add menu name";
+      await screen.findByText(errorMsg);
     };
+    */
+
+    it("save new menu - display error when we set up one lang", async () => {
+      await setup();
+      await waitForAjaxes();
+
+      await setup_display_message_err();
+
+      const errorMsg = "Add menu name";
+      await screen.findByText(errorMsg);    
+      await expect(screen.findByText('for lang')).rejects.toThrow(); //it is one lang
+    });
 
     it("save new menu - display error and clear msg after change menu name", async () => {
       await setup();
       await waitForAjaxes();
 
       await setup_display_message_err();
+      await expect(screen.findByText('for lang')).rejects.toThrow(); //it is one lang
 
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
       await userEvent.type(addMenuPlaceholder, "N");
@@ -1033,6 +1072,15 @@ describe("Pages page", () => {
       const changeLang = screen.queryByRole("change_lang");
       expect(changeLang).toBeInTheDocument();
     });
+
+    it("save new menu and display error for first empty lang", async () => {
+      await setup2();
+      await waitForAjaxes();
+
+      await setup_display_message_err();
+      await screen.findByText('Add menu name for lang = pl');
+    });
+
   });
 
   describe("Interactions one menu", () => {

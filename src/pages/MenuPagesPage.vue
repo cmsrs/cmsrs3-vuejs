@@ -496,9 +496,7 @@ const { configLangs, configDefaultLang, pageTypes, token } =
   functions.retrieveParamsFromStorage();
 const langs = ref(configLangs);
 const lang = ref(configDefaultLang);
-const defaultLang = ref(configDefaultLang);
 const page_types = ref(pageTypes);
-//const token = ref(token);
 
 const msgWrong = ref("");
 const msgGood = ref("");
@@ -536,49 +534,10 @@ const editorConfig = ref({});
 editor.value = ClassicEditor;
 const ckeditor = CKEditor.component;
 
-/*
-//import CKEditor from "@ckeditor/ckeditor5-vue";
-//import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-const editor = ref(ClassicEditor);
-const editorConfig = ref({
-});
-
-const  ckeditor =  CKEditor.component;
-*/
-
-/*
-export default defineComponent({
-  setup() {
-    // Deklaracja ref dla ClassicEditor i konfiguracji
-    const editor = ref(ClassicEditor);
-    const editorConfig = ref({
-      // Konfiguracja edytora
-    });
-
-    // Deklaracja aliasu ckeditor dla CKEditor.component
-    const ckeditor = CKEditor.component;
-
-    return { editor, editorConfig, ckeditor };
-  },
-})
-*/
-
-/*
-setup() {
-    // Ref dla ClassicEditor
-    const editor = ref(ClassicEditor);
-
-    // Zwracanie potrzebnych danych lub funkcji
-    return {
-      editor,
-    };
-}
-*/
 
 // Computed
 //const SERVER_URL = computed(() => SERVER_URL);
 
-// Methods
 const saveEditPage = async () => {
   if (!startLoading()) {
     return false;
@@ -779,13 +738,23 @@ function addMenu() {
   new_menu_name.value = {};
 }
 
+function getInfoMsgPrefixByLang( langs, currentLang )
+{
+  let infoMsgPrefix = '';
+  if(langs.length > 1 ){
+    infoMsgPrefix = ' for lang = ' + currentLang;
+  }
+  return infoMsgPrefix;
+}
+
 async function saveMenu(index) {
   clearMsg();
+
   if ("new" === index) {
     menus_error_new.value = false;
     for (let lang of langs.value) {
       if (!new_menu_name.value[lang]) {
-        msgWrong.value = "Add menu name"; // for lang = "+lang;
+        msgWrong.value = "Add menu name" + getInfoMsgPrefixByLang( langs.value, lang ); // for lang = "+lang;
         menus_error_new.value = true;
         break;
       }
@@ -820,9 +789,10 @@ async function saveMenu(index) {
       return false;
     }
     const menuByLangs = menus.value[index]["name"];
+
     for (let lang of langs.value) {
       if (!menuByLangs[lang]) {
-        msgWrong.value = "Add menu name"; // for '+lang+' lang';
+        msgWrong.value = "Add menu name" + getInfoMsgPrefixByLang( langs.value, lang ); // for '+lang+' lang';
         break;
       }
     }
@@ -1109,57 +1079,7 @@ const refreshPages = async () => {
   }
   return false;
 };
-/*
-const getPagesBelongsToMenus = (pages) => {
-  let out = [];
-  for (let page of pages) {
-    if (page.menu_id && !page.page_id) {
-      if ("undefined" === typeof out[page.menu_id]) {
-        out[page.menu_id] = [];
-      }
-      out[page.menu_id].push(page);
-    }
-  }
-  return out;
-};
 
-const getPagesBelongsToPages = (pages) => {
-  let out = [];
-  for (let page of pages) {
-    if (page.page_id) {
-      if ("undefined" === typeof out[page.page_id]) {
-        out[page.page_id] = [];
-      }
-      out[page.page_id].push(page);
-    }
-  }
-  return out;
-};
-
-const getNotRelatedPages = (pages) => {
-  let out = [];
-  for (let page of pages) {
-    if (!page.menu_id && "inner" !== page.type) {
-      out.push(page);
-    }
-  }
-  return out;
-};
-
-const getInnerPages = (pages) => {
-  let out = [];
-  for (let page of pages) {
-    if ("inner" === page.type) {
-      out.push(page);
-    }
-  }
-  return out;
-};
-*/
-
-// Other methods...
-
-// Lifecycle hooks
 onMounted(async () => {
   if (!token) {
     useRouter().push("/");
@@ -1174,28 +1094,6 @@ onMounted(async () => {
     pre_loader.value = false;
   }
 });
-
-/*
-watch: {
-    new_menu_name: {
-      handler: function () {
-        this.clearMsg();
-      },
-      deep: true,
-    },
-    menus: {
-      handler: function () {
-        this.clearMsg();
-      },
-      deep: true,
-    },
-    lang: {
-      handler: function () {
-        this.clearMsg();
-      },
-    },
-  }
-*/
 
 watch(
   new_menu_name,
@@ -1217,12 +1115,4 @@ watch(lang, () => {
   clearMsg();
 });
 
-/*
-// Watchers
-watch([new_menu_name, menus, lang], () => {
-  clearMsg();
-});
-*/
-
-// Other watchers...
 </script>
