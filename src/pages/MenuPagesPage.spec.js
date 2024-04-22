@@ -15,6 +15,7 @@ import userEvent from "@testing-library/user-event";
 import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
+//import { afterAll, beforeAll, describe, expect } from "vitest";
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -195,6 +196,7 @@ const menus = [
 let counter = 0;
 let counter2 = 0;
 let counterMenu = 0;
+let counterUpload = 0;
 let server = setupServer(
   http.post("/api/pages", async () => {
     counter += 1;
@@ -292,6 +294,7 @@ beforeEach(() => {
   counter = 0;
   counter2 = 0;
   counterMenu = 0;
+  counterUpload = 0;
   server.resetHandlers();
 });
 
@@ -1040,6 +1043,124 @@ describe("Pages page", () => {
   /*
 -----------------
 */
+
+  describe('upload images', () => {
+
+    const images = [
+      {
+        "id": 1,
+        "name": "phpunittest1.jpg",
+        "position": 1,
+        "page_id": 3,
+        "product_id": null,
+        "created_at": "2020-11-22T16:38:46.000000Z",
+        "updated_at": "2020-11-22T16:38:46.000000Z",
+        "alt": {
+          "en": "description img1"
+        },
+        "fs": {
+          "org": "/images/page/1/1/phpunittest1.jpg",
+          "small": "/images/page/1/1/phpunittest1-small.jpg",
+          "medium": "/images/page/1/1/phpunittest1-medium.jpg"
+        }
+      },
+      {
+        "id": 2,
+        "name": "phpunittest2.jpg",
+        "position": 2,
+        "page_id": 3,
+        "product_id": null,
+        "created_at": "2020-11-22T16:38:46.000000Z",
+        "updated_at": "2020-11-22T16:38:46.000000Z",
+        "alt": {
+          "en": ""
+        },
+        "fs": {
+          "org": "/images/page/1/2/phpunittest2.jpg",
+          "small": "/images/page/1/2/phpunittest2-small.jpg",
+          "medium": "/images/page/1/2/phpunittest2-medium.jpg"
+        }
+      }
+    ];
+    
+
+    it("upload images is prohibit without edit page", async () => {
+      await setup();
+      await waitForAjaxes();
+
+      const uploadImages = screen.queryByRole("upload_images");  //const uploadImages = screen.getByLabelText(/upload images/i) //second option
+      await userEvent.upload(
+        uploadImages, [
+          new File(['phpunittest1'], 'phpunittest1.jpg', { type: 'image/jpg' }),
+          new File(['phpunittest2'], 'phpunittest2.jpg', { type: 'image/jpg' })
+        ]
+      )  
+
+    });
+
+
+    it("upload one image success", async () => {
+    
+      server.use(
+
+        http.post("/api/image/page/3", async () => {
+          counterUpload += 1;
+          return HttpResponse.json({
+            success: true,
+          });
+        }),
+  
+        http.get("/api/images/page/3", async () => { //s !!
+          return HttpResponse.json({
+            success: true,
+            data: images
+          });
+        })
+
+  
+      );
+  
+      /* edit page start*/
+      await setup();
+      await waitForAjaxes();
+
+      const title = screen.queryByPlaceholderText("title en");
+      expect(title).toHaveValue("");
+
+      const firstPageIdOnThePage = 3;
+      const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
+      expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
+
+      const pageEdit = screen.queryAllByRole("edit_page");
+      const firstEditPage = pageEdit[0];
+      await userEvent.click(firstEditPage);
+
+      const page = pages[firstPageIdOnThePageIndex];
+
+      const title2 = screen.queryByPlaceholderText("title en");
+      expect(title2).toHaveValue(page.title["en"]);
+      /* edit page stop*/
+
+      expect( counterUpload).toBe(0);
+
+      const uploadImages = screen.queryByRole("upload_images");  //const uploadImages = screen.getByLabelText(/upload images/i) //second option
+      await userEvent.upload(
+        uploadImages, [
+          new File(['phpunittest1'], 'phpunittest1.jpg', { type: 'image/jpg' }),
+          new File(['phpunittest2'], 'phpunittest2.jpg', { type: 'image/jpg' })
+        ]
+      )  
+      
+      await waitFor(() => {
+        expect( counterUpload).toBe(2);
+
+        const successMsg =  "Images has been uploaded"
+        screen.findByText(successMsg);    
+      } ) ;
+    });
+
+  })
+
 
   describe("Interactions many langs", () => {
     const jsonStore2 = {
