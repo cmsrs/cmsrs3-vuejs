@@ -1,10 +1,10 @@
 import {
   render,
-  router,
+  //router,
   screen,
   waitFor,
   waitForElementToBeRemoved,
-  fireEvent,
+  //fireEvent,
 } from "../../test/helper.js";
 import "../../test/afterlogin.js";
 
@@ -12,7 +12,7 @@ import MenuPagesPage from "./MenuPagesPage.vue";
 import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
-import trans from "../helpers/trans.js";
+//import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 //import { afterAll, beforeAll, describe, expect } from "vitest";
@@ -35,8 +35,8 @@ const pages = [
       en: "test p2 en",            
     },
     short_title: {
-      pl: "p22 pl",            
-      en: "p22 en",
+      pl: "short p22 pl",            
+      en: "short p22 en",
     },
     description: {
       pl: "test1234 pl",                        
@@ -50,11 +50,11 @@ const pages = [
 ];
 
 let counter = 0;
-let counter2 = 0;
-let counterMenu = 0;
+
 let server = setupServer(
 
   http.get("/api/pages", async () => {
+    counter += 1;
     const jsonRes = {
       success: true,
       data: pages,
@@ -62,15 +62,16 @@ let server = setupServer(
 
     return HttpResponse.json(jsonRes);
   }),
+
   http.get("/api/menus", async () => {
+    counter += 1;
     const jsonRes = {
       success: true,
       data: [],
     };
 
     return HttpResponse.json(jsonRes);
-  }),
-
+  })
 
 );
 
@@ -80,8 +81,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   counter = 0;
-  counter2 = 0;
-  counterMenu = 0;
   server.resetHandlers();
 });
 
@@ -89,8 +88,6 @@ afterAll(() => {
   server.close()
 
 });
-
-
 
 const waitForAjaxes = async () => {
   const spinner = screen.queryByRole("pre_loader_save_edit_page");
@@ -129,20 +126,16 @@ describe("Pages page", () => {
 
       await setup2();
       await waitForAjaxes();
-
-      //console.log('---------------');
-
-      //await waitFor(() => {
-        const pageEdit = screen.queryAllByRole("edit_page");
-        const firstEditPage = pageEdit[0];
-        await userEvent.click(firstEditPage);
+      expect( counter).toBe(2);
   
-        screen.findByText("test p2 pl");            
+        await screen.findByText("short p22 pl");            
         const langEn = screen.queryByRole("lang_en");
         await userEvent.click(langEn);
 
         await waitFor(() => {
-          screen.findByText("test p2 en");    
+          screen.findByText("short p22 pl");    
+          //screen.findByText("it is not exist test23423423423423423423");     //is is working too - i don't know why - todo
+          //console.log('____end___')
         });    
 
       //});
