@@ -7,6 +7,7 @@
         <div role="change_lang" class="col-2" v-if="langs.length > 1">
           <div v-for="l in langs" :key="l">
             <span
+              :role = "'lang_'+ l"
               :class="{
                 'mr-1 cursor-pointer text-primary': lang === l,
                 'mr-1 cursor-pointer text-secondary': lang !== l,

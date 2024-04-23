@@ -2,11 +2,12 @@
 if [ "$1" = "all" ]; then
     #npm run test
     npm run test:coverage
+
     exit
 
 else
     
-    npm run test     -- -t    'images tests'
+    #npm run test     -- -t    'images tests'
     #npm run test   -- -t   'save new menu - display error and clear msg after change menu name'
     #npm run test   -- -t     'display good message and click add menu button'
 
@@ -16,7 +17,7 @@ else
 
     #npm run test ./src/pages/UsersPage.spec.js 
 
-   # npm run test  ./src/pages/MenuPagesPage.spec.js 
+    npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'click change lang' 
 
     #npm run test    ./src/pages/LoginPage.spec.js -- -t "send good data to server" 
 

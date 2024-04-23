@@ -384,6 +384,113 @@ describe("Pages page", () => {
     });
   });
 
+  describe("Interactions many langs", () => {
+    const jsonStore2 = {
+      auth: {
+        isLoggedIn: true,
+        token: "abcde12345",
+        email: "user_rs@mail.com",
+        password: "PasswordRs",
+      },
+      config: {
+        page_types: ["cms", "gallery", "main_page"],
+        langs: ["pl", "en"], //!!
+        default_lang: "pl", //!!
+        cache_enable: 1,
+      },
+    };
+
+    const setup2 = async () => {
+      localStorage.clear();
+      storage.setItem("auth", jsonStore2.auth);
+      storage.setItem("config", jsonStore2.config);
+
+      render(MenuPagesPage);
+    };
+
+    it("show langs", async () => {
+      await setup2();
+      await waitForAjaxes();
+
+      const changeLang = screen.queryByRole("change_lang");
+      expect(changeLang).toBeInTheDocument();
+    });
+
+    it("save new menu and display error for first empty lang", async () => {
+      await setup2();
+      await waitForAjaxes();
+
+      await setup_display_message_err();
+      await screen.findByText('Add menu name for lang = pl');
+    });
+
+    it.skip("click change lang", async () => {
+      const contentPl = "lorem ipsum pl";
+      const contentEn = "lorem ipsum en";
+      const pages = [
+        {
+          id: 1,
+          published: 1,
+          commented: 0,
+          after_login: 0,
+          position: 1,
+          type: "main_page",
+          menu_id: null,
+          page_id: null,
+          title: {
+            pl: "test p2 pl",
+            en: "test p2 en",            
+          },
+          short_title: {
+            pl: "p22 pl",            
+            en: "p22 en",
+          },
+          description: {
+            pl: "test1234 pl",                        
+            en: "test1234 en",
+          },
+          content: {
+            pl: contentPl,
+            en: contentEn,
+          },
+        }
+      ];
+
+      server.use(
+        http.get("/api/pages", async () => {
+          const jsonRes = {
+            success: true,
+            data: pages,
+          };
+
+          return HttpResponse.json(jsonRes);
+        })
+      );
+      await setup2();
+      await waitForAjaxes();
+
+      console.log('---------------');
+
+      //await waitFor(() => {
+        const pageEdit = screen.queryAllByRole("edit_page");
+        const firstEditPage = pageEdit[0];
+        await userEvent.click(firstEditPage);
+  
+        screen.findByText("test p2 pl");    
+        //screen.findByText('aaaaaaaaaaaa111111111111111sssssssssssssssssssssssssssss');    
+        const langEn = screen.queryByRole("lang_en");
+        await userEvent.click(langEn);
+
+        await waitFor(() => {
+          screen.findByText("test p2 en");    
+        });    
+
+      //});
+    });
+    
+
+  });
+
   describe("Interactions", () => {
     it("has user login in order to see pages and get access to config", async () => {
       //await setup();
@@ -1083,7 +1190,7 @@ describe("Pages page", () => {
 -----------------
 */
 
-  describe('images tests', () => {
+  describe('Images tests', () => {
 
     const setup_edit_page = async () => {
       await setup();
@@ -1256,47 +1363,6 @@ describe("Pages page", () => {
   })
 
 
-  describe("Interactions many langs", () => {
-    const jsonStore2 = {
-      auth: {
-        isLoggedIn: true,
-        token: "abcde12345",
-        email: "user_rs@mail.com",
-        password: "PasswordRs",
-      },
-      config: {
-        page_types: ["cms", "gallery", "main_page"],
-        langs: ["pl", "en"], //!!
-        default_lang: "pl", //!!
-        cache_enable: 1,
-      },
-    };
-
-    const setup2 = async () => {
-      localStorage.clear();
-      storage.setItem("auth", jsonStore2.auth);
-      storage.setItem("config", jsonStore2.config);
-
-      render(MenuPagesPage);
-    };
-
-    it("show langs", async () => {
-      await setup2();
-      await waitForAjaxes();
-
-      const changeLang = screen.queryByRole("change_lang");
-      expect(changeLang).toBeInTheDocument();
-    });
-
-    it("save new menu and display error for first empty lang", async () => {
-      await setup2();
-      await waitForAjaxes();
-
-      await setup_display_message_err();
-      await screen.findByText('Add menu name for lang = pl');
-    });
-
-  });
 
   describe("Interactions one menu", () => {
     it("not display positions in one menu", async () => {
