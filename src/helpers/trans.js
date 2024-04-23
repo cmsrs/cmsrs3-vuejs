@@ -4,6 +4,8 @@ const ttt = (key) => {
     success_page_edit: "Page has been changed",
     success_client_edit: "Page has been changed",
     success_client_add: "Page has been added",
+    success_image_position: "Position image has been changed",
+    success_image_delete: "Image has been deleted",
   };
 
   return d[key] ? d[key] : key;

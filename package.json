@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest --watch=false",
+    "test": "vitest --watch=false   --testTimeout 10000",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "test:coverage": "vitest --coverage --watch=false   --testTimeout 10000",

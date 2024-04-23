@@ -434,6 +434,7 @@
               >
                 <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
               </div>
+
               <div
                 role="down_image"
                 :class="{ 'disabled-if-loader': pre_loader }"
@@ -445,6 +446,7 @@
                   aria-hidden="true"
                 ></i>
               </div>
+
               <div
                 role="up_image"
                 :class="{ 'disabled-if-loader': pre_loader }"
@@ -457,6 +459,7 @@
                 ></i>
               </div>
             </div>
+
           </form>
         </div>
       </div>
@@ -465,7 +468,7 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, watch, onMounted, defineComponent } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { SERVER_URL } from "../config.js";
 import functions from "../helpers/functions.js";
@@ -482,7 +485,7 @@ import {
   deletePage,
   setPagePosition,
   uploadImage,
-  getImages as ApiGetImages,
+  getImages, // as getImages,
   deleteImage,
   setImagePosition,
 } from "../api/apiCalls";
@@ -635,7 +638,7 @@ async function handleUploadFile(event) {
     return false;
   }
 
-  const images = await getImages(files);
+  const images = await getImagesUpload(files);
 
   for (let i = 0; i < images.length; i++) {
     let ret = uploadImage(images[i], "page", currentPageId.value, token);
@@ -651,7 +654,7 @@ async function handleUploadFile(event) {
     }
   }
 
-  const dbImages = await ApiGetImages("page", currentPageId.value, token);
+  const dbImages = await getImages("page", currentPageId.value, token);
   if (dbImages.data.success) {
     // Assuming msgGood is a ref object
     msgGood.value = "Images has been uploaded";
@@ -659,7 +662,7 @@ async function handleUploadFile(event) {
   }
 }
 
-async function getImages(files) {
+async function getImagesUpload(files) {
   const promises = [];
   for (let i = 0; i < files.length; i++) {
     promises.push(
@@ -905,11 +908,11 @@ const delImage = async (id) => {
 
     try {
       const objDeleteImage = await deleteImage(id, token);
-      if (objDeleteImage.data.success) {
+      if (objDeleteImage.data.success) {      
         const images = await getImages("page", currentPageId.value, token);
         if (images.data.success) {
           images.value = images.data.data;
-          msgGood.value = "Image has been deleted";
+          msgGood.value =  trans.ttt("success_image_delete"); //  "Image has been deleted";
           pre_loader.value = false;
         }
       }
@@ -936,7 +939,7 @@ const positionImage = async (direction, imageId) => {
       const images = await getImages("page", currentPageId.value, token);
       if (images.data.success) {
         images.value = images.data.data;
-        msgGood.value = "Position image has been changed";
+        msgGood.value = trans.ttt("success_image_position");   //"Position image has been changed";
         pre_loader.value = false;
       }
     }

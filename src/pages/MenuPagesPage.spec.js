@@ -19,6 +19,43 @@ import { afterAll, beforeAll } from "vitest";
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
+const images = [
+  {
+    "id": 1,
+    "name": "phpunittest1.jpg",
+    "position": 1,
+    "page_id": 3,
+    "product_id": null,
+    "created_at": "2020-11-22T16:38:46.000000Z",
+    "updated_at": "2020-11-22T16:38:46.000000Z",
+    "alt": {
+      "en": "description img1"
+    },
+    "fs": {
+      "org": "/images/page/1/1/phpunittest1.jpg",
+      "small": "/images/page/1/1/phpunittest1-small.jpg",
+      "medium": "/images/page/1/1/phpunittest1-medium.jpg"
+    }
+  },
+  {
+    "id": 2,
+    "name": "phpunittest2.jpg",
+    "position": 2,
+    "page_id": 3,
+    "product_id": null,
+    "created_at": "2020-11-22T16:38:46.000000Z",
+    "updated_at": "2020-11-22T16:38:46.000000Z",
+    "alt": {
+      "en": ""
+    },
+    "fs": {
+      "org": "/images/page/1/2/phpunittest2.jpg",
+      "small": "/images/page/1/2/phpunittest2-small.jpg",
+      "medium": "/images/page/1/2/phpunittest2-medium.jpg"
+    }
+  }
+];
+
 const pages = [
   {
     id: 1,
@@ -85,6 +122,7 @@ const pages = [
     content: {
       en: "page connected to menu 1a",
     },
+    images: images
   },
   {
     id: 4,
@@ -1047,46 +1085,32 @@ describe("Pages page", () => {
 
   describe('images tests', () => {
 
-    const images = [
-      {
-        "id": 1,
-        "name": "phpunittest1.jpg",
-        "position": 1,
-        "page_id": 3,
-        "product_id": null,
-        "created_at": "2020-11-22T16:38:46.000000Z",
-        "updated_at": "2020-11-22T16:38:46.000000Z",
-        "alt": {
-          "en": "description img1"
-        },
-        "fs": {
-          "org": "/images/page/1/1/phpunittest1.jpg",
-          "small": "/images/page/1/1/phpunittest1-small.jpg",
-          "medium": "/images/page/1/1/phpunittest1-medium.jpg"
-        }
-      },
-      {
-        "id": 2,
-        "name": "phpunittest2.jpg",
-        "position": 2,
-        "page_id": 3,
-        "product_id": null,
-        "created_at": "2020-11-22T16:38:46.000000Z",
-        "updated_at": "2020-11-22T16:38:46.000000Z",
-        "alt": {
-          "en": ""
-        },
-        "fs": {
-          "org": "/images/page/1/2/phpunittest2.jpg",
-          "small": "/images/page/1/2/phpunittest2-small.jpg",
-          "medium": "/images/page/1/2/phpunittest2-medium.jpg"
-        }
-      }
-    ];
+    const setup_edit_page = async () => {
+      await setup();
+      await waitForAjaxes();
+
+      const title = screen.queryByPlaceholderText("title en");
+      expect(title).toHaveValue("");
+
+      const firstPageIdOnThePage = 3;
+      const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
+      expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
+
+      const pageEdit = screen.queryAllByRole("edit_page");
+      const firstEditPage = pageEdit[0];
+      await userEvent.click(firstEditPage);
+
+      const page = pages[firstPageIdOnThePageIndex];
+
+      const title2 = screen.queryByPlaceholderText("title en");
+      expect(title2).toHaveValue(page.title["en"]);
+    };
 
     let counterUpload = 0;
+    let counterImage = 0;
     beforeEach(() => {
       counterUpload = 0;
+      counterImage = 0;
       server.use(
 
         http.post("/api/image/page/3", async () => {
@@ -1101,7 +1125,28 @@ describe("Pages page", () => {
             success: true,
             data: images
           });
-        })
+        }),
+
+        http.get("/api/images/position/down/1", async () => {
+          counterImage += 1;
+          return HttpResponse.json({
+            success: true
+          });
+        }),
+
+        http.get("/api/images/position/up/2", async () => {
+          counterImage += 1;
+          return HttpResponse.json({
+            success: true
+          });
+        }),
+
+        http.delete("/api/images/1", async () => {
+          counterImage += 1;
+          return HttpResponse.json({
+            success: true
+          });
+        }),
   
       );
     });        
@@ -1128,26 +1173,7 @@ describe("Pages page", () => {
 
     it("upload one image success", async () => {
     
-      /* edit page start*/
-      await setup();
-      await waitForAjaxes();
-
-      const title = screen.queryByPlaceholderText("title en");
-      expect(title).toHaveValue("");
-
-      const firstPageIdOnThePage = 3;
-      const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
-      expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
-
-      const pageEdit = screen.queryAllByRole("edit_page");
-      const firstEditPage = pageEdit[0];
-      await userEvent.click(firstEditPage);
-
-      const page = pages[firstPageIdOnThePageIndex];
-
-      const title2 = screen.queryByPlaceholderText("title en");
-      expect(title2).toHaveValue(page.title["en"]);
-      /* edit page stop*/
+      await setup_edit_page();
 
       expect( counterUpload).toBe(0);
 
@@ -1166,6 +1192,66 @@ describe("Pages page", () => {
         screen.findByText(successMsg);    
       } ) ;
     });
+
+    it("image show", async () => {    
+      await setup_edit_page();
+      const delImage = screen.queryAllByRole("del_image");
+      const positionDownImages = screen.queryAllByRole("down_image");
+      const positionUpImages = screen.queryAllByRole("up_image");
+
+      expect(delImage.length).toBe(2);
+      expect(positionDownImages.length).toBe(2);
+      expect(positionUpImages.length).toBe(2);
+    });
+
+    it("image delete success", async () => {  
+      confirmSpy.mockReturnValueOnce(true);  
+      await setup_edit_page();
+      expect( counterImage).toBe(0);
+      const delImage = screen.queryAllByRole("del_image");
+      await userEvent.click(delImage[0]);
+
+      await waitFor(() => {
+        expect( counterImage).toBe(1);
+
+        const successMsg = trans.ttt("success_image_delete");
+        screen.findByText(successMsg);    
+      });    
+
+    });
+
+    it("image position down success", async () => {    
+      await setup_edit_page();
+      expect( counterImage).toBe(0);
+
+      const positionDownImages = screen.queryAllByRole("down_image");
+      await userEvent.click(positionDownImages[0]);
+
+      await waitFor(() => {
+        expect( counterImage).toBe(1);
+
+        const successMsg = trans.ttt("success_image_position");
+        screen.findByText(successMsg);    
+      });
+
+    });
+
+    it("image position up success", async () => {    
+      await setup_edit_page();
+      expect( counterImage).toBe(0);
+
+      const positionUpImages = screen.queryAllByRole("up_image");
+      await userEvent.click(positionUpImages[1]);
+
+      await waitFor(() => {
+        expect( counterImage).toBe(1);
+
+        const successMsg = trans.ttt("success_image_position");
+        screen.findByText(successMsg);    
+      });
+
+    });
+
 
   })
 
