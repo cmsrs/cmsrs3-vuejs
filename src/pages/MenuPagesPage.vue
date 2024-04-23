@@ -472,6 +472,7 @@ import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { SERVER_URL } from "../config.js";
 import functions from "../helpers/functions.js";
+import cms from "../helpers/cms.js";
 import trans from "../helpers/trans.js";
 import {
   postPage,
@@ -683,64 +684,8 @@ async function getImagesUpload(files) {
   return Promise.all(promises);
 }
 
-function changeLang(inLang) {
+async function changeLang(inLang) {
   lang.value = inLang;
-}
-
-function getNotRelatedPages(pages) {
-  let out = [];
-  for (let page of pages) {
-    if (!page.menu_id && "inner" !== page.type) {
-      out.push(page);
-    }
-  }
-  return out;
-}
-
-function getInnerPages(pages) {
-  let out = [];
-  for (let page of pages) {
-    if ("inner" === page.type) {
-      out.push(page);
-    }
-  }
-  return out;
-}
-function getPagesBelongsToMenus(pages) {
-  let out = [];
-  for (let page of pages) {
-    if (page.menu_id && !page.page_id) {
-      if ("undefined" === typeof out[page.menu_id]) {
-        out[page.menu_id] = [];
-      }
-      out[page.menu_id].push(page);
-    }
-  }
-  return out;
-}
-function getPagesBelongsToMenu(menuId) {
-  if ("undefined" === typeof pagesBelongsToMenus.value[menuId]) {
-    return false;
-  }
-  return pagesBelongsToMenus.value[menuId];
-}
-function getPagesBelongsToPages(pages) {
-  let out = [];
-  for (let page of pages) {
-    if (page.page_id) {
-      if ("undefined" === typeof out[page.page_id]) {
-        out[page.page_id] = [];
-      }
-      out[page.page_id].push(page);
-    }
-  }
-  return out;
-}
-function getPagesBelongsToPage(parentPageId) {
-  if ("undefined" === typeof pagesBelongsToPages.value[parentPageId]) {
-    return false;
-  }
-  return pagesBelongsToPages.value[parentPageId];
 }
 
 function addMenu() {
@@ -748,14 +693,6 @@ function addMenu() {
   isAddMenu.value = true;
   menus_error_new.value = false;
   new_menu_name.value = {};
-}
-
-function getInfoMsgPrefixByLang(langs, currentLang) {
-  let infoMsgPrefix = "";
-  if (langs.length > 1) {
-    infoMsgPrefix = " for lang = " + currentLang;
-  }
-  return infoMsgPrefix;
 }
 
 async function saveMenu(index) {
@@ -766,7 +703,7 @@ async function saveMenu(index) {
     for (let lang of langs.value) {
       if (!new_menu_name.value[lang]) {
         msgWrong.value =
-          "Add menu name" + getInfoMsgPrefixByLang(langs.value, lang); // for lang = "+lang;
+          "Add menu name" + cms.getInfoMsgPrefixByLang(langs.value, lang); // for lang = "+lang;
         menus_error_new.value = true;
         break;
       }
@@ -805,7 +742,7 @@ async function saveMenu(index) {
     for (let lang of langs.value) {
       if (!menuByLangs[lang]) {
         msgWrong.value =
-          "Add menu name" + getInfoMsgPrefixByLang(langs.value, lang); // for '+lang+' lang';
+          "Add menu name" + cms.getInfoMsgPrefixByLang(langs.value, lang); // for '+lang+' lang';
         break;
       }
     }
@@ -950,56 +887,17 @@ const positionImage = async (direction, imageId) => {
   }
 };
 
-/**
- * todo move this function to functions
- * only root pages without children (copy from react)
- * get root pages belongs to given menu, and get pages without children
- */
-function getRootPages(menuId) {
-  menuId = parseInt(menuId);
-  const pageId = currentPageId.value ? parseInt(currentPageId.value) : false;
-
-  let parentIds = []; //get children
-  for (let p of allPages.value) {
-    if (p.menu_id === menuId && p.page_id) {
-      parentIds.push(p.page_id);
-    }
-  }
-
-  let pages = [];
-
-  //only one level of depth
-  if (parentIds.includes(pageId)) {
-    return pages;
-  }
-
-  for (let p of allPages.value) {
-    //edit
-    if (p.menu_id === menuId && !p.page_id && pageId && p.id !== pageId) {
-      pages.push(p);
-    }
-    //new
-    if (p.menu_id === menuId && !p.page_id && !pageId) {
-      pages.push(p);
-    }
-  }
-
-  return pages;
-}
-
-const handleMenuChange = () => {
-  rootPagesBelongToMenu.value = menu_id.value
-    ? getRootPages(menu_id.value)
-    : [];
-};
-
 const editPage = (pageId) => {
   clearMsg();
   const p = allPages.value.find((page) => page.id === pageId);
 
   currentPageId.value = p.id;
 
-  rootPagesBelongToMenu.value = p.menu_id ? getRootPages(p.menu_id) : [];
+  rootPagesBelongToMenu.value = cms.getRootPages(
+    p.menu_id,
+    currentPageId.value,
+    allPages.value,
+  ); //p.menu_id ? getRootPages(p.menu_id) : [];
   title.value = p.title;
   short_title.value = p.short_title;
   description.value = p.description;
@@ -1081,17 +979,39 @@ const refreshPages = async () => {
   try {
     const responseP = await getPages(token);
     allPages.value = responseP.data.data;
-    pagesBelongsToMenus.value = getPagesBelongsToMenus(responseP.data.data);
-    pagesBelongsToPages.value = getPagesBelongsToPages(responseP.data.data);
+    pagesBelongsToMenus.value = cms.getPagesBelongsToMenus(responseP.data.data);
+    pagesBelongsToPages.value = cms.getPagesBelongsToPages(responseP.data.data);
 
-    notRelatedPages.value = getNotRelatedPages(responseP.data.data);
-    innerPages.value = getInnerPages(responseP.data.data);
+    notRelatedPages.value = cms.getNotRelatedPages(responseP.data.data);
+    innerPages.value = cms.getInnerPages(responseP.data.data);
     return true;
   } catch (error) {
     console.log("error get pages=", error);
   }
   return false;
 };
+
+const handleMenuChange = () => {
+  rootPagesBelongToMenu.value = cms.getRootPages(
+    menu_id.value,
+    currentPageId.value,
+    allPages.value,
+  ); //menu_id.value ? getRootPages(menu_id.value) : [];
+};
+
+function getPagesBelongsToMenu(menuId) {
+  if ("undefined" === typeof pagesBelongsToMenus.value[menuId]) {
+    return false;
+  }
+  return pagesBelongsToMenus.value[menuId];
+}
+
+function getPagesBelongsToPage(parentPageId) {
+  if ("undefined" === typeof pagesBelongsToPages.value[parentPageId]) {
+    return false;
+  }
+  return pagesBelongsToPages.value[parentPageId];
+}
 
 onMounted(async () => {
   if (!token) {
