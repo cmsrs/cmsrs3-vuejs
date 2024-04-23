@@ -492,6 +492,10 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import PageTitle from "../components/PageTitle.vue";
 import Msg from "../components/Msg.vue";
 
+import jsonStoreTest from "../../test/jsonStore.js"
+import { useAuthStore } from "../state/store.js";
+const { auth } = useAuthStore();
+
 // Data
 const { configLangs, configDefaultLang, pageTypes, token } =
   functions.retrieveParamsFromStorage();
@@ -636,7 +640,8 @@ async function handleUploadFile(event) {
   for (let i = 0; i < images.length; i++) {
     let ret = uploadImage(images[i], "page", currentPageId.value, token);
 
-    if(token !==  'abcde12345'){ 
+    //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
+    if( auth.token !== jsonStoreTest.getTestToken() ){ //test token = 'abcde12345'
       await delay(6000);//in test we not execute this line
     }    
 

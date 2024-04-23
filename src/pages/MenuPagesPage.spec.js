@@ -196,7 +196,6 @@ const menus = [
 let counter = 0;
 let counter2 = 0;
 let counterMenu = 0;
-let counterUpload = 0;
 let server = setupServer(
   http.post("/api/pages", async () => {
     counter += 1;
@@ -294,11 +293,13 @@ beforeEach(() => {
   counter = 0;
   counter2 = 0;
   counterMenu = 0;
-  counterUpload = 0;
   server.resetHandlers();
 });
 
-afterAll(() => server.close());
+afterAll(() => {
+  server.close()
+
+}, 100000);
 
 const setup = async () => {
   render(MenuPagesPage);
@@ -1082,7 +1083,28 @@ describe("Pages page", () => {
         }
       }
     ];
-    
+
+    let counterUpload = 0;
+    beforeEach(() => {
+      counterUpload = 0;
+      server.use(
+
+        http.post("/api/image/page/3", async () => {
+          counterUpload += 1;
+          return HttpResponse.json({
+            success: true,
+          });
+        }),
+  
+        http.get("/api/images/page/3", async () => { //s !!
+          return HttpResponse.json({
+            success: true,
+            data: images
+          });
+        })
+  
+      );
+    });        
 
     it("upload images is prohibit without edit page", async () => {
       await setup();
@@ -1101,25 +1123,6 @@ describe("Pages page", () => {
 
     it("upload one image success", async () => {
     
-      server.use(
-
-        http.post("/api/image/page/3", async () => {
-          counterUpload += 1;
-          return HttpResponse.json({
-            success: true,
-          });
-        }),
-  
-        http.get("/api/images/page/3", async () => { //s !!
-          return HttpResponse.json({
-            success: true,
-            data: images
-          });
-        })
-
-  
-      );
-  
       /* edit page start*/
       await setup();
       await waitForAjaxes();
