@@ -17,7 +17,6 @@ import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 //import { afterAll, beforeAll, describe, expect } from "vitest";
 
-
 const contentPl = "lorem ipsum pl";
 const contentEn = "lorem ipsum en";
 const pages = [
@@ -32,27 +31,26 @@ const pages = [
     page_id: null,
     title: {
       pl: "test p2 pl",
-      en: "test p2 en",            
+      en: "test p2 en",
     },
     short_title: {
-      pl: "short p22 pl",            
+      pl: "short p22 pl",
       en: "short p22 en",
     },
     description: {
-      pl: "test1234 pl",                        
+      pl: "test1234 pl",
       en: "test1234 en",
     },
     content: {
       pl: contentPl,
       en: contentEn,
     },
-  }
+  },
 ];
 
 let counter = 0;
 
 let server = setupServer(
-
   http.get("/api/pages", async () => {
     counter += 1;
     const jsonRes = {
@@ -71,8 +69,7 @@ let server = setupServer(
     };
 
     return HttpResponse.json(jsonRes);
-  })
-
+  }),
 );
 
 beforeAll(() => {
@@ -85,8 +82,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  server.close()
-
+  server.close();
 });
 
 const waitForAjaxes = async () => {
@@ -96,7 +92,6 @@ const waitForAjaxes = async () => {
 };
 
 describe("Pages page", () => {
-
   describe("Interactions many langs", () => {
     const jsonStore2 = {
       auth: {
@@ -121,27 +116,22 @@ describe("Pages page", () => {
       render(MenuPagesPage);
     };
 
-
     it("click change lang", async () => {
-
       await setup2();
       await waitForAjaxes();
-      expect( counter).toBe(2);
-  
-        await screen.findByText("short p22 pl");            
-        const langEn = screen.queryByRole("lang_en");
-        await userEvent.click(langEn);
+      expect(counter).toBe(2);
 
-        await waitFor(() => {
-          screen.findByText("short p22 pl");    
-          //screen.findByText("it is not exist test23423423423423423423");     //is is working too - i don't know why - todo
-          //console.log('____end___')
-        });    
+      await screen.findByText("short p22 pl");
+      const langEn = screen.queryByRole("lang_en");
+      await userEvent.click(langEn);
+
+      await waitFor(() => {
+        screen.findByText("short p22 pl");
+        //screen.findByText("it is not exist test23423423423423423423");     //is is working too - i don't know why - todo
+        //console.log('____end___')
+      });
 
       //});
     });
-    
-
   });
-
 });

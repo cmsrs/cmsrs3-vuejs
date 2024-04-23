@@ -7,7 +7,7 @@
         <div role="change_lang" class="col-2" v-if="langs.length > 1">
           <div v-for="l in langs" :key="l">
             <span
-              :role = "'lang_'+ l"
+              :role="'lang_' + l"
               :class="{
                 'mr-1 cursor-pointer text-primary': lang === l,
                 'mr-1 cursor-pointer text-secondary': lang !== l,
@@ -460,7 +460,6 @@
                 ></i>
               </div>
             </div>
-
           </form>
         </div>
       </div>
@@ -496,7 +495,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import PageTitle from "../components/PageTitle.vue";
 import Msg from "../components/Msg.vue";
 
-import jsonStoreTest from "../../test/jsonStore.js"
+import jsonStoreTest from "../../test/jsonStore.js";
 import { useAuthStore } from "../state/store.js";
 const { auth } = useAuthStore();
 
@@ -542,7 +541,6 @@ const editorConfig = ref({});
 
 editor.value = ClassicEditor;
 const ckeditor = CKEditor.component;
-
 
 // Computed
 //const SERVER_URL = computed(() => SERVER_URL);
@@ -645,9 +643,10 @@ async function handleUploadFile(event) {
     let ret = uploadImage(images[i], "page", currentPageId.value, token);
 
     //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
-    if( auth.token !== jsonStoreTest.getTestToken() ){ //test token = 'abcde12345'
-      await delay(6000);//in test we not execute this line
-    }    
+    if (auth.token !== jsonStoreTest.getTestToken()) {
+      //test token = 'abcde12345'
+      await delay(6000); //in test we not execute this line
+    }
 
     if (ret) {
       msgGood.value =
@@ -751,11 +750,10 @@ function addMenu() {
   new_menu_name.value = {};
 }
 
-function getInfoMsgPrefixByLang( langs, currentLang )
-{
-  let infoMsgPrefix = '';
-  if(langs.length > 1 ){
-    infoMsgPrefix = ' for lang = ' + currentLang;
+function getInfoMsgPrefixByLang(langs, currentLang) {
+  let infoMsgPrefix = "";
+  if (langs.length > 1) {
+    infoMsgPrefix = " for lang = " + currentLang;
   }
   return infoMsgPrefix;
 }
@@ -767,7 +765,8 @@ async function saveMenu(index) {
     menus_error_new.value = false;
     for (let lang of langs.value) {
       if (!new_menu_name.value[lang]) {
-        msgWrong.value = "Add menu name" + getInfoMsgPrefixByLang( langs.value, lang ); // for lang = "+lang;
+        msgWrong.value =
+          "Add menu name" + getInfoMsgPrefixByLang(langs.value, lang); // for lang = "+lang;
         menus_error_new.value = true;
         break;
       }
@@ -805,7 +804,8 @@ async function saveMenu(index) {
 
     for (let lang of langs.value) {
       if (!menuByLangs[lang]) {
-        msgWrong.value = "Add menu name" + getInfoMsgPrefixByLang( langs.value, lang ); // for '+lang+' lang';
+        msgWrong.value =
+          "Add menu name" + getInfoMsgPrefixByLang(langs.value, lang); // for '+lang+' lang';
         break;
       }
     }
@@ -909,11 +909,11 @@ const delImage = async (id) => {
 
     try {
       const objDeleteImage = await deleteImage(id, token);
-      if (objDeleteImage.data.success) {      
+      if (objDeleteImage.data.success) {
         const images = await getImages("page", currentPageId.value, token);
         if (images.data.success) {
           images.value = images.data.data;
-          msgGood.value =  trans.ttt("success_image_delete"); //  "Image has been deleted";
+          msgGood.value = trans.ttt("success_image_delete"); //  "Image has been deleted";
           pre_loader.value = false;
         }
       }
@@ -940,7 +940,7 @@ const positionImage = async (direction, imageId) => {
       const images = await getImages("page", currentPageId.value, token);
       if (images.data.success) {
         images.value = images.data.data;
-        msgGood.value = trans.ttt("success_image_position");   //"Position image has been changed";
+        msgGood.value = trans.ttt("success_image_position"); //"Position image has been changed";
         pre_loader.value = false;
       }
     }
@@ -1127,5 +1127,4 @@ watch(
 watch(lang, () => {
   clearMsg();
 });
-
 </script>

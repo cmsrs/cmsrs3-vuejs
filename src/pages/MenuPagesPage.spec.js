@@ -21,39 +21,39 @@ const confirmSpy = vi.spyOn(window, "confirm");
 
 const images = [
   {
-    "id": 1,
-    "name": "phpunittest1.jpg",
-    "position": 1,
-    "page_id": 3,
-    "product_id": null,
-    "created_at": "2020-11-22T16:38:46.000000Z",
-    "updated_at": "2020-11-22T16:38:46.000000Z",
-    "alt": {
-      "en": "description img1"
+    id: 1,
+    name: "phpunittest1.jpg",
+    position: 1,
+    page_id: 3,
+    product_id: null,
+    created_at: "2020-11-22T16:38:46.000000Z",
+    updated_at: "2020-11-22T16:38:46.000000Z",
+    alt: {
+      en: "description img1",
     },
-    "fs": {
-      "org": "/images/page/1/1/phpunittest1.jpg",
-      "small": "/images/page/1/1/phpunittest1-small.jpg",
-      "medium": "/images/page/1/1/phpunittest1-medium.jpg"
-    }
+    fs: {
+      org: "/images/page/1/1/phpunittest1.jpg",
+      small: "/images/page/1/1/phpunittest1-small.jpg",
+      medium: "/images/page/1/1/phpunittest1-medium.jpg",
+    },
   },
   {
-    "id": 2,
-    "name": "phpunittest2.jpg",
-    "position": 2,
-    "page_id": 3,
-    "product_id": null,
-    "created_at": "2020-11-22T16:38:46.000000Z",
-    "updated_at": "2020-11-22T16:38:46.000000Z",
-    "alt": {
-      "en": ""
+    id: 2,
+    name: "phpunittest2.jpg",
+    position: 2,
+    page_id: 3,
+    product_id: null,
+    created_at: "2020-11-22T16:38:46.000000Z",
+    updated_at: "2020-11-22T16:38:46.000000Z",
+    alt: {
+      en: "",
     },
-    "fs": {
-      "org": "/images/page/1/2/phpunittest2.jpg",
-      "small": "/images/page/1/2/phpunittest2-small.jpg",
-      "medium": "/images/page/1/2/phpunittest2-medium.jpg"
-    }
-  }
+    fs: {
+      org: "/images/page/1/2/phpunittest2.jpg",
+      small: "/images/page/1/2/phpunittest2-small.jpg",
+      medium: "/images/page/1/2/phpunittest2-medium.jpg",
+    },
+  },
 ];
 
 const pages = [
@@ -122,7 +122,7 @@ const pages = [
     content: {
       en: "page connected to menu 1a",
     },
-    images: images
+    images: images,
   },
   {
     id: 4,
@@ -335,8 +335,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  server.close()
-
+  server.close();
 }, 100000);
 
 const setup = async () => {
@@ -421,7 +420,7 @@ describe("Pages page", () => {
       await waitForAjaxes();
 
       await setup_display_message_err();
-      await screen.findByText('Add menu name for lang = pl');
+      await screen.findByText("Add menu name for lang = pl");
     });
 
     it.skip("click change lang", async () => {
@@ -439,21 +438,21 @@ describe("Pages page", () => {
           page_id: null,
           title: {
             pl: "test p2 pl",
-            en: "test p2 en",            
+            en: "test p2 en",
           },
           short_title: {
-            pl: "p22 pl",            
+            pl: "p22 pl",
             en: "p22 en",
           },
           description: {
-            pl: "test1234 pl",                        
+            pl: "test1234 pl",
             en: "test1234 en",
           },
           content: {
             pl: contentPl,
             en: contentEn,
           },
-        }
+        },
       ];
 
       server.use(
@@ -464,31 +463,29 @@ describe("Pages page", () => {
           };
 
           return HttpResponse.json(jsonRes);
-        })
+        }),
       );
       await setup2();
       await waitForAjaxes();
 
-      console.log('---------------');
+      console.log("---------------");
 
       //await waitFor(() => {
-        const pageEdit = screen.queryAllByRole("edit_page");
-        const firstEditPage = pageEdit[0];
-        await userEvent.click(firstEditPage);
-  
-        screen.findByText("test p2 pl");    
-        //screen.findByText('aaaaaaaaaaaa111111111111111sssssssssssssssssssssssssssss');    
-        const langEn = screen.queryByRole("lang_en");
-        await userEvent.click(langEn);
+      const pageEdit = screen.queryAllByRole("edit_page");
+      const firstEditPage = pageEdit[0];
+      await userEvent.click(firstEditPage);
 
-        await waitFor(() => {
-          screen.findByText("test p2 en");    
-        });    
+      screen.findByText("test p2 pl");
+      //screen.findByText('aaaaaaaaaaaa111111111111111sssssssssssssssssssssssssssss');
+      const langEn = screen.queryByRole("lang_en");
+      await userEvent.click(langEn);
+
+      await waitFor(() => {
+        screen.findByText("test p2 en");
+      });
 
       //});
     });
-    
-
   });
 
   describe("Interactions", () => {
@@ -675,8 +672,8 @@ describe("Pages page", () => {
       await setup_display_message_err();
 
       const errorMsg = "Add menu name";
-      await screen.findByText(errorMsg);    
-      await expect(screen.findByText('for lang')).rejects.toThrow(); //it is one lang
+      await screen.findByText(errorMsg);
+      await expect(screen.findByText("for lang")).rejects.toThrow(); //it is one lang
     });
 
     it("save new menu - display error and clear msg after change menu name", async () => {
@@ -684,7 +681,7 @@ describe("Pages page", () => {
       await waitForAjaxes();
 
       await setup_display_message_err();
-      await expect(screen.findByText('for lang')).rejects.toThrow(); //it is one lang
+      await expect(screen.findByText("for lang")).rejects.toThrow(); //it is one lang
 
       const addMenuPlaceholder = screen.queryByPlaceholderText("Menu name en");
       await userEvent.type(addMenuPlaceholder, "N");
@@ -1190,8 +1187,7 @@ describe("Pages page", () => {
 -----------------
 */
 
-  describe('Images tests', () => {
-
+  describe("Images tests", () => {
     const setup_edit_page = async () => {
       await setup();
       await waitForAjaxes();
@@ -1219,88 +1215,80 @@ describe("Pages page", () => {
       counterUpload = 0;
       counterImage = 0;
       server.use(
-
         http.post("/api/image/page/3", async () => {
           counterUpload += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
-  
-        http.get("/api/images/page/3", async () => { //s !!
+
+        http.get("/api/images/page/3", async () => {
+          //s !!
           return HttpResponse.json({
             success: true,
-            data: images
+            data: images,
           });
         }),
 
         http.get("/api/images/position/down/1", async () => {
           counterImage += 1;
           return HttpResponse.json({
-            success: true
+            success: true,
           });
         }),
 
         http.get("/api/images/position/up/2", async () => {
           counterImage += 1;
           return HttpResponse.json({
-            success: true
+            success: true,
           });
         }),
 
         http.delete("/api/images/1", async () => {
           counterImage += 1;
           return HttpResponse.json({
-            success: true
+            success: true,
           });
         }),
-  
       );
-    });        
+    });
 
     it("upload images is prohibit without edit page", async () => {
       await setup();
       await waitForAjaxes();
 
-      expect( counterUpload).toBe(0);
-      const uploadImages = screen.queryByRole("upload_images");  //const uploadImages = screen.getByLabelText(/upload images/i) //second option
-      await userEvent.upload(
-        uploadImages, [
-          new File(['phpunittest1'], 'phpunittest1.jpg', { type: 'image/jpg' }),
-          new File(['phpunittest2'], 'phpunittest2.jpg', { type: 'image/jpg' })
-        ]
-      )  
+      expect(counterUpload).toBe(0);
+      const uploadImages = screen.queryByRole("upload_images"); //const uploadImages = screen.getByLabelText(/upload images/i) //second option
+      await userEvent.upload(uploadImages, [
+        new File(["phpunittest1"], "phpunittest1.jpg", { type: "image/jpg" }),
+        new File(["phpunittest2"], "phpunittest2.jpg", { type: "image/jpg" }),
+      ]);
 
       await waitFor(() => {
-        expect( counterUpload).toBe(0);
-      } ) ;
-      
+        expect(counterUpload).toBe(0);
+      });
     });
-
 
     it("upload one image success", async () => {
-    
       await setup_edit_page();
 
-      expect( counterUpload).toBe(0);
+      expect(counterUpload).toBe(0);
 
-      const uploadImages = screen.queryByRole("upload_images");  //const uploadImages = screen.getByLabelText(/upload images/i) //second option
-      await userEvent.upload(
-        uploadImages, [
-          new File(['phpunittest1'], 'phpunittest1.jpg', { type: 'image/jpg' }),
-          new File(['phpunittest2'], 'phpunittest2.jpg', { type: 'image/jpg' })
-        ]
-      )  
-      
+      const uploadImages = screen.queryByRole("upload_images"); //const uploadImages = screen.getByLabelText(/upload images/i) //second option
+      await userEvent.upload(uploadImages, [
+        new File(["phpunittest1"], "phpunittest1.jpg", { type: "image/jpg" }),
+        new File(["phpunittest2"], "phpunittest2.jpg", { type: "image/jpg" }),
+      ]);
+
       await waitFor(() => {
-        expect( counterUpload).toBe(2);
+        expect(counterUpload).toBe(2);
 
-        const successMsg =  "Images has been uploaded"
-        screen.findByText(successMsg);    
-      } ) ;
+        const successMsg = "Images has been uploaded";
+        screen.findByText(successMsg);
+      });
     });
 
-    it("image show", async () => {    
+    it("image show", async () => {
       await setup_edit_page();
       const delImage = screen.queryAllByRole("del_image");
       const positionDownImages = screen.queryAllByRole("down_image");
@@ -1311,58 +1299,51 @@ describe("Pages page", () => {
       expect(positionUpImages.length).toBe(2);
     });
 
-    it("image delete success", async () => {  
-      confirmSpy.mockReturnValueOnce(true);  
+    it("image delete success", async () => {
+      confirmSpy.mockReturnValueOnce(true);
       await setup_edit_page();
-      expect( counterImage).toBe(0);
+      expect(counterImage).toBe(0);
       const delImage = screen.queryAllByRole("del_image");
       await userEvent.click(delImage[0]);
 
       await waitFor(() => {
-        expect( counterImage).toBe(1);
+        expect(counterImage).toBe(1);
 
         const successMsg = trans.ttt("success_image_delete");
-        screen.findByText(successMsg);    
-      });    
-
+        screen.findByText(successMsg);
+      });
     });
 
-    it("image position down success", async () => {    
+    it("image position down success", async () => {
       await setup_edit_page();
-      expect( counterImage).toBe(0);
+      expect(counterImage).toBe(0);
 
       const positionDownImages = screen.queryAllByRole("down_image");
       await userEvent.click(positionDownImages[0]);
 
       await waitFor(() => {
-        expect( counterImage).toBe(1);
+        expect(counterImage).toBe(1);
 
         const successMsg = trans.ttt("success_image_position");
-        screen.findByText(successMsg);    
+        screen.findByText(successMsg);
       });
-
     });
 
-    it("image position up success", async () => {    
+    it("image position up success", async () => {
       await setup_edit_page();
-      expect( counterImage).toBe(0);
+      expect(counterImage).toBe(0);
 
       const positionUpImages = screen.queryAllByRole("up_image");
       await userEvent.click(positionUpImages[1]);
 
       await waitFor(() => {
-        expect( counterImage).toBe(1);
+        expect(counterImage).toBe(1);
 
         const successMsg = trans.ttt("success_image_position");
-        screen.findByText(successMsg);    
+        screen.findByText(successMsg);
       });
-
     });
-
-
-  })
-
-
+  });
 
   describe("Interactions one menu", () => {
     it("not display positions in one menu", async () => {
