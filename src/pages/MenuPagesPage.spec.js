@@ -1045,7 +1045,7 @@ describe("Pages page", () => {
 -----------------
 */
 
-  describe('upload images', () => {
+  describe('images tests', () => {
 
     const images = [
       {
@@ -1110,6 +1110,7 @@ describe("Pages page", () => {
       await setup();
       await waitForAjaxes();
 
+      expect( counterUpload).toBe(0);
       const uploadImages = screen.queryByRole("upload_images");  //const uploadImages = screen.getByLabelText(/upload images/i) //second option
       await userEvent.upload(
         uploadImages, [
@@ -1118,6 +1119,10 @@ describe("Pages page", () => {
         ]
       )  
 
+      await waitFor(() => {
+        expect( counterUpload).toBe(0);
+      } ) ;
+      
     });
 
 

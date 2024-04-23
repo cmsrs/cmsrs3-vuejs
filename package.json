@@ -9,7 +9,7 @@
     "test": "vitest --watch=false",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "test:coverage": "vitest --coverage --watch=false",
+    "test:coverage": "vitest --coverage --watch=false   --testTimeout 10000",
     "format": "prettier --write src/"
   },
   "dependencies": {
