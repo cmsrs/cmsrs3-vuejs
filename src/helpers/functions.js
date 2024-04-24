@@ -81,7 +81,7 @@ const retrieveParamsFromUrl = (url, param) => {
   return page;
 };
 
-const  delay = async (ms) => {
+const delay = async (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
@@ -89,7 +89,7 @@ const getItemFromArrayOrFalse = (arr, k) => {
   if ("undefined" === typeof arr[k]) {
     return false;
   }
-  return arr[k];  
+  return arr[k];
 };
 
 export default {

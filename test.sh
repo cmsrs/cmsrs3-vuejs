@@ -1,19 +1,15 @@
 #run all test
 if [ "$1" = "all" ]; then
     npm run test
-    #npm run test:coverage
     exit
 
-elif [ "$1" = "cover" ]; then
-    #npm run test
+elif [ "$1" = "coverage" ]; then
     npm run test:coverage
     exit
 
 elif [ "$1" = "-t" ]; then
-    #npm run test
     npm run test -- -t $2
     exit
-
 
 else
     

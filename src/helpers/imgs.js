@@ -1,4 +1,4 @@
-const  getImagesUpload = async (files) => {
+const getImagesUpload = async (files) => {
   const promises = [];
   for (let i = 0; i < files.length; i++) {
     promises.push(
@@ -17,9 +17,8 @@ const  getImagesUpload = async (files) => {
     );
   }
   return Promise.all(promises);
-}
-
+};
 
 export default {
-  getImagesUpload
+  getImagesUpload,
 };

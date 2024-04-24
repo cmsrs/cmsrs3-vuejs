@@ -502,8 +502,12 @@ import { useAuthStore } from "../state/store.js";
 const { auth } = useAuthStore();
 
 // Data
-const { configLangs: langs, configDefaultLang, pageTypes: page_types, token } =
-  functions.retrieveParamsFromStorage();
+const {
+  configLangs: langs,
+  configDefaultLang,
+  pageTypes: page_types,
+  token,
+} = functions.retrieveParamsFromStorage();
 
 const lang = ref(configDefaultLang);
 const msgWrong = ref("");
@@ -637,8 +641,9 @@ async function handleUploadFile(event) {
 
   for (let i = 0; i < images.length; i++) {
     let ret = uploadImage(images[i], "page", currentPageId.value, token);
-    
-    if (auth.token !== jsonStoreTest.getTestToken()) {  //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
+
+    if (auth.token !== jsonStoreTest.getTestToken()) {
+      //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
       await functions.delay(6000); //in test we not execute this line//test token = 'abcde12345'
     }
 
@@ -971,11 +976,14 @@ const handleMenuChange = () => {
 };
 
 function getPagesBelongsToMenu(menuId) {
-  return  functions.getItemFromArrayOrFalse(pagesBelongsToMenus.value, menuId);
+  return functions.getItemFromArrayOrFalse(pagesBelongsToMenus.value, menuId);
 }
 
 function getPagesBelongsToPage(parentPageId) {
-  return  functions.getItemFromArrayOrFalse(pagesBelongsToPages.value, parentPageId);
+  return functions.getItemFromArrayOrFalse(
+    pagesBelongsToPages.value,
+    parentPageId,
+  );
 }
 
 onMounted(async () => {
