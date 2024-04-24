@@ -25,11 +25,10 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  props: {
+<script setup>
+
+defineProps({
     msgGood: String,
     msgWrong: [Array, Object, String], //maybe without array - todo test
-  },
-};
+});
 </script>
