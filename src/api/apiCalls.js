@@ -13,9 +13,7 @@ export const logout = (token) => {
 };
 
 export const postPage = (post, token) => {
-  //console.log('____________________postPage___________');
   const ret = axios.post("/api/pages?token=" + token, post);
-  //console.log( ret );
   return ret;
 };
 
@@ -27,7 +25,7 @@ export const getPages = (token) => {
   return axios.get("/api/pages?token=" + token);
 };
 
-//not use
+//when click edit  page we get new data
 export const getPage = (id, token) => {
   return axios.get("/api/pages/" + id + "?token=" + token);
 };

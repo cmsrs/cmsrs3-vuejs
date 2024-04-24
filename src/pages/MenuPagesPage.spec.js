@@ -57,7 +57,7 @@ const images = [
 ];
 
 const pages = [
-  {
+  { //0
     id: 1,
     published: 0,
     commented: 0,
@@ -79,7 +79,7 @@ const pages = [
       en: "lorem ipsum",
     },
   },
-  {
+  { //1
     id: 2,
     published: 0,
     commented: 0,
@@ -101,7 +101,7 @@ const pages = [
       en: "inner lorem ipsum",
     },
   },
-  {
+  { //2
     id: 3,
     published: 1,
     commented: 0,
@@ -260,6 +260,15 @@ let server = setupServer(
       success: true,
     });
   }),
+
+  http.get("/api/pages/3", async () => {
+    const jsonRes = {
+      success: true,
+      data: pages[2], //id = 3
+    };
+
+    return HttpResponse.json(jsonRes);
+  }),  
 
   http.get("/api/pages", async () => {
     const jsonRes = {

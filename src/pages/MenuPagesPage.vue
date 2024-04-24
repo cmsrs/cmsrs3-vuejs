@@ -479,6 +479,7 @@ import {
   postPage,
   putPage,
   getPages,
+  getPage,
   postMenu,
   getMenus,
   putMenu,
@@ -637,10 +638,10 @@ async function handleUploadFile(event) {
     return false;
   }
 
-  const images = await imgs.getImagesUpload(files);
+  const newImages = await imgs.getImagesUpload(files);
 
-  for (let i = 0; i < images.length; i++) {
-    let ret = uploadImage(images[i], "page", currentPageId.value, token);
+  for (let i = 0; i < newImages.length; i++) {
+    let ret = uploadImage(newImages[i], "page", currentPageId.value, token);
 
     if (auth.token !== jsonStoreTest.getTestToken()) {
       //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
@@ -649,12 +650,13 @@ async function handleUploadFile(event) {
 
     if (ret) {
       msgGood.value =
-        "Images has been uploaded " + (i + 1) + "/" + images.length;
+        "Images has been uploaded " + (i + 1) + "/" + newImages.length;
     }
   }
 
   const dbImages = await getImages("page", currentPageId.value, token);
   if (dbImages.data.success) {
+    images.value = dbImages.data.data;
     msgGood.value = "Images has been uploaded";
     pre_loader.value = false;
   }
@@ -823,9 +825,9 @@ const delImage = async (id) => {
     try {
       const objDeleteImage = await deleteImage(id, token);
       if (objDeleteImage.data.success) {
-        const images = await getImages("page", currentPageId.value, token);
-        if (images.data.success) {
-          images.value = images.data.data;
+        const dbImages = await getImages("page", currentPageId.value, token);
+        if (dbImages.data.success) {
+          images.value = dbImages.data.data;
           msgGood.value = trans.ttt("success_image_delete"); //  "Image has been deleted";
           pre_loader.value = false;
         }
@@ -850,9 +852,9 @@ const positionImage = async (direction, imageId) => {
     const pos = await setImagePosition(direction, imageId, token);
 
     if (pos.data.success) {
-      const images = await getImages("page", currentPageId.value, token);
-      if (images.data.success) {
-        images.value = images.data.data;
+      const dbImages = await getImages("page", currentPageId.value, token);
+      if (dbImages.data.success) {
+        images.value = dbImages.data.data;
         msgGood.value = trans.ttt("success_image_position"); //"Position image has been changed";
         pre_loader.value = false;
       }
@@ -863,31 +865,49 @@ const positionImage = async (direction, imageId) => {
   }
 };
 
-const editPage = (pageId) => {
-  clearMsg();
-  const p = allPages.value.find((page) => page.id === pageId);
+const editPage =  async (pageId) => {
+  if (!startLoading()) {
+    return false;
+  }
 
-  currentPageId.value = p.id;
+  //const p = allPages.value.find((page) => page.id === pageId);
+  try{
+    const dbPage = await getPage(pageId, token);
+    if (dbPage.data.success) {
+      const p = dbPage.data.data;
+      //console.log('id', p.id);
+      //console.log('images',  p.images);      
+      //console.log('title', p.title);      
 
-  rootPagesBelongToMenu.value = cms.getRootPages(
-    p.menu_id,
-    currentPageId.value,
-    allPages.value,
-  ); //p.menu_id ? getRootPages(p.menu_id) : [];
-  title.value = p.title;
-  short_title.value = p.short_title;
-  description.value = p.description;
-  page_type.value = p.type; //!
-  content.value = p.content[lang.value]
-    ? p.content
-    : functions.createEmptyObj(langs);
-  published.value = p.published;
+      currentPageId.value = p.id;
 
-  commented.value = p.commented;
-  after_login.value = p.after_login;
-  menu_id.value = p.menu_id;
-  page_id.value = p.page_id;
-  images.value = p.images;
+      rootPagesBelongToMenu.value = cms.getRootPages(
+        p.menu_id,
+        currentPageId.value,
+        allPages.value,
+      ); //p.menu_id ? getRootPages(p.menu_id) : [];
+      title.value = p.title;
+      short_title.value = p.short_title;
+      description.value = p.description;
+      page_type.value = p.type; //!
+      content.value = p.content[lang.value]
+        ? p.content
+        : functions.createEmptyObj(langs);
+      published.value = p.published;
+
+      commented.value = p.commented;
+      after_login.value = p.after_login;
+      menu_id.value = p.menu_id;
+      page_id.value = p.page_id;
+      images.value = p.images;
+
+      pre_loader.value = false;
+    }
+  } catch (error) {
+    console.log("_is_error_get_page_", error);
+    msgWrong.value = "Get page problem = " + error;
+  }
+
 };
 
 const delPage = async (pageId) => {
@@ -933,6 +953,8 @@ const positionPage = async (direction, pageId) => {
         msgGood.value = "Position page has been changed";
         pre_loader.value = false;
       }
+    } else if ( pos.data.success === false ){ //in case one page to sorting
+      pre_loader.value = false;
     }
   } catch (error) {
     console.log("_is_error__", error);
