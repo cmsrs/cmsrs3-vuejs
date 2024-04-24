@@ -4,7 +4,7 @@
       :role="'sorting_' + sortColumn + '_asc'"
       :class="{ 'disabled-if-loader': pre_loader }"
       class="ml-2 col-1"
-      @click.prevent="inSortAsc(column)"
+      @click.prevent="$emit('sortAsc')"
     >
       <i
         class="fas fa-arrow-down cursor-pointer"
@@ -16,7 +16,7 @@
       :role="'sorting_' + sortColumn + '_desc'"
       :class="{ 'disabled-if-loader': pre_loader }"
       class="ml-2 col-1"
-      @click.prevent="inSortDesc(column)"
+      @click.prevent="$emit('sortDesc')"
     >
       <i
         class="fas fa-arrow-up cursor-pointer"
@@ -27,23 +27,14 @@
   </span>
 </template>
 
-<script>
-export default {
-  props: {
-    pre_loader: Boolean,
-    onClickAsc: Function,
-    onClickDesc: Function,
-    sortColumn: String,
-    column: String,
-    direction: String,
-  },
-  methods: {
-    inSortAsc(column) {
-      this.$emit("onClickAsc", column);
-    },
-    inSortDesc(column) {
-      this.$emit("onClickDesc", column);
-    },
-  },
-};
+<script setup>
+
+defineProps({
+  pre_loader: Boolean,
+  sortColumn: String,
+  column: String,
+  direction: String,
+});
+
+defineEmits(['sortAsc', 'sortDesc'])
 </script>

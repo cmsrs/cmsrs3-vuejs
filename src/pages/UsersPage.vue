@@ -58,8 +58,8 @@
               Name
               <TableSort
                 :sortColumn="'name'"
-                @onClickAsc="sortingAsc('name')"
-                @onClickDesc="sortingDesc('name')"
+                @sort-asc="sortingAsc('name')"
+                @sort-desc="sortingDesc('name')"
                 :pre_loader="pre_loader"
                 :column="column"
                 :direction="direction"
@@ -70,8 +70,8 @@
               Email
               <TableSort
                 :sortColumn="'email'"
-                @onClickAsc="sortingAsc('email')"
-                @onClickDesc="sortingDesc('email')"
+                @sort-asc="sortingAsc('email')"
+                @sort-desc="sortingDesc('email')"
                 :pre_loader="pre_loader"
                 :column="column"
                 :direction="direction"
@@ -82,8 +82,8 @@
               Created
               <TableSort
                 :sortColumn="'created_at'"
-                @onClickAsc="sortingAsc('created_at')"
-                @onClickDesc="sortingDesc('created_at')"
+                @sort-asc="sortingAsc('created_at')"
+                @sort-desc="sortingDesc('created_at')"
                 :pre_loader="pre_loader"
                 :column="column"
                 :direction="direction"
