@@ -472,6 +472,7 @@ import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { SERVER_URL } from "../config.js";
 import functions from "../helpers/functions.js";
+import imgs from "../helpers/imgs.js";
 import cms from "../helpers/cms.js";
 import trans from "../helpers/trans.js";
 import {
@@ -501,12 +502,10 @@ import { useAuthStore } from "../state/store.js";
 const { auth } = useAuthStore();
 
 // Data
-const { configLangs, configDefaultLang, pageTypes, token } =
+const { configLangs: langs, configDefaultLang, pageTypes: page_types, token } =
   functions.retrieveParamsFromStorage();
-const langs = ref(configLangs);
-const lang = ref(configDefaultLang);
-const page_types = ref(pageTypes);
 
+const lang = ref(configDefaultLang);
 const msgWrong = ref("");
 const msgGood = ref("");
 const pre_loader = ref(false);
@@ -616,10 +615,6 @@ const clearDataPage = () => {
   pre_loader.value = false;
 };
 
-async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function handleUploadFile(event) {
   if (pre_loader.value) {
     return false;
@@ -638,15 +633,13 @@ async function handleUploadFile(event) {
     return false;
   }
 
-  const images = await getImagesUpload(files);
+  const images = await imgs.getImagesUpload(files);
 
   for (let i = 0; i < images.length; i++) {
     let ret = uploadImage(images[i], "page", currentPageId.value, token);
-
-    //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
-    if (auth.token !== jsonStoreTest.getTestToken()) {
-      //test token = 'abcde12345'
-      await delay(6000); //in test we not execute this line
+    
+    if (auth.token !== jsonStoreTest.getTestToken()) {  //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
+      await functions.delay(6000); //in test we not execute this line//test token = 'abcde12345'
     }
 
     if (ret) {
@@ -657,31 +650,9 @@ async function handleUploadFile(event) {
 
   const dbImages = await getImages("page", currentPageId.value, token);
   if (dbImages.data.success) {
-    // Assuming msgGood is a ref object
     msgGood.value = "Images has been uploaded";
     pre_loader.value = false;
   }
-}
-
-async function getImagesUpload(files) {
-  const promises = [];
-  for (let i = 0; i < files.length; i++) {
-    promises.push(
-      new Promise((resolve, reject) => {
-        let name = files[i].name;
-        let reader = new FileReader();
-
-        reader.readAsDataURL(files[i]);
-        reader.onload = (e) => {
-          resolve({ data: e.target.result, name: name });
-        };
-        reader.onerror = (error) => {
-          reject(error);
-        };
-      }),
-    );
-  }
-  return Promise.all(promises);
 }
 
 async function changeLang(inLang) {
@@ -700,10 +671,10 @@ async function saveMenu(index) {
 
   if ("new" === index) {
     menus_error_new.value = false;
-    for (let lang of langs.value) {
+    for (let lang of langs) {
       if (!new_menu_name.value[lang]) {
         msgWrong.value =
-          "Add menu name" + cms.getInfoMsgPrefixByLang(langs.value, lang); // for lang = "+lang;
+          "Add menu name" + cms.getInfoMsgPrefixByLang(langs, lang); // for lang = "+lang;
         menus_error_new.value = true;
         break;
       }
@@ -739,10 +710,10 @@ async function saveMenu(index) {
     }
     const menuByLangs = menus.value[index]["name"];
 
-    for (let lang of langs.value) {
+    for (let lang of langs) {
       if (!menuByLangs[lang]) {
         msgWrong.value =
-          "Add menu name" + cms.getInfoMsgPrefixByLang(langs.value, lang); // for '+lang+' lang';
+          "Add menu name" + cms.getInfoMsgPrefixByLang(langs, lang); // for '+lang+' lang';
         break;
       }
     }
@@ -904,7 +875,7 @@ const editPage = (pageId) => {
   page_type.value = p.type; //!
   content.value = p.content[lang.value]
     ? p.content
-    : functions.createEmptyObj(langs.value);
+    : functions.createEmptyObj(langs);
   published.value = p.published;
 
   commented.value = p.commented;
@@ -1000,17 +971,11 @@ const handleMenuChange = () => {
 };
 
 function getPagesBelongsToMenu(menuId) {
-  if ("undefined" === typeof pagesBelongsToMenus.value[menuId]) {
-    return false;
-  }
-  return pagesBelongsToMenus.value[menuId];
+  return  functions.getItemFromArrayOrFalse(pagesBelongsToMenus.value, menuId);
 }
 
 function getPagesBelongsToPage(parentPageId) {
-  if ("undefined" === typeof pagesBelongsToPages.value[parentPageId]) {
-    return false;
-  }
-  return pagesBelongsToPages.value[parentPageId];
+  return  functions.getItemFromArrayOrFalse(pagesBelongsToPages.value, parentPageId);
 }
 
 onMounted(async () => {

@@ -81,7 +81,20 @@ const retrieveParamsFromUrl = (url, param) => {
   return page;
 };
 
+const  delay = async (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+const getItemFromArrayOrFalse = (arr, k) => {
+  if ("undefined" === typeof arr[k]) {
+    return false;
+  }
+  return arr[k];  
+};
+
 export default {
+  getItemFromArrayOrFalse,
+  delay,
   createEmptyObj,
   parseError,
   getErrorFields,
