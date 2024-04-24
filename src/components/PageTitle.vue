@@ -5,7 +5,7 @@
         role="edit_page"
         class="ml-2 col-1"
         :class="{ 'disabled-if-loader': pre_loader }"
-        @click="inEditPage(p.id)"
+        @click="$emit('execEditPage', p.id)"
       >
         <i class="far fa-edit cursor-pointer"></i>
       </div>
@@ -13,7 +13,7 @@
         role="del_page"
         class="ml-2 col-1"
         :class="{ 'disabled-if-loader': pre_loader }"
-        @click="inDelPage(p.id)"
+        @click="$emit('execDelPage', p.id)"
       >
         <i class="fas fa-trash cursor-pointer"></i>
       </div>
@@ -21,7 +21,7 @@
         role="down_page"
         :class="{ 'disabled-if-loader': pre_loader }"
         class="ml-2 col-1"
-        @click="inPositionPage('down', p.id)"
+        @click="$emit('execPositionPageDown', p.id)"
       >
         <i class="fas fa-arrow-down cursor-pointer" aria-hidden="true"></i>
       </div>
@@ -29,7 +29,7 @@
         role="up_page"
         :class="{ 'disabled-if-loader': pre_loader }"
         class="ml-2 col-1"
-        @click="inPositionPage('up', p.id)"
+        @click="$emit('execPositionPageUp', p.id)"
       >
         <i class="fas fa-arrow-up cursor-pointer" aria-hidden="true"></i>
       </div>
@@ -44,40 +44,15 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "PageTitle",
-  props: {
-    pre_loader: Boolean,
-    p: Object, // Assuming pageTitle is an object with translations
+<script setup>
+defineProps({
+  pre_loader: Boolean,
+    p: Object,
     lang: String,
     allPages: Object,
-    execEditPage: Function,
-    execDelPage: Function,
-    execPositionPageUp: Function,
-    execPositionPageDown: Function,
-    showPageId: Boolean,
-  },
-  methods: {
-    inEditPage(pId) {
-      //this.$emit('wywolajMetode');
-      this.$emit("execEditPage", pId);
-    },
-    async inDelPage(pId) {
-      //console.log('_________del_page________')
-      this.$emit("execDelPage", pId);
-    },
+    showPageId: Boolean,    
+});
 
-    async inPositionPage(direction, pageId) {
-      //console.log('child='+ direction+ ' pId=' + pageId); //tu jest ok
-      if ("down" == direction) {
-        this.$emit("execPositionPageDown", pageId);
-      }
-      if ("up" == direction) {
-        this.$emit("execPositionPageUp", pageId);
-      }
-    },
-  },
-};
+defineEmits(['execEditPage', 'execDelPage',  'execPositionPageUp',   'execPositionPageDown' ])
+
 </script>

@@ -109,10 +109,10 @@
                   :key="p.id"
                 >
                   <PageTitle
-                    @execEditPage="editPage(p.id)"
-                    @execDelPage="delPage(p.id)"
-                    @execPositionPageUp="positionPageUp(p.id)"
-                    @execPositionPageDown="positionPageDown(p.id)"
+                    @exec-edit-page="editPage(p.id)"
+                    @exec-del-page="delPage(p.id)"
+                    @exec-position-page-up="positionPageUp(p.id)"
+                    @exec-position-page-down="positionPageDown(p.id)"
                     :pre_loader="pre_loader"
                     :p="p"
                     :lang="lang"
@@ -131,10 +131,10 @@
                       :key="pp.id"
                     >
                       <PageTitle
-                        @execEditPage="editPage(pp.id)"
-                        @execDelPage="delPage(pp.id)"
-                        @execPositionPageUp="positionPageUp(pp.id)"
-                        @execPositionPageDown="positionPageDown(pp.id)"
+                        @exec-edit-page="editPage(pp.id)"
+                        @exec-del-page="delPage(pp.id)"
+                        @exec-position-page-up="positionPageUp(pp.id)"
+                        @exec-position-page-down="positionPageDown(pp.id)"
                         :pre_loader="pre_loader"
                         :p="pp"
                         :lang="lang"
@@ -185,10 +185,10 @@
                 :key="index"
               >
                 <PageTitle
-                  @execEditPage="editPage(p.id)"
-                  @execDelPage="delPage(p.id)"
-                  @execPositionPageUp="positionPageUp(p.id)"
-                  @execPositionPageDown="positionPageDown(p.id)"
+                  @exec-edit-page="editPage(p.id)"
+                  @exec-del-page="delPage(p.id)"
+                  @exec-position-page-up="positionPageUp(p.id)"
+                  @exec-position-page-down="positionPageDown(p.id)"
                   :pre_loader="pre_loader"
                   :p="p"
                   :lang="lang"
@@ -200,10 +200,10 @@
               <h5 class="mt-4">Inner boxes</h5>
               <div class="row" v-for="(p, index) in innerPages" :key="index">
                 <PageTitle
-                  @execEditPage="editPage(p.id)"
-                  @execDelPage="delPage(p.id)"
-                  @execPositionPageUp="positionPageUp(p.id)"
-                  @execPositionPageDown="positionPageDown(p.id)"
+                  @exec-edit-page="editPage(p.id)"
+                  @exec-del-page="delPage(p.id)"
+                  @exec-position-page-up="positionPageUp(p.id)"
+                  @exec-position-page-down="positionPageDown(p.id)"
                   :pre_loader="pre_loader"
                   :p="p"
                   :lang="lang"
