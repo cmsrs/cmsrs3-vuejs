@@ -55,7 +55,7 @@
             <th scope="col">#</th>
 
             <th scope="col">
-              Name
+              Product name
               <TableSort
                 :sortColumn="'product_name'"
                 @sort-asc="sortingAsc('product_name')"
@@ -67,7 +67,7 @@
             </th>
 
             <th scope="col">
-              Email
+              Sku
               <TableSort
                 :sortColumn="'sku'"
                 @sort-asc="sortingAsc('sku')"

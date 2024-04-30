@@ -5,6 +5,7 @@
         <ul class="navbar-nav ms-auto col-10">
           <router-link class="nav-link" to="/pages">Pages </router-link>
           <router-link class="nav-link" to="/users">Users </router-link>
+          <router-link class="nav-link" to="/products">Products </router-link>          
         </ul>
         <ul class="navbar-nav justify-content-end col-2">
           <li
