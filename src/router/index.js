@@ -4,6 +4,9 @@ import MenuPagesPage from "../pages/MenuPagesPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import UsersPage from "../pages/UsersPage.vue";
 import UserEditPage from "../pages/UserEditPage.vue";
+
+import ProductsPage from "../pages/ProductsPage.vue";
+
 //import UserPage from "../pages/UserPage";
 //import AccountActivationPage from "../pages/AccountActivationPage";
 
@@ -30,6 +33,20 @@ const router = createRouter({
       name: "user",
       props: true,
     },
+
+    {
+      path: "/products",
+      name: "products",
+      component: ProductsPage,
+    },
+    // {
+    //   path: "/product/:mode/:id?",
+    //   component: ProductEditPage,
+    //   name: "product",
+    //   props: true,
+    // },
+
+
     // {
     //   path: "/*",
     //   component: LoginPage,
