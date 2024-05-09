@@ -79,6 +79,30 @@
             </th>
 
             <th scope="col">
+              Price
+              <TableSort
+                :sortColumn="'price'"
+                @sort-asc="sortingAsc('price')"
+                @sort-desc="sortingDesc('price')"
+                :pre_loader="pre_loader"
+                :column="column"
+                :direction="direction"
+              ></TableSort>
+            </th>
+
+            <th scope="col">
+              Pub
+              <TableSort
+                :sortColumn="'published'"
+                @sort-asc="sortingAsc('published')"
+                @sort-desc="sortingDesc('published')"
+                :pre_loader="pre_loader"
+                :column="column"
+                :direction="direction"
+              ></TableSort>
+            </th>
+
+            <th scope="col">
               Created
               <TableSort
                 :sortColumn="'created_at'"
@@ -88,29 +112,34 @@
                 :column="column"
                 :direction="direction"
               ></TableSort>
-            </th>
+            </th>            
             <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(c, index) in products.data" :key="index">
+          <tr v-for="(p, index) in products.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
-            <td>{{ c["product_name"] }}</td>
-            <td>{{ c["sku"] }}</td>
-            <td>{{ c["created_at"] ? c["created_at"].split("T")[0] : "" }}</td>
+            <td>{{ p["product_name"] }}</td>
+            <td>{{ p["sku"] }}</td>
+            <td>{{ p["price"] }}</td>            
+            <td>
+              <i v-if="p['published']"  class="fa fa-check" aria-hidden="true"></i>
+              <i v-if="!p['published']" class="fa fa-times" aria-hidden="true"></i>
+            </td>            
+            <td>{{ p["created_at"] ? p["created_at"].split("T")[0] : "" }}</td>
             <td>
               <span
                 role="edit_product"
                 class="me-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
-                @click="editProduct(c['id'])"
+                @click="editProduct(p['id'])"
                 ><i class="far fa-edit cursor-pointer"></i
               ></span>
               <span
                 role="del_product"
                 class="ms-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
-                @click="delProduct(c['id'])"
+                @click="delProduct(p['id'])"
                 ><i class="fas fa-trash cursor-pointer"></i
               ></span>
             </td>
