@@ -19,9 +19,10 @@ const router = createRouter({
       component: LoginPage,
     },
     {
-      path: "/pages",
+      path: "/pages/:id?",
       component: MenuPagesPage,
     },
+
     {
       path: "/users",
       name: "users",

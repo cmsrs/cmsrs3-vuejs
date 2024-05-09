@@ -55,7 +55,7 @@
 
                   <div
                     role="save_menu"
-                    class="ml-2 col-1"
+                    class="ms-2 col-1"
                     :class="{ 'disabled-if-loader': pre_loader }"
                     @click="saveMenu(index)"
                   >
@@ -63,7 +63,7 @@
                   </div>
                   <div
                     role="del_menu"
-                    class="ml-2 trash col-1"
+                    class="ms-2 trash col-1"
                     :class="{ 'disabled-if-loader': pre_loader }"
                     @click="delMenu(index)"
                   >
@@ -74,7 +74,7 @@
                     v-if="menus.length > 1"
                     role="down_menu"
                     :class="{ 'disabled-if-loader': pre_loader }"
-                    class="ml-2 col-1"
+                    class="ms-2 col-1"
                     @click="positionMenu('down', m.id)"
                   >
                     <i
@@ -86,7 +86,7 @@
                     v-if="menus.length > 1"
                     role="up_menu"
                     :class="{ 'disabled-if-loader': pre_loader }"
-                    class="ml-2 col-1"
+                    class="ms-2 col-1"
                     @click="positionMenu('up', m.id)"
                   >
                     <i
@@ -120,7 +120,7 @@
                   ></PageTitle>
 
                   <div
-                    class="container m-2"
+                    class="container ms-2"
                     role="page_pages"
                     :data-page-id="p.id"
                     v-if="getPagesBelongsToPage(p.id)"
@@ -161,14 +161,14 @@
 
               <div
                 role="save_menu_0"
-                class="ml-2 col-1"
+                class="ms-2 col-1"
                 @click="saveMenu('new')"
               >
                 <i class="far fa-save cursor-pointer"></i>
               </div>
               <div
                 role="del_menu_0"
-                class="ml-2 trash col-1"
+                class="ms-2 trash col-1"
                 @click="delMenu('new')"
               >
                 <i class="fas fa-trash cursor-pointer" aria-hidden="true" />
@@ -237,7 +237,7 @@
           <button
             role="button_clear_page_data"
             @click.prevent="clearDataPage"
-            class="add-page-btn btn btn-info ml-3 mt-2 mb-2"
+            class="add-page-btn btn btn-info ms-2 mt-2 mb-2"
             :disabled="pre_loader"
           >
             Clear data
@@ -429,7 +429,7 @@
 
               <div
                 role="del_image"
-                class="ml-2 trash col-1"
+                class="ms-2 trash col-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
                 @click="delImage(image.id)"
               >
@@ -439,7 +439,7 @@
               <div
                 role="down_image"
                 :class="{ 'disabled-if-loader': pre_loader }"
-                class="ml-2 col-1"
+                class="ms-2 col-1"
                 @click="positionImage('down', image.id)"
               >
                 <i
@@ -451,7 +451,7 @@
               <div
                 role="up_image"
                 :class="{ 'disabled-if-loader': pre_loader }"
-                class="ml-2 col-1"
+                class="ms-2 col-1"
                 @click="positionImage('up', image.id)"
               >
                 <i
@@ -500,6 +500,8 @@ import Msg from "../components/Msg.vue";
 
 import jsonStoreTest from "../../test/jsonStore.js";
 import { useAuthStore } from "../state/store.js";
+
+const router = useRouter();
 const { auth } = useAuthStore();
 
 // Data
@@ -602,6 +604,7 @@ const clearDataPage = () => {
   if (!startLoading()) {
     return false;
   }
+  router.push("/pages");  
 
   title.value = {};
   short_title.value = {};
@@ -865,12 +868,7 @@ const positionImage = async (direction, imageId) => {
   }
 };
 
-const editPage =  async (pageId) => {
-  if (!startLoading()) {
-    return false;
-  }
-
-  //const p = allPages.value.find((page) => page.id === pageId);
+const getPageById =  async (pageId) => {
   try{
     const dbPage = await getPage(pageId, token);
     if (dbPage.data.success) {
@@ -901,13 +899,27 @@ const editPage =  async (pageId) => {
       page_id.value = p.page_id;
       images.value = p.images;
 
-      pre_loader.value = false;
+      return true;
     }
   } catch (error) {
     console.log("_is_error_get_page_", error);
-    msgWrong.value = "Get page problem = " + error;
+    //msgWrong.value = "Get page problem = " + error;
+    return false;
+  }
+};
+
+const editPage =  async (pageId) => {
+  if (!startLoading()) {
+    return false;
   }
 
+  const getSomePage = await getPageById(pageId);
+  if(getSomePage){
+    router.push("/pages/"+pageId);
+    pre_loader.value = false;      
+  }else{
+    msgWrong.value = "Get page problem = " + error;
+  }
 };
 
 const delPage = async (pageId) => {
@@ -1010,7 +1022,7 @@ function getPagesBelongsToPage(parentPageId) {
 
 onMounted(async () => {
   if (!token) {
-    useRouter().push("/");
+    router.push("/");
     return false;
   }
 
@@ -1018,9 +1030,18 @@ onMounted(async () => {
   const refreshM = await refreshMenus();
   const refreshP = await refreshPages();
 
-  if (refreshM && refreshP) {
-    pre_loader.value = false;
+  const pageId = router.currentRoute.value.params.id;
+  if(pageId){
+    const getSomePage = await getPageById(pageId);
+    if (refreshM && refreshP && getSomePage) {
+      pre_loader.value = false;
+    }
+  }else{
+    if (refreshM && refreshP) {
+      pre_loader.value = false;
+    }
   }
+
 });
 
 watch(

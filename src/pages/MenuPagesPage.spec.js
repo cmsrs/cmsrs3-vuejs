@@ -348,7 +348,9 @@ afterAll(() => {
 }, 100000);
 
 const setup = async () => {
-  render(MenuPagesPage);
+  router.push("/pages");
+  await router.isReady();
+  return render(MenuPagesPage);
 };
 
 const setup_display_message_err = async () => {
@@ -1403,4 +1405,30 @@ describe("Pages page", () => {
       });
     });
   });
+
+  describe("go to direct page", () => {
+    const firstPageIdOnThePage = 3;    
+    const setupEdit = async () => {
+      router.push("/pages/3");
+      await router.isReady();
+      return render(MenuPagesPage, {
+        props: {
+          id: firstPageIdOnThePage,
+        },
+      });
+    };
+    
+    it("display first page", async () => {
+      await setupEdit();
+      await waitForAjaxes();
+
+      const firstPageIdOnThePageIndex = firstPageIdOnThePage - 1;
+      expect(pages[firstPageIdOnThePageIndex].id).toBe(firstPageIdOnThePage);
+      const page = pages[firstPageIdOnThePageIndex];
+
+      const title = screen.queryByPlaceholderText("title en");
+      expect(title).toHaveValue(page.title["en"]);
+    });
+  });
+
 });
