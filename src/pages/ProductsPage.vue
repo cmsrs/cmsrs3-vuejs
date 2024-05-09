@@ -53,6 +53,7 @@
         <thead>
           <tr>
             <th scope="col">#</th>
+            <th scope="col">Img</th>
 
             <th scope="col">
               Product name
@@ -119,6 +120,13 @@
         <tbody>
           <tr v-for="(p, index) in products.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
+            <td>
+              <img
+                class="col-2"
+                :src="SERVER_URL + p.images[0]['fs']['small']"
+                :alt="p.images[0]['alt'][lang]"
+              />                      
+            </td>
             <td>{{ p["product_name"] }}</td>
             <td>{{ p["sku"] }}</td>
             <td>{{ p["price"] }}</td>            
@@ -173,6 +181,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
+import { SERVER_URL } from "../config.js";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import { getProducts, deleteProduct } from "../api/apiCalls.js";
