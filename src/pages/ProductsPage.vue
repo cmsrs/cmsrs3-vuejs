@@ -53,7 +53,19 @@
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Img</th>
+            <th scope="col">Image</th>
+
+            <th scope="col">
+              Page
+              <TableSort
+                :sortColumn="'page_short_title'"
+                @sort-asc="sortingAsc('page_short_title')"
+                @sort-desc="sortingDesc('page_short_title')"
+                :pre_loader="pre_loader"
+                :column="column"
+                :direction="direction"
+              ></TableSort>
+            </th>
 
             <th scope="col">
               Product name
@@ -122,11 +134,12 @@
             <th scope="row">{{ index + 1 }}</th>
             <td>
               <img
-                class="col-2"
+                style="width: 40%"
                 :src="SERVER_URL + p.images[0]['fs']['small']"
                 :alt="p.images[0]['alt'][lang]"
               />                      
-            </td>
+            </td>          
+            <td>{{ p["page_short_title"] }}</td>
             <td>{{ p["product_name"] }}</td>
             <td>{{ p["sku"] }}</td>
             <td>{{ p["price"] }}</td>            
