@@ -139,7 +139,11 @@
                 :alt="p.images[0]['alt'][lang]"
               />                      
             </td>          
-            <td>{{ p["page_short_title"] }}</td>
+            <td>
+              <span  @click="goToPage(p['page_id'])" class="cursor-pointer text-primary">
+                {{ p["page_short_title"] }}
+              </span>
+            </td>
             <td>{{ p["product_name"] }}</td>
             <td>{{ p["sku"] }}</td>
             <td>{{ p["price"] }}</td>            
@@ -227,11 +231,11 @@ const search = ref(""); //after click button
 const searchValue = ref(""); // current value
 
 const addProduct = () => {
-  router.push({ product_name: "product", params: { mode: "add" } });
+  router.push({ name: "product", params: { mode: "add" } });
 };
 
 const editProduct = (id) => {
-  router.push({ product_name: "product", params: { mode: "edit", id: id } });
+  router.push({ name: "product", params: { mode: "edit", id: id } });
 };
 
 const searchProducts = async () => {
@@ -243,6 +247,10 @@ const searchProducts = async () => {
   if (refreshC) {
     pre_loader.value = false;
   }
+};
+
+const goToPage = (pageId) => {
+  router.push("/pages/"+pageId);
 };
 
 const delProduct = async (id) => {

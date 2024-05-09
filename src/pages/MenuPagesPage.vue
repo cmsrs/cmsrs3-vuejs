@@ -9,8 +9,8 @@
             <span
               :role="'lang_' + l"
               :class="{
-                'mr-1 cursor-pointer text-primary': lang === l,
-                'mr-1 cursor-pointer text-secondary': lang !== l,
+                'me-1 cursor-pointer text-primary': lang === l,
+                'me-1 cursor-pointer text-secondary': lang !== l,
               }"
               @click="changeLang(l)"
               >{{ l }}
@@ -222,7 +222,7 @@
             role="button_save_edit_page"
             @click.prevent="saveEditPage"
             type="submit"
-            class="add-page-btn btn btn-primary mt-2 mb-2 mr-2"
+            class="add-page-btn btn btn-primary mt-2 mb-2 me-2"
             :disabled="pre_loader"
           >
             <i v-if="!pre_loader" class="fas fa-plus"></i>
