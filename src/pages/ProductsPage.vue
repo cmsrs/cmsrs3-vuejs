@@ -1,6 +1,16 @@
 <template>
   <div data-testid="products-page">
-    <h3>Products</h3>
+
+    <div class="container">
+      <div class="row mt-3 mb-3">
+        <h3 class="col-10">Products</h3>
+        <ChangeLang 
+          :lang="lang"
+          @exec-change-lang="changeLang"
+        ></ChangeLang>
+      </div>
+    </div>
+
 
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
@@ -203,6 +213,7 @@ import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import { getProducts, deleteProduct } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
+import ChangeLang from "../components/ChangeLang.vue";
 import TableSort from "../components/TableSort.vue";
 
 const router = useRouter();
@@ -211,10 +222,12 @@ const router = useRouter();
 
 // Data
 const {
-  configLangs: langs,
+  //configLangs: langs,
   configDefaultLang,
   token,
 } = functions.retrieveParamsFromStorage();
+
+//console.log('def_lang', configDefaultLang);
 
 const lang = ref(configDefaultLang);
 const msgWrong = ref("");
@@ -236,6 +249,11 @@ const addProduct = () => {
 
 const editProduct = (id) => {
   router.push({ name: "product", params: { mode: "edit", id: id } });
+};
+
+async function changeLang(inLang) {
+  lang.value = inLang;
+  setDefaultLang(inLang);
 };
 
 const searchProducts = async () => {

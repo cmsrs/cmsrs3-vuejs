@@ -4,19 +4,10 @@
     <div class="container">
       <div class="row mt-3 mb-3">
         <h3 class="col-10" role="head_menu_pages">CMS - menus and pages</h3>
-        <div role="change_lang" class="col-2" v-if="langs.length > 1">
-          <div v-for="l in langs" :key="l">
-            <span
-              :role="'lang_' + l"
-              :class="{
-                'me-1 cursor-pointer text-primary': lang === l,
-                'me-1 cursor-pointer text-secondary': lang !== l,
-              }"
-              @click="changeLang(l)"
-              >{{ l }}
-            </span>
-          </div>
-        </div>
+        <ChangeLang 
+          :lang="lang"
+          @exec-change-lang="changeLang"
+        ></ChangeLang>
       </div>
     </div>
 
@@ -497,6 +488,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 import PageTitle from "../components/PageTitle.vue";
 import Msg from "../components/Msg.vue";
+import ChangeLang from "../components/ChangeLang.vue";
 
 import jsonStoreTest from "../../test/jsonStore.js";
 import { useAuthStore } from "../state/store.js";
