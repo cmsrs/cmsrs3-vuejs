@@ -154,7 +154,9 @@
                 {{ p["page_short_title"] }}
               </span>
             </td>
-            <td>{{ p["product_name"] }}</td>
+            <td :role="'product_name_' + lang">
+              {{ p["product_name"] }}
+            </td>
             <td>{{ p["sku"] }}</td>
             <td>{{ p["price"] }}</td>            
             <td>
@@ -215,6 +217,8 @@ import { getProducts, deleteProduct } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
 import TableSort from "../components/TableSort.vue";
+import { useAuthStore } from "../state/store.js";
+const { auth, setDefaultLang } = useAuthStore();
 
 const router = useRouter();
 
@@ -224,7 +228,7 @@ const router = useRouter();
 const {
   //configLangs: langs,
   configDefaultLang,
-  token,
+  //token,
 } = functions.retrieveParamsFromStorage();
 
 //console.log('def_lang', configDefaultLang);
@@ -252,17 +256,24 @@ const editProduct = (id) => {
 };
 
 async function changeLang(inLang) {
+  pre_loader.value = true;
   lang.value = inLang;
   setDefaultLang(inLang);
+
+  const refreshP = await refreshProducts();
+
+  if (refreshP) {
+    pre_loader.value = false;
+  }
 };
 
 const searchProducts = async () => {
   pre_loader.value = true;
   search.value = searchValue.value;
 
-  const refreshC = await refreshProducts();
+  const refreshP = await refreshProducts();
 
-  if (refreshC) {
+  if (refreshP) {
     pre_loader.value = false;
   }
 };
@@ -277,7 +288,7 @@ const delProduct = async (id) => {
     pre_loader.value = true;
 
     try {
-      const response = await deleteProduct(id, token);
+      const response = await deleteProduct(id, auth.token);
       if (response.data.success) {
         const ret = await refreshProducts();
         if (ret) {
@@ -296,9 +307,9 @@ const changePageByUrl = async (url) => {
   pre_loader.value = true;
   page.value = functions.retrieveParamsFromUrl(url, "page");
 
-  const refreshC = await refreshProducts();
+  const refreshP = await refreshProducts();
 
-  if (refreshC) {
+  if (refreshP) {
     pre_loader.value = false;
   }
 };
@@ -317,9 +328,9 @@ const sorting = async (col, dir) => {
   direction.value = dir;
   page.value = "1";
 
-  const refreshC = await refreshProducts();
+  const refreshP = await refreshProducts();
 
-  if (refreshC) {
+  if (refreshP) {
     pre_loader.value = false;
   }
 };
@@ -332,15 +343,15 @@ const clearMsg = () => {
 const refreshProducts = async () => {
   clearMsg();
   try {
-    const responseC = await getProducts(
+    const responseP = await getProducts(
       lang.value,
       column.value,
       direction.value,
-      token,
+      auth.token,
       page.value,
       search.value,
     );
-    products.value = responseC.data.data;
+    products.value = responseP.data.data;
     return true;
   } catch (error) {
     console.log("error get products=", error);
@@ -349,7 +360,7 @@ const refreshProducts = async () => {
 };
 
 onMounted(async () => {
-  if (!token) {
+  if (!auth.token) {
     router.push("/");
     return false;
   }
@@ -362,9 +373,9 @@ onMounted(async () => {
   page.value = "1";
   search.value = "";
 
-  const refreshC = await refreshProducts();
+  const refreshP = await refreshProducts();
 
-  if (refreshC) {
+  if (refreshP) {
     pre_loader.value = false;
   }
 });
