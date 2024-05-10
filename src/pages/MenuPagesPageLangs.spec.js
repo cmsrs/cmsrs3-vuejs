@@ -1,12 +1,11 @@
 import {
   render,
-  //router,
+  router,
   screen,
   waitFor,
   waitForElementToBeRemoved,
   //fireEvent,
 } from "../../test/helper.js";
-import "../../test/afterlogin.js";
 
 import MenuPagesPage from "./MenuPagesPage.vue";
 import { setupServer } from "msw/node";
@@ -61,6 +60,17 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
+  http.get("/api/pages/1", async () => {
+    counter += 1;
+    const jsonRes = {
+      success: true,
+      data: pages[0],
+    };
+
+    return HttpResponse.json(jsonRes);
+  }),
+
+
   http.get("/api/menus", async () => {
     counter += 1;
     const jsonRes = {
@@ -93,45 +103,58 @@ const waitForAjaxes = async () => {
 
 describe("Pages page", () => {
   describe("Interactions many langs", () => {
-    const jsonStore2 = {
+
+    const jsonStore2 ={
       auth: {
-        isLoggedIn: true,
-        token: "abcde12345",
-        email: "user_rs@mail.com",
-        password: "PasswordRs",
+        token:  "abcde12345",
       },
+      //this data came from api/config and save to local storage
       config: {
-        page_types: ["cms", "gallery", "main_page"],
-        langs: ["pl", "en"], //!!
-        default_lang: "pl", //!!
-        cache_enable: 1,
-      },
+        page_types: ['cms', 'gallery', 'main_page'],
+        langs: ['pl', 'en'],
+        default_lang: 'pl',
+        cache_enable: 1
+      }
+    };
+    
+    const setup2 = async () => {
+
+      const firstPageIdOnThePage = 1;    
+      router.push("/pages/1");
+      await router.isReady();
+      return render(MenuPagesPage, {
+        props: {
+          id: firstPageIdOnThePage,
+        },
+      });
     };
 
-    const setup2 = async () => {
+    it("click change lang", async () => {
       localStorage.clear();
       storage.setItem("auth", jsonStore2.auth);
       storage.setItem("config", jsonStore2.config);
 
-      render(MenuPagesPage);
-    };
-
-    it("click change lang", async () => {
       await setup2();
       await waitForAjaxes();
-      expect(counter).toBe(2);
+      expect(counter).toBe(3);
 
+      
       await screen.findByText("short p22 pl");
+
+      const shortTitle = screen.queryByPlaceholderText("short title pl");
+      expect(shortTitle).toHaveValue("short p22 pl");
+
       const langEn = screen.queryByRole("lang_en");
       await userEvent.click(langEn);
 
       await waitFor(() => {
-        screen.findByText("short p22 pl");
+        const shortTitleE = screen.queryByPlaceholderText("short title en");
+        expect(shortTitleE).toHaveValue("short p22 en");
+        expect(shortTitleE).not.toHaveValue("short p22 pl");
+  
         //screen.findByText("it is not exist test23423423423423423423");     //is is working too - i don't know why - todo
-        //console.log('____end___')
       });
 
-      //});
     });
   });
 });
