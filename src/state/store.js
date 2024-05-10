@@ -45,6 +45,10 @@ export const useAuthStore = defineStore("auth", () => {
     config.cache_enable = data.cache_enable;
   }
 
+  function setDefaultLang(lang) {
+    config.default_lang = lang;
+  }  
+
   function logout() {
     auth.token = 0;
     config.page_types = [];
@@ -65,5 +69,5 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.setItem("config", JSON.stringify(config));
   });
 
-  return { auth, setAuth, setConfig, logout };
+  return { auth, setDefaultLang, setAuth, setConfig, logout };
 });

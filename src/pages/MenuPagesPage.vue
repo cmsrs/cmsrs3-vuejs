@@ -502,7 +502,7 @@ import jsonStoreTest from "../../test/jsonStore.js";
 import { useAuthStore } from "../state/store.js";
 
 const router = useRouter();
-const { auth } = useAuthStore();
+const { auth, setDefaultLang } = useAuthStore();
 
 // Data
 const {
@@ -667,6 +667,7 @@ async function handleUploadFile(event) {
 
 async function changeLang(inLang) {
   lang.value = inLang;
+  setDefaultLang(inLang);
 }
 
 function addMenu() {
