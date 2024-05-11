@@ -270,6 +270,7 @@
                   name="published"
                   type="checkbox"
                   v-model="published"
+                  :true-value="1"
                 />
                 Published
               </label>
@@ -277,14 +278,26 @@
 
             <div class="form-check mt-2 row">
               <label>
-                <input class="col-1" name="commented" type="checkbox" />
+                <input 
+                  class="col-1" 
+                  name="commented" 
+                  type="checkbox" 
+                  v-model="commented"
+                  :true-value="1"
+                />
                 Commented
               </label>
             </div>
 
             <div class="form-check mt-2 row">
               <label>
-                <input class="col-1" name="after_login" type="checkbox" />
+                <input 
+                  class="col-1" 
+                  name="after_login" 
+                  type="checkbox" 
+                  v-model="after_login"
+                  :true-value="1"
+                />
                 Available after log in
               </label>
             </div>
@@ -866,6 +879,7 @@ const getPageById =  async (pageId) => {
     const dbPage = await getPage(pageId, token);
     if (dbPage.data.success) {
       const p = dbPage.data.data;
+      //console.log( p);
       //console.log('id', p.id);
       //console.log('images',  p.images);      
       //console.log('title', p.title);      
