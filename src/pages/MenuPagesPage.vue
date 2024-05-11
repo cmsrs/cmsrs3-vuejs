@@ -583,7 +583,9 @@ const saveEditPage = async () => {
 
     if (retPage.data.success) {
       if (!currentPageId.value) {
-        currentPageId.value = retPage.data.data.pageId;
+        const pageId =  retPage.data.data.pageId;
+        currentPageId.value = pageId;
+        router.push("/pages/"+pageId);
         msgGood.value = trans.ttt("success_page_add");
       } else {
         msgGood.value = trans.ttt("success_page_edit");

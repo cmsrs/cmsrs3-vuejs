@@ -234,13 +234,14 @@ const menus = [
 let counter = 0;
 let counter2 = 0;
 let counterMenu = 0;
+const newPageId = 8;
 let server = setupServer(
   http.post("/api/pages", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
       data: {
-        pageId: 8,
+        pageId: newPageId,
       },
     };
 
@@ -527,6 +528,7 @@ describe("Pages page", () => {
       const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       await waitFor(() => {
         expect(spinnerAfterClick).not.toBeInTheDocument();
+        router.push("/pages/"+newPageId);
       });
       //const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       //expect(spinnerAfterClick).not.toBeNull();
@@ -586,6 +588,7 @@ describe("Pages page", () => {
       const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       await waitFor(() => {
         expect(spinnerAfterClick).not.toBeInTheDocument();
+        router.push("/pages/"+newPageId);
       });
       //await waitForElementToBeRemoved(spinnerAfterClick); //todo!!! - in webpack it is working - manual testing required
       //expect(spinnerAfterClick).not.toBeNull();
