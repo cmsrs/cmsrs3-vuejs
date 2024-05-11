@@ -5,7 +5,7 @@
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
     <div class="container">
-      <div class="row">
+      <div class="row mb-4">
         <div class="col-5">
           <button
             role="button_add_client"
@@ -27,6 +27,7 @@
         <div class="col-7 d-flex align-items-baseline">
           <input
             type="input"
+            placeholder="search: name or email"
             class="form-control col"
             name="search"
             v-model="searchValue"
