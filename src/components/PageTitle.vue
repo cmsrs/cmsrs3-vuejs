@@ -33,11 +33,11 @@
       >
         <i class="fas fa-arrow-up cursor-pointer" aria-hidden="true"></i>
       </div>
-      <span class="col">
-        <span v-if="showPageId">
+      <span class="col" :class="{ 'text-secondary' : !p.published  }" @click="$emit('execEditPage', p.id)">
+        <span v-if="showPageId"  :class="{ 'text-primary': p.id == currentPageId}" >
           {{ p.short_title[lang] + " (" + p.id + ")" }}
         </span>
-        <span v-else>
+        <span v-else  :class="{ 'text-primary': p.id == currentPageId}">
           {{ p.short_title[lang] }}
         </span>
       </span>
@@ -50,7 +50,8 @@ defineProps({
     p: Object,
     lang: String,
     allPages: Object,
-    showPageId: Boolean,    
+    showPageId: Boolean,  
+    currentPageId: [Number, Boolean]
 });
 
 defineEmits(['execEditPage', 'execDelPage',  'execPositionPageUp',   'execPositionPageDown' ])

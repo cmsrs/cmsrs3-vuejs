@@ -108,6 +108,7 @@
                     :p="p"
                     :lang="lang"
                     :allPages="allPages"
+                    :currentPageId="currentPageId"
                   ></PageTitle>
 
                   <div
@@ -130,6 +131,7 @@
                         :p="pp"
                         :lang="lang"
                         :allPages="allPages"
+                        :currentPageId="currentPageId"
                       ></PageTitle>
                     </div>
                   </div>
@@ -184,6 +186,7 @@
                   :p="p"
                   :lang="lang"
                   :allPages="allPages"
+                  :currentPageId="currentPageId"
                 ></PageTitle>
               </div>
             </div>
@@ -200,6 +203,7 @@
                   :lang="lang"
                   :allPages="allPages"
                   :showPageId="true"
+                  :currentPageId="currentPageId"
                 ></PageTitle>
               </div>
             </div>
