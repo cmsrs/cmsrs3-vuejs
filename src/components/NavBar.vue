@@ -3,9 +3,9 @@
     <nav class="navbar navbar-expand navbar-light container">
       <div class="container-fluid p-0 row">
         <ul class="navbar-nav ms-auto col-10">
-          <router-link class="nav-link" to="/pages">Pages </router-link>
-          <router-link class="nav-link" to="/users">Users </router-link>
-          <router-link class="nav-link" to="/products">Products </router-link>          
+          <router-link class="nav-link" to="/pages"  :class="{ 'text-primary': $route.path.startsWith('/pages')  }">Pages</router-link>
+          <router-link class="nav-link" to="/users"  :class="{ 'text-primary': $route.path.startsWith('/user') }">Users</router-link>
+          <router-link class="nav-link" to="/products"  :class="{ 'text-primary': $route.path.startsWith('/product') }">Products</router-link>
         </ul>
         <ul class="navbar-nav justify-content-end col-2">
           <li
