@@ -22,15 +22,17 @@ else
     #npm run test ./src/pages/UserEditPage.spec.js #-- -t 'load client data'
 
     #npm run test ./src/pages/UsersPage.spec.js 
-    #npm run test ./src/pages/ProductsPage.spec.js 
+    #npm run test ./src/pages/ProductsPage.spec.js  
 
 
-    #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'click change lang' 
-    npm run test  ./src/pages/MenuPagesPageLangs.spec.js 
+    # npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'create some page' 
+    #npm run test  ./src/pages/MenuPagesPageLangs.spec.js 
 
     #npm run test    ./src/pages/LoginPage.spec.js -- -t "send good data to server" 
 
     #npm run test   ./src/helpers/functions.spec.js 
+
+    npm run test  ./src/pages/ProductEditPage.spec.js
 
 fi
 

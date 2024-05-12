@@ -4,8 +4,8 @@ import MenuPagesPage from "../pages/MenuPagesPage.vue";
 import LoginPage from "../pages/LoginPage.vue";
 import UsersPage from "../pages/UsersPage.vue";
 import UserEditPage from "../pages/UserEditPage.vue";
-
 import ProductsPage from "../pages/ProductsPage.vue";
+import ProductEditPage from "../pages/ProductEditPage.vue";
 
 //import UserPage from "../pages/UserPage";
 //import AccountActivationPage from "../pages/AccountActivationPage";
@@ -40,13 +40,12 @@ const router = createRouter({
       name: "products",
       component: ProductsPage,
     },
-    // {
-    //   path: "/product/:mode/:id?",
-    //   component: ProductEditPage,
-    //   name: "product",
-    //   props: true,
-    // },
-
+    {
+      path: "/product/:mode/:id?",
+      component: ProductEditPage,
+      name: "product",
+      props: true,
+    },
 
     // {
     //   path: "/*",

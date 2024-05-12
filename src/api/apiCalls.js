@@ -146,3 +146,16 @@ export const putClient = (post, token) => {
   const id = post["id"];
   return axios.put("/api/clients/" + id + "?token=" + token, post);
 };
+
+export const getProduct = (id, token) => {
+  return axios.get("/api/products/" + id + "?token=" + token);
+};
+
+export const postProduct = (post, token) => {
+  return axios.post("/api/products?token=" + token, post);
+};
+
+export const putProduct = (post, token) => {
+  const id = post["id"];
+  return axios.put("/api/products/" + id + "?token=" + token, post);
+};
