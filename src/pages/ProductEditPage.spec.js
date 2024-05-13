@@ -184,7 +184,7 @@ describe.skip("empty token", () => {
   });
 });
 
-describe("Product edit page", () => {
+describe("Product edit or add page", () => {
   describe("Layout", () => {
     it("has edit product header", async () => {
       await setupEdit();

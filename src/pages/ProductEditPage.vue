@@ -84,7 +84,7 @@
               class="form-control textarea-rs"
               rows="20"
               cols="50"
-              v-model="product.description[lang]"
+              v-model="product.description"
               :placeholder="`description ${lang}`"
             ></textarea>
           </div>
@@ -125,8 +125,7 @@
           </button>
         </form>
       </div>
-    </div>
-    <!--  container -->
+    </div><!--  container -->
   </div>
 </template>
 <script setup>
@@ -135,17 +134,20 @@ import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import { getProduct, postProduct, putProduct, getPagesByType } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
+import ChangeLang from "../components/ChangeLang.vue";
 import trans from "../helpers/trans.js";
+import { useAuthStore } from "../state/store.js";
 const { auth, setDefaultLang } = useAuthStore();
 
 const {
   configDefaultLang,
 } = functions.retrieveParamsFromStorage();
+
 const lang = ref(configDefaultLang);
 
 const router = useRouter();
-
 const mode = router.currentRoute.value.params.mode;
+
 const msgWrong = ref("");
 const msgGood = ref("");
 const errFields = ref([]);
@@ -244,12 +246,12 @@ const getShopPages = async () => {
       shopPages.value = response.data.data;
       return true;
     } else {
-      msgWrong.value = "Sth wrong with get product";
-      console.log("error get product=", response.data);
+      msgWrong.value = "Sth wrong with get pages by type";
+      console.log("error get pages by type=", response.data);
     }
   } catch (error) {
-    msgWrong.value = "Sth wrong with get product (error)";
-    console.log("error get product=", error);
+    msgWrong.value = "Sth wrong with get pages by type (error)";
+    console.log("error get pages by type=", error);
   }
   return false;
 };
