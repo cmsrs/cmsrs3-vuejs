@@ -24,13 +24,16 @@ const responseGetProduct = {
     price: 101,
     page_id: 1,
     product_name: {
-      en: "php3 db app_1"
+      en: "php3 db app_1",
+      pl: "php3 jako app bazodanowe",
     },
     product_name_slug: {
-      en: "php3-db-app-1"
+      en: "php3-db-app-1",
+      pl: "php3-jako-app-bazodanowe",
     },
     product_description: {
-      en: "book desc_1"
+      en: "book desc_1",
+      pl: "php3 app bazodanowe",
     },
     product_name_default_lang: "php3 db app_1",
     images: [
@@ -43,7 +46,8 @@ const responseGetProduct = {
         created_at: "2024-04-25T16:54:10.000000Z",
         updated_at: "2024-04-25T16:54:10.000000Z",
         alt: {
-          en: "description img1 - product image"
+          en: "description img1 - product image",
+          pl: "opis img1 - obraz produktu",
         },
         fs: {
           org: "/images/product/1/1/phpunittest1.jpg",
@@ -60,7 +64,8 @@ const responseGetProduct = {
         created_at: "2024-04-25T16:54:10.000000Z",
         updated_at: "2024-04-25T16:54:10.000000Z",
         alt: {
-          en: ""
+          en: "",
+          pl: "",
         },
         fs: {
           org: "/images/product/1/2/phpunittest2.jpg",
@@ -69,9 +74,44 @@ const responseGetProduct = {
         }
       }
     ]
-  }};
+}};
+
+const responsePagesTypeShop = {
+    success: 1,
+    data: [
+        {
+            id: 1,
+            published: 0,
+            commented: 0,
+            after_login: 0,
+            position: 1,
+            type: 'shop',
+            menu_id: null,
+            page_id: null,
+            title: {
+                en: 'test p2'
+            },
+            short_title: {
+                en: 'p22'
+            },
+            description: {
+                en: ''
+            },
+            content: {
+                en: 'aaa bbbb'
+            },
+            images: []
+        }
+    ]
+};
+
 
 let server = setupServer(
+  http.get("/api/products/type/shop", () => {
+    counter += 1;
+    return HttpResponse.json(responsePagesTypeShop);
+  }),
+
   http.get("/api/products/1", () => {
     counter += 1;
     return HttpResponse.json(responseGetProduct);
@@ -267,6 +307,74 @@ describe("Product edit page", () => {
       await screen.findByText(successMsg);
     });
   });
+
+  describe("Interactions edit product change lang", () => {
+
+    const jsonStore2 ={
+      auth: {
+        token:  "abcde12345",
+      },
+      //this data came from api/config and save to local storage
+      config: {
+        page_types: ['cms', 'gallery', 'main_page'],
+        langs: ['pl', 'en'],
+        default_lang: 'pl',
+        cache_enable: 1
+      }
+    };
+
+    it("show data in Polish language", async () => {      
+      localStorage.clear();
+      storage.setItem("auth", jsonStore2.auth);
+      storage.setItem("config", jsonStore2.config);  
+      await setupEdit();
+      await waitForAjax();
+      const name1 = responseGetProductsPl.data.data[0].product_name;
+      await screen.findByText(name1);
+      const sku1 = responseGetProductsPl.data.data[0].sku;
+      await screen.findByText(sku1);
+
+      const name2 = responseGetProductsPl.data.data[1].product_name;
+      await screen.findByText(name2);
+      const sku2 = responseGetProductsPl.data.data[1].sku;
+      await screen.findByText(sku2);
+    });
+
+    it("change lang from Polish to England", async () => {      
+      localStorage.clear();
+      storage.setItem("auth", jsonStore2.auth);
+      storage.setItem("config", jsonStore2.config);  
+      await setupEdit();
+      await waitForAjax();
+
+      const name1 = responseGetProductsPl.data.data[0].product_name;
+      await screen.findByText(name1);
+
+      const productPl = screen.queryByRole("product_name_pl");
+      expect(productPl).toBeInTheDocument()
+
+      const productEn = screen.queryByRole("product_name_en");
+      expect(productEn).not.toBeInTheDocument()
+
+      const langEn = screen.queryByRole("lang_en");
+      await userEvent.click(langEn);
+      
+      await waitFor(() => {
+
+        const name2 = responseGetProducts.data.data[0].product_name;
+        screen.findByText(name2);
+        //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa');
+  
+        const productEn = screen.queryAllByRole("product_name_en");
+        expect(productEn.length).toBe(2);
+
+        const productPl = screen.queryAllByRole("product_name_pl");
+        expect(productPl.length).toBe(0);
+        });
+
+    });
+
+  });  
 
   describe("Interactions validation errors", () => {
     it("add product with errors", async () => {

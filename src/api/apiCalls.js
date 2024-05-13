@@ -25,6 +25,11 @@ export const getPages = (token) => {
   return axios.get("/api/pages?token=" + token);
 };
 
+//it use in products, where type = 'shop'
+export const getPagesByType = (type, token) => {
+  return axios.get("/api/pages/type/"+type+"?token=" + token);
+};
+
 //when click edit  page we get new data
 export const getPage = (id, token) => {
   return axios.get("/api/pages/" + id + "?token=" + token);

@@ -1,7 +1,16 @@
 <template>
   <div data-testid="product-edit-page">
-    <h3 v-if="mode === 'edit'">Edit product</h3>
-    <h3 v-else>Add product</h3>
+
+    <div class="container">
+      <div class="row mt-3 mb-3">
+        <h3 v-if="mode === 'edit'">Edit product</h3>
+        <h3 v-else>Add product</h3>
+        <ChangeLang 
+          :lang="lang"
+          @exec-change-lang="changeLang"
+        ></ChangeLang>
+      </div>
+    </div>
 
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
@@ -20,57 +29,82 @@
 
       <div class="row pb-4 pt-4">
         <form>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <input
-              type="email"
-              v-model="product.email"
-              class="form-control"
-              :class="{ 'is-invalid': errFields.includes('email') }"
-              id="email"
-              aria-describedby="emailHelp"
-              placeholder="email"
-              :disabled="mode === 'edit'"
-            />
-            <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
-          </div>
 
           <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="product_name" class="form-label">Product Name</label>
             <input
+              :role="'product_name_' + lang"
               type="text"
-              v-model="product.name"
+              v-model="product.product_name"
               class="form-control"
-              :class="{ 'is-invalid': errFields.includes('name') }"
-              id="name"
-              placeholder="name"
+              id="product_name"
+              placeholder="Product name"
             />
           </div>
 
           <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="sku" class="form-label">Sku</label>
             <input
-              type="password"
-              v-model="product.password"
+              type="sku"
+              v-model="product.sku"
               class="form-control"
-              :class="{ 'is-invalid': errFields.includes('password') }"
-              id="password"
-              placeholder="password"
+              :class="{ 'is-invalid': errFields.includes('sku') }"
+              id="sku"              
+              placeholder="sku"
             />
           </div>
 
           <div class="mb-3">
-            <label for="password_confirmation" class="form-label"
-              >Password confirmation</label
-            >
+            <label for="price" class="form-label">price</label>
             <input
-              type="password"
-              v-model="product.password_confirmation"
+              type="price"
+              v-model="product.price"
               class="form-control"
-              :class="{ 'is-invalid': errFields.includes('password') }"
-              id="password_confirmation"
-              placeholder="password confirmation"
+              :class="{ 'is-invalid': errFields.includes('price') }"
+              id="price"
+              placeholder="price"
             />
+          </div>
+
+          <div class="form-check mt-2 row">
+            <label>
+              <input
+                class="col-1"
+                name="published"
+                type="checkbox"
+                v-model="product.published"
+                :true-value="1"
+              />
+              Published
+            </label>
+          </div>
+          
+          <div class="form-group">
+            <textarea
+              class="form-control textarea-rs"
+              rows="20"
+              cols="50"
+              v-model="product.description[lang]"
+              :placeholder="`description ${lang}`"
+            ></textarea>
+          </div>
+
+          <div class="form-group mt-3">
+              <label for="page" class="text-secondary">Page:</label>
+              <select
+                role="page_items"
+                class="rs-select form-control"
+                v-model="product.page_id"
+              >
+                <option value=""></option>
+                <option
+                  v-for="page in shopPages"
+                  :key="page.id"
+                  :value="page.id"
+                >
+                  {{ page.short_title[lang] }}
+                </option>
+              </select>
           </div>
 
           <button
@@ -99,21 +133,39 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { getProduct, postProduct, putProduct } from "../api/apiCalls.js";
+import { getProduct, postProduct, putProduct, getPagesByType } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
+const { auth, setDefaultLang } = useAuthStore();
+
+const {
+  configDefaultLang,
+} = functions.retrieveParamsFromStorage();
+const lang = ref(configDefaultLang);
 
 const router = useRouter();
 
-const { token } = functions.retrieveParamsFromStorage();
 const mode = router.currentRoute.value.params.mode;
-
 const msgWrong = ref("");
 const msgGood = ref("");
 const errFields = ref([]);
 
 const pre_loader = ref(false);
+const shopPages = ref([]);
+
 let product = reactive({});
+
+
+async function changeLang(inLang) {
+  //pre_loader.value = true;
+  lang.value = inLang;
+  setDefaultLang(inLang);
+
+  // const refreshP = await refreshProducts();
+  // if (refreshP) {
+  //   pre_loader.value = false;
+  // }
+};
 
 const back = () => {
   router.push({ name: "products" });
@@ -126,11 +178,12 @@ const clearMsg = () => {
 
 const getEmptyProduct = () => {
   return {
-    id: "",
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    product_name: '',
+    sku: '',
+    price: '',
+    published: '',
+    description: '',
+    page_id: ''
   };
 };
 
@@ -139,8 +192,8 @@ const addEditProduct = async () => {
   pre_loader.value = true;
   try {
     const retProduct = product.id //product.value.id
-      ? await putProduct(product, token)
-      : await postProduct(product, token);
+      ? await putProduct(product, auth.token)
+      : await postProduct(product, auth.token);
     if (retProduct.data.success) {
       msgGood.value = product.id
         ? trans.ttt("success_product_edit")
@@ -160,16 +213,21 @@ const addEditProduct = async () => {
 
 const loadProduct = async (id) => {
   try {
-    const responseC = await getProduct(id, token);
-    if (responseC.data.success) {
-      const productData = responseC.data.data;
+    const response = await getProduct(id, auth.token);
+    if (response.data.success) {
+      const productData = response.data.data;
       product.id = productData.id;
-      product.name = productData.name;
-      product.email = productData.email;
+      product.product_name = productData.product_name[lang.value];
+      product.sku = productData.sku;
+      product.price = productData.price;
+      product.published = productData.published;
+      product.description = productData.description[lang.value];
+      product.page_id = productData.page_id;
+      
       return true;
     } else {
       msgWrong.value = "Sth wrong with get product";
-      console.log("error get product=", responseC.data);
+      console.log("error get product=", response.data);
     }
   } catch (error) {
     msgWrong.value = "Sth wrong with get product (error)";
@@ -178,8 +236,27 @@ const loadProduct = async (id) => {
   return false;
 };
 
+
+const getShopPages = async () => {
+  try {
+    const response = await getPagesByType('shop', auth.token);
+    if (response.data.success) {
+      shopPages.value = response.data.data;
+      return true;
+    } else {
+      msgWrong.value = "Sth wrong with get product";
+      console.log("error get product=", response.data);
+    }
+  } catch (error) {
+    msgWrong.value = "Sth wrong with get product (error)";
+    console.log("error get product=", error);
+  }
+  return false;
+};
+
+
 onMounted(async () => {
-  if (!token) {
+  if (!auth.token) {
     router.push("/");
     return false;
   }
@@ -189,6 +266,8 @@ onMounted(async () => {
   }
 
   clearMsg();
+  //shopPages.value = [];
+  getShopPages();
   product = getEmptyProduct();
 
   if (mode === "edit") {
