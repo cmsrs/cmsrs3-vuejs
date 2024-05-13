@@ -107,7 +107,7 @@ const responsePagesTypeShop = {
 
 
 let server = setupServer(
-  http.get("/api/products/type/shop", () => {
+  http.get("/api/pages/type/shop", () => {
     counter += 1;
     return HttpResponse.json(responsePagesTypeShop);
   }),
@@ -204,24 +204,24 @@ describe("Product edit or add page", () => {
       await setupEdit();
 
       await waitForAjax();
-      expect(counter).toBe(1); //mount
+      expect(counter).toBe(2); //mount
     });
 
     it("new data", async () => {
       await setupAdd();
-      expect(counter).toBe(0);
+      expect(counter).toBe(1);
     });
 
     it("load edit product", async () => {
       await setupEdit();
       await waitForAjax();
-      expect(counter).toBe(1);
+      expect(counter).toBe(2);
 
-      const email = screen.queryByPlaceholderText("email");
-      expect(email).toHaveValue(responseGetProduct.data.email);
+      const sku = screen.queryByPlaceholderText("sku");
+      expect(sku).toHaveValue(responseGetProduct.data.sku);
 
-      const name = screen.queryByPlaceholderText("name");
-      expect(name).toHaveValue(responseGetProduct.data.name);
+      const product_name = screen.queryByPlaceholderText("product_name");
+      expect(product_name).toHaveValue(responseGetProduct.data.product_name);
 
       const password = screen.queryByPlaceholderText("password");
       expect(password).toHaveValue("");
@@ -234,13 +234,13 @@ describe("Product edit or add page", () => {
 
     it("load add product", async () => {
       await setupAdd();
-      expect(counter).toBe(0);
+      expect(counter).toBe(1);
 
-      const email = screen.queryByPlaceholderText("email");
-      expect(email).toHaveValue("");
+      const sku = screen.queryByPlaceholderText("sku");
+      expect(sku).toHaveValue("");
 
-      const name = screen.queryByPlaceholderText("name");
-      expect(name).toHaveValue("");
+      const product_name = screen.queryByPlaceholderText("product_name");
+      expect(product_name).toHaveValue("");
 
       const password = screen.queryByPlaceholderText("password");
       expect(password).toHaveValue("");
@@ -254,13 +254,13 @@ describe("Product edit or add page", () => {
     it("edit product by click", async () => {
       await setupEdit();
       await waitForAjax();
-      expect(counter).toBe(1);
+      expect(counter).toBe(2);
 
-      const email = screen.queryByPlaceholderText("email");
-      await userEvent.type(email, "aaaa@example.com"); //email is not changeable in edit mode
+      const sku = screen.queryByPlaceholderText("sku");
+      await userEvent.type(sku, "aaaa@example.com"); //sku is not changeable in edit mode
 
-      const name = screen.queryByPlaceholderText("name");
-      await userEvent.type(name, "aaaaaaaaaaaaa");
+      const product_name = screen.queryByPlaceholderText("product_name");
+      await userEvent.type(product_name, "aaaaaaaaaaaaa");
 
       const password = screen.queryByPlaceholderText("password");
       await userEvent.type(password, "abc");
@@ -282,13 +282,13 @@ describe("Product edit or add page", () => {
     it("add product by click", async () => {
       await setupAdd();
       //await waitForAjax();
-      expect(counter).toBe(0);
+      expect(counter).toBe(1);
 
-      const email = screen.queryByPlaceholderText("email");
-      await userEvent.type(email, "aaaabb@example.com"); //email is not changeable in edit mode
+      const sku = screen.queryByPlaceholderText("sku");
+      await userEvent.type(sku, "aaaabb@example.com"); //sku is not changeable in edit mode
 
-      const name = screen.queryByPlaceholderText("name");
-      await userEvent.type(name, "aaaaaaaaaaaaa");
+      const product_name = screen.queryByPlaceholderText("product_name");
+      await userEvent.type(product_name, "aaaaaaaaaaaaa");
 
       const password = screen.queryByPlaceholderText("password");
       await userEvent.type(password, "abc2");
@@ -329,14 +329,14 @@ describe("Product edit or add page", () => {
       storage.setItem("config", jsonStore2.config);  
       await setupEdit();
       await waitForAjax();
-      const name1 = responseGetProductsPl.data.data[0].product_name;
-      await screen.findByText(name1);
-      const sku1 = responseGetProductsPl.data.data[0].sku;
+      const product_name1 = responseGetProduct.data.data.product_name;
+      await screen.findByText(product_name1);
+      const sku1 = responseGetProduct.data.data.sku;
       await screen.findByText(sku1);
 
-      const name2 = responseGetProductsPl.data.data[1].product_name;
-      await screen.findByText(name2);
-      const sku2 = responseGetProductsPl.data.data[1].sku;
+      const product_name2 = responseGetProduct.data.data.product_name;
+      await screen.findByText(product_name2);
+      const sku2 = responseGetProduct.data.data[1].sku;
       await screen.findByText(sku2);
     });
 
@@ -347,8 +347,8 @@ describe("Product edit or add page", () => {
       await setupEdit();
       await waitForAjax();
 
-      const name1 = responseGetProductsPl.data.data[0].product_name;
-      await screen.findByText(name1);
+      const product_name1 = responseGetProduct.data.data.product_name;
+      await screen.findByText(product_name1);
 
       const productPl = screen.queryByRole("product_name_pl");
       expect(productPl).toBeInTheDocument()
@@ -361,8 +361,8 @@ describe("Product edit or add page", () => {
       
       await waitFor(() => {
 
-        const name2 = responseGetProducts.data.data[0].product_name;
-        screen.findByText(name2);
+        const product_name2 = responseGetProduct.data.data.product_name;
+        screen.findByText(product_name2);
         //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa');
   
         const productEn = screen.queryAllByRole("product_name_en");
@@ -400,11 +400,11 @@ describe("Product edit or add page", () => {
       //await waitForAjax();
       expect(counter).toBe(0);
 
-      const email = screen.queryByPlaceholderText("email");
-      await userEvent.type(email, "aaaabb@example.com"); //email is not changeable in edit mode
+      const sku = screen.queryByPlaceholderText("sku");
+      await userEvent.type(sku, "aaaabb@example.com"); //sku is not changeable in edit mode
 
-      const name = screen.queryByPlaceholderText("name");
-      await userEvent.type(name, "aaaaaaaaaaaaa");
+      const product_name = screen.queryByPlaceholderText("product_name");
+      await userEvent.type(product_name, "aaaaaaaaaaaaa");
 
       const password = screen.queryByPlaceholderText("password");
       await userEvent.type(password, "abc");
@@ -425,11 +425,11 @@ describe("Product edit or add page", () => {
         const alertDangerAfter2 = screen.queryByRole("alert_danger");
         expect(alertDangerAfter2).toBeInTheDocument();
 
-        const email2 = screen.queryByPlaceholderText("email");
-        expect(email2).toHaveClass("is-invalid");
+        const sku2 = screen.queryByPlaceholderText("sku");
+        expect(sku2).toHaveClass("is-invalid");
 
-        const name2 = screen.queryByPlaceholderText("name");
-        expect(name2).toHaveClass("is-invalid");
+        const product_name2 = screen.queryByPlaceholderText("product_name");
+        expect(product_name2).toHaveClass("is-invalid");
 
         const password2 = screen.queryByPlaceholderText("password");
         expect(password2).toHaveClass("is-invalid");
