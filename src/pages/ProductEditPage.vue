@@ -3,8 +3,8 @@
 
     <div class="container">
       <div class="row mt-3 mb-3">
-        <h3 v-if="mode === 'edit'">Edit product</h3>
-        <h3 v-else>Add product</h3>
+        <h3  class="col-10" v-if="mode === 'edit'">Edit product</h3>
+        <h3  class="col-10" v-else>Add product</h3>
         <ChangeLang 
           :lang="lang"
           @exec-change-lang="changeLang"
@@ -84,8 +84,8 @@
               class="form-control textarea-rs"
               rows="20"
               cols="50"
-              v-model="product.description"
-              :placeholder="`description ${lang}`"
+              v-model="product.product_description"
+              :placeholder="`product description ${lang}`"
             ></textarea>
           </div>
 
@@ -184,7 +184,7 @@ const getEmptyProduct = () => {
     sku: '',
     price: '',
     published: '',
-    description: '',
+    product_description: '',
     page_id: ''
   };
 };
@@ -215,15 +215,16 @@ const addEditProduct = async () => {
 
 const loadProduct = async (id) => {
   try {
-    const response = await getProduct(id, auth.token);
+    const response = await getProduct(id, auth.token);    
     if (response.data.success) {
+      //console.log(response.data.data);
       const productData = response.data.data;
       product.id = productData.id;
       product.product_name = productData.product_name[lang.value];
       product.sku = productData.sku;
       product.price = productData.price;
       product.published = productData.published;
-      product.description = productData.description[lang.value];
+      product.product_description = productData.product_description[lang.value];
       product.page_id = productData.page_id;
       
       return true;
@@ -275,6 +276,7 @@ onMounted(async () => {
   if (mode === "edit") {
     const id = router.currentRoute.value.params.id;
     pre_loader.value = true;
+    //console.log('id=', id);
     const loadC = await loadProduct(id);
 
     if (loadC) {
