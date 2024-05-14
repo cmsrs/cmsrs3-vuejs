@@ -33,6 +33,7 @@ else
     #npm run test   ./src/helpers/functions.spec.js 
 
     npm run test  ./src/pages/ProductEditPage.spec.js
+    #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "has edit product header"
 
 fi
 

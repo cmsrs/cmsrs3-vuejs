@@ -38,7 +38,7 @@
               v-model="product.product_name"
               class="form-control"
               id="product_name"
-              placeholder="Product name"
+              placeholder="product name"
             />
           </div>
 
@@ -84,8 +84,8 @@
               class="form-control textarea-rs"
               rows="20"
               cols="50"
-              v-model="product.product_description"
-              :placeholder="`product description ${lang}`"
+              v-model="product.product_description"                                    
+              placeholder="product description"
             ></textarea>
           </div>
 
@@ -114,7 +114,6 @@
             :disabled="pre_loader"
           >
             <i v-if="!pre_loader" class="fas fa-plus"></i>
-
             <span
               role="pre_loader_add_edit_product"
               v-if="pre_loader"
@@ -269,14 +268,12 @@ onMounted(async () => {
   }
 
   clearMsg();
-  //shopPages.value = [];
   getShopPages();
   product = getEmptyProduct();
 
   if (mode === "edit") {
     const id = router.currentRoute.value.params.id;
     pre_loader.value = true;
-    //console.log('id=', id);
     const loadC = await loadProduct(id);
 
     if (loadC) {

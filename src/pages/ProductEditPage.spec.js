@@ -217,19 +217,21 @@ describe("Product edit or add page", () => {
       await waitForAjax();
       expect(counter).toBe(2);
 
+      const product_name = screen.queryByPlaceholderText("product name");
+      expect(product_name).toHaveValue(responseGetProduct.data.product_name['en']);
+
       const sku = screen.queryByPlaceholderText("sku");
       expect(sku).toHaveValue(responseGetProduct.data.sku);
 
-      const product_name = screen.queryByPlaceholderText("product_name");
-      expect(product_name).toHaveValue(responseGetProduct.data.product_name);
+      const price = screen.queryByPlaceholderText("price");
+      expect(price).toHaveValue(  responseGetProduct.data.price.toString()  );
 
-      const password = screen.queryByPlaceholderText("password");
-      expect(password).toHaveValue("");
+      const published = screen.queryByLabelText("Published");
+      expect(published).toBeChecked();//  toHaveValue(responseGetProduct.data.published);
 
-      const password_confirmation = screen.queryByPlaceholderText(
-        "password confirmation",
-      );
-      expect(password_confirmation).toHaveValue("");
+      const productDescription = screen.queryByPlaceholderText("product description");
+      expect(productDescription).toHaveValue(responseGetProduct.data.product_description['en']);
+
     });
 
     it("load add product", async () => {
@@ -239,16 +241,17 @@ describe("Product edit or add page", () => {
       const sku = screen.queryByPlaceholderText("sku");
       expect(sku).toHaveValue("");
 
-      const product_name = screen.queryByPlaceholderText("product_name");
+      const product_name = screen.queryByPlaceholderText("product name");
       expect(product_name).toHaveValue("");
 
-      const password = screen.queryByPlaceholderText("password");
-      expect(password).toHaveValue("");
+      const price = screen.queryByPlaceholderText("price");
+      expect(price).toHaveValue(  ""  );
 
-      const password_confirmation = screen.queryByPlaceholderText(
-        "password confirmation",
-      );
-      expect(password_confirmation).toHaveValue("");
+      const published = screen.queryByLabelText("Published");
+      expect(published).not.toBeChecked();
+
+      const productDescription = screen.queryByPlaceholderText("product description");
+      expect(productDescription).toHaveValue("");
     });
 
     it("edit product by click", async () => {
@@ -257,22 +260,11 @@ describe("Product edit or add page", () => {
       expect(counter).toBe(2);
 
       const sku = screen.queryByPlaceholderText("sku");
-      await userEvent.type(sku, "aaaa@example.com"); //sku is not changeable in edit mode
-
-      const product_name = screen.queryByPlaceholderText("product_name");
-      await userEvent.type(product_name, "aaaaaaaaaaaaa");
-
-      const password = screen.queryByPlaceholderText("password");
-      await userEvent.type(password, "abc");
-
-      const password_confirmation = screen.queryByPlaceholderText(
-        "password confirmation",
-      );
-      await userEvent.type(password_confirmation, "abc");
+      await userEvent.type(sku, "sku/test/123");
 
       const buttonSubmit = screen.queryByRole("button_save_edit_product");
       await userEvent.click(buttonSubmit);
-      expect(counter).toBe(2);
+      expect(counter).toBe(3);
 
       const successMsg = trans.ttt("success_product_edit");
       expect(successMsg).not.toBe("");
@@ -284,23 +276,24 @@ describe("Product edit or add page", () => {
       //await waitForAjax();
       expect(counter).toBe(1);
 
-      const sku = screen.queryByPlaceholderText("sku");
-      await userEvent.type(sku, "aaaabb@example.com"); //sku is not changeable in edit mode
-
-      const product_name = screen.queryByPlaceholderText("product_name");
+      const product_name = screen.queryByPlaceholderText("product name");
       await userEvent.type(product_name, "aaaaaaaaaaaaa");
 
-      const password = screen.queryByPlaceholderText("password");
-      await userEvent.type(password, "abc2");
+      const sku = screen.queryByPlaceholderText("sku");
+      await userEvent.type(sku, "aaaabb/16/3"); 
 
-      const password_confirmation = screen.queryByPlaceholderText(
-        "password confirmation",
-      );
-      await userEvent.type(password_confirmation, "abc2");
+      const price = screen.queryByPlaceholderText("price");
+      await userEvent.type(price, "323"); 
+
+      //const published = screen.queryByLabelText("Published");
+      //expect(published).toBeChecked();//  toHaveValue(responseGetProduct.data.published);
+
+      const productDescription = screen.queryByPlaceholderText("product description");
+      await userEvent.type(productDescription, "323"); 
 
       const buttonSubmit = screen.queryByRole("button_save_edit_product");
       await userEvent.click(buttonSubmit);
-      expect(counter).toBe(1);
+      expect(counter).toBe(2);
 
       const successMsg = trans.ttt("success_product_add");
       expect(successMsg).not.toBe("");
