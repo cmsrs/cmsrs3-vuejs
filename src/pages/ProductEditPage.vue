@@ -55,7 +55,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="price" class="form-label">price</label>
+            <label for="price" class="form-label">Price</label>
             <input
               type="price"
               v-model="product.price"

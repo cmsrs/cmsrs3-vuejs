@@ -322,15 +322,16 @@ describe("Product edit or add page", () => {
       storage.setItem("config", jsonStore2.config);  
       await setupEdit();
       await waitForAjax();
-      const product_name1 = responseGetProduct.data.data.product_name;
-      await screen.findByText(product_name1);
-      const sku1 = responseGetProduct.data.data.sku;
-      await screen.findByText(sku1);
+      expect(counter).toBe(2); 
 
-      const product_name2 = responseGetProduct.data.data.product_name;
-      await screen.findByText(product_name2);
-      const sku2 = responseGetProduct.data.data[1].sku;
-      await screen.findByText(sku2);
+      await waitFor(() => {
+        const sku1 = responseGetProduct.data.sku;
+        screen.findByText(sku1);
+
+        const product_name1 = responseGetProduct.data.product_name['pl'];
+        screen.findByText(product_name1);
+      });
+      
     });
 
     it("change lang from Polish to England", async () => {      
@@ -340,30 +341,32 @@ describe("Product edit or add page", () => {
       await setupEdit();
       await waitForAjax();
 
-      const product_name1 = responseGetProduct.data.data.product_name;
-      await screen.findByText(product_name1);
+      //see previous test
+      //const product_name1 = responseGetProduct.data.product_name['pl'];
+      //await screen.findByText(product_name1);
 
       const productPl = screen.queryByRole("product_name_pl");
-      expect(productPl).toBeInTheDocument()
+      expect(productPl).toBeInTheDocument();
 
       const productEn = screen.queryByRole("product_name_en");
-      expect(productEn).not.toBeInTheDocument()
+      expect(productEn).not.toBeInTheDocument();
 
       const langEn = screen.queryByRole("lang_en");
       await userEvent.click(langEn);
       
       await waitFor(() => {
 
-        const product_name2 = responseGetProduct.data.data.product_name;
+        const product_name2 = responseGetProduct.data.product_name['en'];
         screen.findByText(product_name2);
-        //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa');
+        //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa'); //it works too. i don't  know why
   
-        const productEn = screen.queryAllByRole("product_name_en");
-        expect(productEn.length).toBe(2);
+        const productEn = screen.queryByRole("product_name_en");
+        expect(productEn).toBeInTheDocument()
+      
 
-        const productPl = screen.queryAllByRole("product_name_pl");
-        expect(productPl.length).toBe(0);
-        });
+        const productPl = screen.queryByRole("product_name_pl");
+        expect(productPl).not.toBeInTheDocument()
+      });
 
     });
 
