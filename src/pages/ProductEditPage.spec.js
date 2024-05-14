@@ -209,6 +209,7 @@ describe("Product edit or add page", () => {
 
     it("new data", async () => {
       await setupAdd();
+      await waitForAjax();
       expect(counter).toBe(1);
     });
 
@@ -390,32 +391,29 @@ describe("Product edit or add page", () => {
           counter += 1;
           return HttpResponse.json(responseError);
         }),
+        http.get("/api/pages/type/shop", () => {
+          counter += 1;
+          return HttpResponse.json(responsePagesTypeShop);
+        }),
+      
       );
 
       await setupAdd();
-      //await waitForAjax();
-      expect(counter).toBe(0);
+      await waitForAjax();
+      expect(counter).toBe(1);
 
-      const sku = screen.queryByPlaceholderText("sku");
-      await userEvent.type(sku, "aaaabb@example.com"); //sku is not changeable in edit mode
+      //const sku = screen.queryByPlaceholderText("sku");
+      //await userEvent.type(sku, "b/4345"); 
 
-      const product_name = screen.queryByPlaceholderText("product_name");
-      await userEvent.type(product_name, "aaaaaaaaaaaaa");
-
-      const password = screen.queryByPlaceholderText("password");
-      await userEvent.type(password, "abc");
-
-      const password_confirmation = screen.queryByPlaceholderText(
-        "password confirmation",
-      );
-      await userEvent.type(password_confirmation, "abc");
+      const product_name = screen.queryByPlaceholderText("product name");
+      await userEvent.type(product_name, "TV");
 
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect(alertDangerAfter).not.toBeInTheDocument();
 
       const buttonSubmit = screen.queryByRole("button_save_edit_product");
       await userEvent.click(buttonSubmit);
-      expect(counter).toBe(1);
+      expect(counter).toBe(2);
 
       await waitFor(() => {
         const alertDangerAfter2 = screen.queryByRole("alert_danger");
@@ -424,16 +422,8 @@ describe("Product edit or add page", () => {
         const sku2 = screen.queryByPlaceholderText("sku");
         expect(sku2).toHaveClass("is-invalid");
 
-        const product_name2 = screen.queryByPlaceholderText("product_name");
-        expect(product_name2).toHaveClass("is-invalid");
-
-        const password2 = screen.queryByPlaceholderText("password");
-        expect(password2).toHaveClass("is-invalid");
-
-        const password_confirmation2 = screen.queryByPlaceholderText(
-          "password confirmation",
-        );
-        expect(password_confirmation2).toHaveClass("is-invalid");
+        const price = screen.queryByPlaceholderText("price");
+        expect(price).toHaveClass("is-invalid");
       });
     });
   });

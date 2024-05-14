@@ -268,17 +268,22 @@ onMounted(async () => {
   }
 
   clearMsg();
-  getShopPages();
+
+  pre_loader.value = true;
+  //console.log('_________jestem___________');
+  await getShopPages();
   product = getEmptyProduct();
 
   if (mode === "edit") {
     const id = router.currentRoute.value.params.id;
-    pre_loader.value = true;
+    //pre_loader.value = true;
     const loadC = await loadProduct(id);
 
     if (loadC) {
       pre_loader.value = false;
     }
+  }else{
+    pre_loader.value = false;
   }
 });
 </script>
