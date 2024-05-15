@@ -129,7 +129,7 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import { getProduct, postProduct, putProduct, getPagesByType } from "../api/apiCalls.js";
@@ -157,14 +157,12 @@ const pre_loader = ref(false);
 const shopPages = ref([]);
 
 //form data - start
-const emptyLangsObjs =  functions.createEmptyObj(langs);
-
 const currentId = ref("");
-const product_name = ref(emptyLangsObjs);
+const product_name = ref(functions.createEmptyObj(langs));
 const sku = ref("");
 const price = ref("");
-const published = ref("");
-const product_description = ref(emptyLangsObjs);
+const published = ref(false);
+const product_description = ref(functions.createEmptyObj(langs));
 const page_id = ref("");
 const images = ref([]);
 //form data - stop
@@ -182,6 +180,7 @@ const back = () => {
 const clearMsg = () => {
   msgWrong.value = "";
   msgGood.value = "";
+  errFields.value = [];
 };
 
 const addEditProduct = async () => {

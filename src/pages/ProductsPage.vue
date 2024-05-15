@@ -144,11 +144,16 @@
           <tr v-for="(p, index) in products.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
             <td>
+              <span v-if="(p.images !== null) && (typeof p.images === 'object') && (typeof p.images[0] === 'object')">
               <img
                 style="width: 40%"
                 :src="SERVER_URL + p.images[0]['fs']['small']"
                 :alt="p.images[0]['alt'][lang]"
-              />                      
+              />    
+              </span>     
+              <span v-else>
+                no image
+              </span>             
             </td>          
             <td>
               <span  @click="goToPage(p['page_id'])" class="cursor-pointer text-primary">
