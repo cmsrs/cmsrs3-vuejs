@@ -36,6 +36,7 @@
               :role="'product_name_' + lang"
               type="text"
               v-model="product_name[lang]"
+              :class="{ 'is-invalid': errFields.includes('product_name') }"
               class="form-control"
               id="product_name"
               placeholder="product name"

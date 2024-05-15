@@ -18,7 +18,7 @@
       >
         <ul>
           <li v-for="(value, key) in msgWrong" :key="key">
-            {{ key }}: {{ value[0] }}
+            {{ key }}: {{  (typeof value === 'object') ? value[0] : value }}
           </li>
         </ul>
       </div>
