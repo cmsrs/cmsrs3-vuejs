@@ -334,7 +334,6 @@ describe("Product edit or add page", () => {
         const productPl = screen.queryByRole("product_name_pl");
         expect(productPl).toBeInTheDocument();
 
-        console.log(productPl.value); //jak pokazac aktualna wartosc w tym elemencie, bo chce ja porozwnac z wartosci: responseGetProduct.data.sku;?
         const product_name1 = responseGetProduct.data.product_name['pl'];
         expect(productPl.value).toBe(product_name1);
   
@@ -373,11 +372,12 @@ describe("Product edit or add page", () => {
       await waitFor(() => {
 
         const product_name2 = responseGetProduct.data.product_name['en'];
-        screen.findByText(product_name2);
+        //screen.findByText(product_name2);
         //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa'); //it works too. i don't  know why
   
         const productEn = screen.queryByRole("product_name_en");
         expect(productEn).toBeInTheDocument()
+        expect(productEn.value).toBe(product_name2);
       
 
         const productPl = screen.queryByRole("product_name_pl");
