@@ -179,6 +179,7 @@ describe.skip("empty token", () => {
   it("has product redirect", async () => {
     storage.setItem("auth", { token: "" });
     await setupAdd();
+    await waitForAjax();
     const header = screen.queryByRole("heading", { name: "Add product" });
     expect(header).not.toBeInTheDocument();
   });
@@ -188,6 +189,7 @@ describe("Product edit or add page", () => {
   describe("Layout", () => {
     it("has edit product header", async () => {
       await setupEdit();
+      await waitForAjax();
       const header = screen.queryByRole("heading", { name: "Edit product" });
       expect(header).toBeInTheDocument();
     });
@@ -237,6 +239,7 @@ describe("Product edit or add page", () => {
 
     it("load add product", async () => {
       await setupAdd();
+      await waitForAjax();
       expect(counter).toBe(1);
 
       const sku = screen.queryByPlaceholderText("sku");

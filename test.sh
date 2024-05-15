@@ -8,7 +8,7 @@ elif [ "$1" = "coverage" ]; then
     exit
 
 elif [ "$1" = "-t" ]; then
-    npm run test -- -t $2
+    npm run test -- -t "$2"
     exit
 
 else
@@ -32,8 +32,8 @@ else
 
     #npm run test   ./src/helpers/functions.spec.js 
 
-    npm run test  ./src/pages/ProductEditPage.spec.js
-    #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "has edit product header"
+    npm run test  ./src/pages/ProductEditPage.spec.js 
+    #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product with errors"
 
 fi
 
