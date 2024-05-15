@@ -28,14 +28,14 @@
       </div>
 
       <div class="row pb-4 pt-4">
-        <form>
+        <form>          
 
           <div class="mb-3">
             <label for="product_name" class="form-label">Product Name</label>
             <input
               :role="'product_name_' + lang"
               type="text"
-              v-model="product.product_name"
+              v-model="product_name[lang]"
               class="form-control"
               id="product_name"
               placeholder="product name"
@@ -46,7 +46,7 @@
             <label for="sku" class="form-label">Sku</label>
             <input
               type="sku"
-              v-model="product.sku"
+              v-model="sku"
               class="form-control"
               :class="{ 'is-invalid': errFields.includes('sku') }"
               id="sku"              
@@ -58,7 +58,7 @@
             <label for="price" class="form-label">Price</label>
             <input
               type="price"
-              v-model="product.price"
+              v-model="price"
               class="form-control"
               :class="{ 'is-invalid': errFields.includes('price') }"
               id="price"
@@ -72,7 +72,7 @@
                 class="col-1"
                 name="published"
                 type="checkbox"
-                v-model="product.published"
+                v-model="published"
                 :true-value="1"
               />
               Published
@@ -84,7 +84,7 @@
               class="form-control textarea-rs"
               rows="20"
               cols="50"
-              v-model="product.product_description"                                    
+              v-model="product_description[lang]"                                    
               placeholder="product description"
             ></textarea>
           </div>
@@ -94,7 +94,7 @@
               <select
                 role="page_items"
                 class="rs-select form-control"
-                v-model="product.page_id"
+                v-model="page_id"
               >
                 <option value=""></option>
                 <option
@@ -121,7 +121,7 @@
             ></span>
             <span v-if="mode === 'edit'">Edit product</span>
             <span v-else>Add product</span>
-          </button>
+          </button>          
         </form>
       </div>
     </div><!--  container -->
@@ -139,6 +139,7 @@ import { useAuthStore } from "../state/store.js";
 const { auth, setDefaultLang } = useAuthStore();
 
 const {
+  configLangs: langs,
   configDefaultLang,
 } = functions.retrieveParamsFromStorage();
 
@@ -154,18 +155,23 @@ const errFields = ref([]);
 const pre_loader = ref(false);
 const shopPages = ref([]);
 
-let product = reactive({});
+//form data - start
+const emptyLangsObjs =  functions.createEmptyObj(langs);
+
+const currentId = ref("");
+const product_name = ref(emptyLangsObjs);
+const sku = ref("");
+const price = ref("");
+const published = ref("");
+const product_description = ref(emptyLangsObjs);
+const page_id = ref("");
+const images = ref([]);
+//form data - stop
 
 
 async function changeLang(inLang) {
-  //pre_loader.value = true;
   lang.value = inLang;
   setDefaultLang(inLang);
-
-  // const refreshP = await refreshProducts();
-  // if (refreshP) {
-  //   pre_loader.value = false;
-  // }
 };
 
 const back = () => {
@@ -177,21 +183,22 @@ const clearMsg = () => {
   msgGood.value = "";
 };
 
-const getEmptyProduct = () => {
-  return {
-    product_name: '',
-    sku: '',
-    price: '',
-    published: '',
-    product_description: '',
-    page_id: ''
-  };
-};
-
 const addEditProduct = async () => {
   clearMsg();
   pre_loader.value = true;
   try {
+
+    const product = {
+      id: currentId.value,
+      product_name: product_name.value,
+      sku: sku.value,
+      price: price.value,
+      published: published.value,
+      product_description: product_description.value,
+      page_id: page_id.value,
+      images: images.value,
+    };
+
     const retProduct = product.id //product.value.id
       ? await putProduct(product, auth.token)
       : await postProduct(product, auth.token);
@@ -216,15 +223,15 @@ const loadProduct = async (id) => {
   try {
     const response = await getProduct(id, auth.token);    
     if (response.data.success) {
-      //console.log(response.data.data);
       const productData = response.data.data;
-      product.id = productData.id;
-      product.product_name = productData.product_name[lang.value];
-      product.sku = productData.sku;
-      product.price = productData.price;
-      product.published = productData.published;
-      product.product_description = productData.product_description[lang.value];
-      product.page_id = productData.page_id;
+      currentId.value = productData.id;
+      product_name.value = productData.product_name; //[lang.value];
+      sku.value = productData.sku;
+      price.value = productData.price;
+      published.value = productData.published;
+      product_description.value = productData.product_description; //[lang.value];
+      page_id.value = productData.page_id;
+      images.value = productData.images;
       
       return true;
     } else {
@@ -268,15 +275,11 @@ onMounted(async () => {
   }
 
   clearMsg();
-
-  pre_loader.value = true;
-  //console.log('_________jestem___________');
+  pre_loader.value = true;  
   await getShopPages();
-  product = getEmptyProduct();
 
   if (mode === "edit") {
     const id = router.currentRoute.value.params.id;
-    //pre_loader.value = true;
     const loadC = await loadProduct(id);
 
     if (loadC) {

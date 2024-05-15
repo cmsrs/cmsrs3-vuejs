@@ -196,6 +196,8 @@ describe("Product edit or add page", () => {
 
     it("has add product header", async () => {
       await setupAdd();
+      await waitForAjax();
+
       const header = screen.queryByRole("heading", { name: "Add product" });
       expect(header).toBeInTheDocument();
     });
@@ -329,11 +331,21 @@ describe("Product edit or add page", () => {
       expect(counter).toBe(2); 
 
       await waitFor(() => {
-        const sku1 = responseGetProduct.data.sku;
-        screen.findByText(sku1);
+        const productPl = screen.queryByRole("product_name_pl");
+        expect(productPl).toBeInTheDocument();
 
+        console.log(productPl.value); //jak pokazac aktualna wartosc w tym elemencie, bo chce ja porozwnac z wartosci: responseGetProduct.data.sku;?
         const product_name1 = responseGetProduct.data.product_name['pl'];
-        screen.findByText(product_name1);
+        expect(productPl.value).toBe(product_name1);
+  
+        const productEn = screen.queryByRole("product_name_en");
+        expect(productEn).not.toBeInTheDocument();
+  
+        //const sku1 = responseGetProduct.data.sku;
+        //screen.findByText(sku1);
+
+        //const product_name1 = responseGetProduct.data.product_name['pl'];
+        //screen.findByText(product_name1);
       });
       
     });
