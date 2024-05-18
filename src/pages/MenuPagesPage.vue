@@ -395,26 +395,60 @@
               </div>
             </div>
 
-            <label
-              class="custom-file-upload mt-3 mb-3"
-              :style="{ opacity: pre_loader || !currentPageId ? '0.6' : '1' }"
-            >
-              <input
-                role="upload_images"
-                class="upload-img"
-                type="file"
-                name="images"
-                @change="handleUploadFile"
-                multiple
-                :disabled="pre_loader || !currentPageId"
-              />
-              <span
-                role="pre_loader_upload_images"
-                v-if="pre_loader"
-                class="spinner-grow spinner-grow-sm"
-              ></span>
-              <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
-            </label>
+            <div class="row">
+              <div class="col-5">
+                <label
+                  class="custom-file-upload mt-3 mb-3"
+                  :style="{ opacity: pre_loader || !currentPageId ? '0.6' : '1' }"
+                >
+                  <input
+                    role="upload_images"
+                    class="upload-img"
+                    type="file"
+                    name="images"
+                    @change="handleUploadFile"
+                    multiple
+                    :disabled="pre_loader || !currentPageId"
+                  />
+                  <span
+                    role="pre_loader_upload_images"
+                    v-if="pre_loader"
+                    class="spinner-grow spinner-grow-sm"
+                  ></span>
+                  <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
+                </label>
+              </div>  
+
+              <div class="col-3">
+                &nbsp;
+              </div>              
+              <div class="col-3">
+                <button
+                  role="button_delete_images"
+                  @click.prevent="deleteImages"
+                  class="btn btn-primary mt-3"
+                  :disabled="pre_loader"
+                >
+                  <i v-if="!pre_loader" class="fas fa-plus"></i>
+                  <span
+                    role="pre_loader_delete_images"
+                    v-if="pre_loader"
+                    class="spinner-grow spinner-grow-sm"
+                  ></span>
+                  Delete images
+                </button>
+              </div>              
+
+              <div class="col-1">
+                  <input
+                    class="form-check-input  mt-4"
+                    type="checkbox"
+                    v-model="selectedAllItems"
+                    :true-value="1"
+                    @click="selectAllItems()"
+                  />
+              </div>
+            </div>    
 
             <div
               class="row mt-2"
@@ -427,9 +461,8 @@
                 :alt="image['alt'][lang]"
               />
 
-              <div class="form-group col-6">
+              <div class="form-group col-4">
                 <input
-                  role="menu"
                   class="form-control"
                   v-model="images[index]['alt'][lang]"
                 />
@@ -437,7 +470,7 @@
 
               <div
                 role="del_image"
-                class="ms-2 trash col-1"
+                class="trash col-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
                 @click="delImage(image.id)"
               >
@@ -447,7 +480,7 @@
               <div
                 role="down_image"
                 :class="{ 'disabled-if-loader': pre_loader }"
-                class="ms-2 col-1"
+                class="col-1"
                 @click="positionImage('down', image.id)"
               >
                 <i
@@ -459,7 +492,7 @@
               <div
                 role="up_image"
                 :class="{ 'disabled-if-loader': pre_loader }"
-                class="ms-2 col-1"
+                class="col-1"
                 @click="positionImage('up', image.id)"
               >
                 <i
@@ -467,6 +500,26 @@
                   aria-hidden="true"
                 ></i>
               </div>
+
+              <div class="form-group col-2">
+                <input
+                  class="form-control"
+                  v-model="images[index]['position']"
+                />
+              </div>
+
+              <div 
+                class="col-1"
+              >
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="selectedItems[image.id]"
+                  :true-value="1"
+                  @click="selectItem(image.id)"
+                />
+              </div>
+
             </div>
           </form>
         </div>
@@ -558,6 +611,8 @@ const editorConfig = ref({});
 editor.value = ClassicEditor;
 const ckeditor = CKEditor.component;
 
+const selectedItems = ref({});
+const selectedAllItems = ref({});
 // Computed
 //const SERVER_URL = computed(() => SERVER_URL);
 
@@ -609,6 +664,19 @@ const saveEditPage = async () => {
     console.log("_is_error__", error);
   }
   pre_loader.value = false;
+};
+
+const selectItem = ( imageId ) => {
+  alert('selectedItem'+imageId);
+  //selectedItems.value[imageId] = true;
+};
+
+const selectAllItems = () => {
+  alert('selectedAllItems');
+};
+
+const deleteImages = () => {
+  alert('delete all images');
 };
 
 const clearDataPage = () => {
