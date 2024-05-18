@@ -647,6 +647,7 @@ const saveEditPage = async () => {
         router.push("/pages/"+pageId);
         msgGood.value = trans.ttt("success_page_add");
       } else {
+        await getPageById(currentPageId.value); //refresh fields especially images.position 
         msgGood.value = trans.ttt("success_page_edit");
       }
     } else if (retPage.data.success === false) {
