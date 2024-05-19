@@ -8,6 +8,9 @@ const ttt = (key) => {
     success_product_add: "Product has been added",
     success_image_position: "Position image has been changed",
     success_image_delete: "Image has been deleted",
+    success_images_delete: "Images has been deleted",
+
+    fail_delete_images_no_items: "fail delete images no items",
   };
 
   return d[key] ? d[key] : key;

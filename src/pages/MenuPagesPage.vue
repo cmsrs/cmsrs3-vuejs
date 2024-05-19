@@ -426,9 +426,12 @@
               <div class="col-1">
 
                 <div
+                  role="delete_many_images"
                   class="trash mt-3"
                   :class="{ 'disabled-if-loader': pre_loader }"
-                  @click.prevent="deleteImages"
+                  :style="{ opacity: pre_loader || !currentPageId ? '0.6' : '1' }"
+                  :disabled="pre_loader || !currentPageId"
+                  @click="deleteImages"
                 >
                   <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
                 </div>
@@ -509,10 +512,10 @@
               >
                 <input
                   class="form-check-input"
+                  role="check_image"
                   type="checkbox"
-                  v-model="selectedItems[image.id]"
                   :true-value="1"
-                  @click="selectItem(image.id)"
+                  @change="selectItem(image.id, $event.target.checked)"
                 />
               </div>
 
@@ -663,17 +666,38 @@ const saveEditPage = async () => {
   pre_loader.value = false;
 };
 
-const selectItem = ( imageId ) => {
-  alert('selectedItem'+imageId);
-  //selectedItems.value[imageId] = true;
+const selectItem = ( imageId, isCheck ) => {
+  clearMsg();
+  if(selectedItems.value[currentPageId.value]){
+    selectedItems.value[currentPageId.value][imageId] = isCheck;
+  }else{
+    selectedItems.value[currentPageId.value] = {};
+    selectedItems.value[currentPageId.value][imageId] = isCheck;
+  }
 };
 
 const selectAllItems = () => {
-  alert('selectedAllItems');
+  alert('selectedAllItems');  
 };
 
-const deleteImages = () => {
-  alert('delete all images');
+const deleteImages =  async () => {
+  if(!selectedItems.value[currentPageId.value]){
+    msgWrong.value = trans.ttt("fail_delete_images_no_items"); 
+    return false;
+  }
+
+  if (!startLoading()) {
+    return false;
+  }
+
+  let items = [];
+  for( const imageId in selectedItems.value[currentPageId.value]  ){
+    if(  selectedItems.value[currentPageId.value][imageId] ){
+      items.push(imageId);
+    }
+  }
+  let ids = items.join(',');
+  await delImagesWrap(ids, true);
 };
 
 const clearDataPage = () => {
@@ -902,13 +926,33 @@ const delImage = async (id) => {
       return false;
     }
 
-    try {
+    await delImagesWrap(id, false);
+    // try {
+    //   const objDeleteImage = await deleteImage(id, token);
+    //   if (objDeleteImage.data.success) {
+    //     const dbImages = await getImages("page", currentPageId.value, token);
+    //     if (dbImages.data.success) {
+    //       images.value = dbImages.data.data;
+    //       msgGood.value = trans.ttt("success_image_delete"); //  "Image has been deleted";
+    //       pre_loader.value = false;
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log("_is_error_del_image_", error);
+    //   msgWrong.value = "Delete menu problem = " + error;
+    // }
+
+  }
+};
+
+const delImagesWrap = async (id, isMany) => {
+  try {
       const objDeleteImage = await deleteImage(id, token);
       if (objDeleteImage.data.success) {
         const dbImages = await getImages("page", currentPageId.value, token);
         if (dbImages.data.success) {
           images.value = dbImages.data.data;
-          msgGood.value = trans.ttt("success_image_delete"); //  "Image has been deleted";
+          msgGood.value =  isMany ?  trans.ttt("success_images_delete") : trans.ttt("success_image_delete"); //  "Image has been deleted";
           pre_loader.value = false;
         }
       }
@@ -916,8 +960,8 @@ const delImage = async (id) => {
       console.log("_is_error_del_image_", error);
       msgWrong.value = "Delete menu problem = " + error;
     }
-  }
-};
+}
+
 
 const positionImage = async (direction, imageId) => {
   if (!currentPageId.value) {

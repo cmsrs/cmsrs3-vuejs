@@ -1225,9 +1225,14 @@ describe("Pages page", () => {
 
     let counterUpload = 0;
     let counterImage = 0;
+
+    let counterDeleteImages = 0;
+    let counterDeleteOneImage= 0;
     beforeEach(() => {
       counterUpload = 0;
       counterImage = 0;
+      counterDeleteImages = 0;
+      counterDeleteOneImage= 0;
       server.use(
         http.post("/api/image/page/3", async () => {
           counterUpload += 1;
@@ -1264,6 +1269,21 @@ describe("Pages page", () => {
             success: true,
           });
         }),
+
+        http.delete("/api/images/1,2", async () => {
+          counterDeleteImages += 1;
+          return HttpResponse.json({
+            success: true,
+          });
+        }),
+
+        http.delete("/api/images/2", async () => {
+          counterDeleteOneImage += 1;
+          return HttpResponse.json({
+            success: true,
+          });
+        }),
+
       );
     });
 
@@ -1326,6 +1346,72 @@ describe("Pages page", () => {
         const successMsg = trans.ttt("success_image_delete");
         screen.findByText(successMsg);
       });
+    });
+
+    it("delete many images success", async () => {
+      confirmSpy.mockReturnValueOnce(true);
+      await setup_edit_page();
+      expect(counterImage).toBe(0);
+
+      const allCheckbox = screen.queryAllByRole("check_image");            
+      expect(images.length).toBe(2);      
+      expect(allCheckbox.length).toBe(2);
+
+      await userEvent.click(allCheckbox[0]);
+      await userEvent.click(allCheckbox[1]);
+
+      const deleteImages = screen.queryByRole("delete_many_images");
+      await userEvent.click(deleteImages);     
+      
+      await waitFor(() => {
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect(alertSuccessAfter).toBeInTheDocument();
+          
+        expect( counterDeleteOneImage ).toBe(0);
+        expect( counterDeleteImages ).toBe(1);
+  
+        const successMsg = trans.ttt("success_images_delete");
+        screen.findByText(successMsg);
+      });
+    });
+
+    it("delete one image success", async () => {
+      confirmSpy.mockReturnValueOnce(true);
+      await setup_edit_page();
+      expect(counterImage).toBe(0);
+
+      const allCheckbox = screen.queryAllByRole("check_image");            
+      expect(images.length).toBe(2);      
+      expect(allCheckbox.length).toBe(2);
+
+      await userEvent.click(allCheckbox[0]);
+      await userEvent.click(allCheckbox[1]);
+      await userEvent.click(allCheckbox[0]);
+
+      const deleteImages = screen.queryByRole("delete_many_images");
+      await userEvent.click(deleteImages);     
+      
+      await waitFor(() => {
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect(alertSuccessAfter).toBeInTheDocument();
+  
+        expect( counterDeleteOneImage ).toBe(1);
+        expect( counterDeleteImages ).toBe(0);
+  
+        const successMsg = trans.ttt("success_images_delete");
+        screen.findByText(successMsg);
+      });    
+    });    
+
+    it("click icon delete many images without check any item", async () => {
+      confirmSpy.mockReturnValueOnce(true);
+      await setup_edit_page();
+      expect(counterImage).toBe(0);
+
+      const deleteImages = screen.queryByRole("delete_many_images");
+      await userEvent.click(deleteImages);   
+      const alertDangerAfter = screen.queryByRole("alert_danger");
+      expect(alertDangerAfter).toBeInTheDocument();
     });
 
     it("image position down success", async () => {
