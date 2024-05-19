@@ -395,7 +395,7 @@
               </div>
             </div>
 
-            <div class="row">
+            <div class="row mt-3">
               <div class="col-5">
                 <label
                   class="custom-file-upload mt-3 mb-3"
@@ -419,24 +419,20 @@
                 </label>
               </div>  
 
-              <div class="col-3">
+              <div class="col-5">
                 &nbsp;
-              </div>              
-              <div class="col-3">
-                <button
-                  role="button_delete_images"
+              </div>    
+
+              <div class="col-1">
+
+                <div
+                  class="trash mt-3"
+                  :class="{ 'disabled-if-loader': pre_loader }"
                   @click.prevent="deleteImages"
-                  class="btn btn-primary mt-3"
-                  :disabled="pre_loader"
                 >
-                  <i v-if="!pre_loader" class="fas fa-plus"></i>
-                  <span
-                    role="pre_loader_delete_images"
-                    v-if="pre_loader"
-                    class="spinner-grow spinner-grow-sm"
-                  ></span>
-                  Delete images
-                </button>
+                  <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
+                </div>
+
               </div>              
 
               <div class="col-1">
