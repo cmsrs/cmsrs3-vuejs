@@ -668,12 +668,10 @@ const saveEditPage = async () => {
 
 const selectItem = ( imageId, isCheck ) => {
   clearMsg();
-  if(selectedItems.value[currentPageId.value]){
-    selectedItems.value[currentPageId.value][imageId] = isCheck;
-  }else{
+  if(!selectedItems.value[currentPageId.value]){
     selectedItems.value[currentPageId.value] = {};
-    selectedItems.value[currentPageId.value][imageId] = isCheck;
   }
+  selectedItems.value[currentPageId.value][imageId] = isCheck;
 };
 
 const selectAllItems = () => {
@@ -686,18 +684,23 @@ const deleteImages =  async () => {
     return false;
   }
 
-  if (!startLoading()) {
-    return false;
-  }
+  if (window.confirm("Are you sure you wish to delete these items?")) {  
+    if (!startLoading()) {
+      return false;
+    }
 
-  let items = [];
-  for( const imageId in selectedItems.value[currentPageId.value]  ){
-    if(  selectedItems.value[currentPageId.value][imageId] ){
-      items.push(imageId);
+    let items = [];
+    for( const imageId in selectedItems.value[currentPageId.value]  ){
+      if( selectedItems.value[currentPageId.value][imageId] === true ){
+        items.push(imageId);
+      }
+    }
+    let ids = items.join(',');
+    const ret = await delImagesWrap(ids, true);
+    if(ret){
+      selectedItems.value[currentPageId.value] = {};
     }
   }
-  let ids = items.join(',');
-  await delImagesWrap(ids, true);
 };
 
 const clearDataPage = () => {
@@ -927,21 +930,6 @@ const delImage = async (id) => {
     }
 
     await delImagesWrap(id, false);
-    // try {
-    //   const objDeleteImage = await deleteImage(id, token);
-    //   if (objDeleteImage.data.success) {
-    //     const dbImages = await getImages("page", currentPageId.value, token);
-    //     if (dbImages.data.success) {
-    //       images.value = dbImages.data.data;
-    //       msgGood.value = trans.ttt("success_image_delete"); //  "Image has been deleted";
-    //       pre_loader.value = false;
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log("_is_error_del_image_", error);
-    //   msgWrong.value = "Delete menu problem = " + error;
-    // }
-
   }
 };
 
@@ -956,9 +944,11 @@ const delImagesWrap = async (id, isMany) => {
           pre_loader.value = false;
         }
       }
+      return true;
     } catch (error) {
       console.log("_is_error_del_image_", error);
       msgWrong.value = "Delete menu problem = " + error;
+      return false;
     }
 }
 
