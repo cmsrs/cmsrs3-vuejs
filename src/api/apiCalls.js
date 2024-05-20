@@ -76,6 +76,7 @@ export const getImages = (type, id, token) => {
   return axios.get("/api/images/" + type + "/" + id + "?token=" + token);
 };
 
+//we can also delete many images, see API docs
 export const deleteImage = (id, token) => {
   return axios.delete("/api/images/" + id + "?token=" + token);
 };
