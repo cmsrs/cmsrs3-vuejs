@@ -1416,12 +1416,11 @@ describe("Pages page", () => {
 
         const alertDangerAfter = screen.queryByRole("alert_danger");
         expect(alertDangerAfter).toBeInTheDocument();
-  
+
         const msg = trans.ttt("fail_delete_images_no_items");
         screen.findByText(msg);
       });
     });
-
 
     it("delete one image success", async () => {
       confirmSpy.mockReturnValueOnce(true);
