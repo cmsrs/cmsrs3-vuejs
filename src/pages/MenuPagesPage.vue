@@ -1023,6 +1023,8 @@ const getImagesByCurrentId = async () => {
 };
 
 const resetSelectedItems = async () => {
+  selectedAllItems.value = false;
+  
   if (!currentPageId.value) {
     return false;
   }
