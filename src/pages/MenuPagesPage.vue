@@ -443,7 +443,7 @@
                     class="form-check-input  mt-4"
                     type="checkbox"
                     v-model="selectedAllItems"
-                    :true-value="1"
+                    :true-value="true"
                     @click="selectAllItems()"
                   />
               </div>
@@ -514,7 +514,7 @@
                   class="form-check-input"
                   role="check_image"
                   type="checkbox"
-                  :true-value="1"
+                  v-model="selectedItems[currentPageId][image.id]"
                   @change="selectItem(image.id, $event.target.checked)"
                 />
               </div>
@@ -675,11 +675,31 @@ const selectItem = ( imageId, isCheck ) => {
 };
 
 const selectAllItems = () => {
-  alert('selectedAllItems');  
-};
+  selectedAllItems.value = !selectedAllItems.value;
+  if(!selectedItems.value[currentPageId.value]){
+    selectedItems.value[currentPageId.value] = {};
+  }
+
+  images.value.forEach(image => {
+    selectedItems.value[currentPageId.value][image.id] = false;
+    //image.selected = selectedAllItems.value;
+  });
+}
 
 const deleteImages =  async () => {
   if(!selectedItems.value[currentPageId.value]){
+    msgWrong.value = trans.ttt("fail_delete_images_no_items"); 
+    return false;
+  }
+
+  let items = [];
+  for( const imageId in selectedItems.value[currentPageId.value]  ){
+    if( selectedItems.value[currentPageId.value][imageId] === true ){
+      items.push(imageId);
+    }
+  }
+
+  if(!items.length){
     msgWrong.value = trans.ttt("fail_delete_images_no_items"); 
     return false;
   }
@@ -689,12 +709,6 @@ const deleteImages =  async () => {
       return false;
     }
 
-    let items = [];
-    for( const imageId in selectedItems.value[currentPageId.value]  ){
-      if( selectedItems.value[currentPageId.value][imageId] === true ){
-        items.push(imageId);
-      }
-    }
     let ids = items.join(',');
     const ret = await delImagesWrap(ids, true);
     if(ret){
@@ -760,7 +774,7 @@ async function handleUploadFile(event) {
     }
   }
 
-  const dbImages = await getImages("page", currentPageId.value, token);
+  const dbImages = await getImagesByCurrentId();
   if (dbImages.data.success) {
     images.value = dbImages.data.data;
     msgGood.value = "Images has been uploaded";
@@ -937,7 +951,7 @@ const delImagesWrap = async (id, isMany) => {
   try {
       const objDeleteImage = await deleteImage(id, token);
       if (objDeleteImage.data.success) {
-        const dbImages = await getImages("page", currentPageId.value, token);
+        const dbImages = await getImagesByCurrentId();
         if (dbImages.data.success) {
           images.value = dbImages.data.data;
           msgGood.value =  isMany ?  trans.ttt("success_images_delete") : trans.ttt("success_image_delete"); //  "Image has been deleted";
@@ -966,7 +980,7 @@ const positionImage = async (direction, imageId) => {
     const pos = await setImagePosition(direction, imageId, token);
 
     if (pos.data.success) {
-      const dbImages = await getImages("page", currentPageId.value, token);
+      const dbImages = await getImagesByCurrentId();
       if (dbImages.data.success) {
         images.value = dbImages.data.data;
         msgGood.value = trans.ttt("success_image_position"); //"Position image has been changed";
@@ -1011,6 +1025,8 @@ const getPageById =  async (pageId) => {
       page_id.value = p.page_id;
       images.value = p.images;
 
+      await resetSelectedItems();
+
       return true;
     }
   } catch (error) {
@@ -1019,6 +1035,31 @@ const getPageById =  async (pageId) => {
     return false;
   }
 };
+
+const getImagesByCurrentId =  async () => {
+  const dbImages = await getImages("page", currentPageId.value, token);
+  await resetSelectedItems();
+  return dbImages;
+};
+
+const resetSelectedItems =  async () => {
+    if(!currentPageId.value){
+      return false;
+    }
+
+    if (!images.value || !images.value.length) {
+        return false; 
+    }
+
+    if(!selectedItems.value[currentPageId.value]){
+      selectedItems.value[currentPageId.value] = {};
+    }
+
+    images.value.forEach(image => {
+      selectedItems.value[currentPageId.value][image.id] = false;
+    });
+};
+
 
 const editPage =  async (pageId) => {
   if (!startLoading()) {
@@ -1144,6 +1185,9 @@ onMounted(async () => {
 
   const pageId = router.currentRoute.value.params.id;
   if(pageId){
+    currentPageId.value = parseInt(pageId);
+    await resetSelectedItems();
+
     const getSomePage = await getPageById(pageId);
     if (refreshM && refreshP && getSomePage) {
       pre_loader.value = false;
