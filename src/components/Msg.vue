@@ -18,7 +18,7 @@
       >
         <ul>
           <li v-for="(value, key) in msgWrong" :key="key">
-            {{ key }}: {{  (typeof value === 'object') ? value[0] : value }}
+            {{ key }}: {{ typeof value === "object" ? value[0] : value }}
           </li>
         </ul>
       </div>
@@ -26,9 +26,8 @@
   </div>
 </template>
 <script setup>
-
 defineProps({
-    msgGood: String,
-    msgWrong: [Array, Object, String], //maybe without array - todo test
+  msgGood: String,
+  msgWrong: [Array, Object, String], //maybe without array - todo test
 });
 </script>

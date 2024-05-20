@@ -57,7 +57,8 @@ const images = [
 ];
 
 const pages = [
-  { //0
+  {
+    //0
     id: 1,
     published: 0,
     commented: 0,
@@ -79,7 +80,8 @@ const pages = [
       en: "lorem ipsum",
     },
   },
-  { //1
+  {
+    //1
     id: 2,
     published: 0,
     commented: 0,
@@ -101,7 +103,8 @@ const pages = [
       en: "inner lorem ipsum",
     },
   },
-  { //2
+  {
+    //2
     id: 3,
     published: 1,
     commented: 0,
@@ -269,7 +272,7 @@ let server = setupServer(
     };
 
     return HttpResponse.json(jsonRes);
-  }),  
+  }),
 
   http.get("/api/pages", async () => {
     const jsonRes = {
@@ -528,7 +531,7 @@ describe("Pages page", () => {
       const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       await waitFor(() => {
         expect(spinnerAfterClick).not.toBeInTheDocument();
-        router.push("/pages/"+newPageId);
+        router.push("/pages/" + newPageId);
       });
       //const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       //expect(spinnerAfterClick).not.toBeNull();
@@ -588,7 +591,7 @@ describe("Pages page", () => {
       const spinnerAfterClick = screen.queryByRole("pre_loader_save_edit_page");
       await waitFor(() => {
         expect(spinnerAfterClick).not.toBeInTheDocument();
-        router.push("/pages/"+newPageId);
+        router.push("/pages/" + newPageId);
       });
       //await waitForElementToBeRemoved(spinnerAfterClick); //todo!!! - in webpack it is working - manual testing required
       //expect(spinnerAfterClick).not.toBeNull();
@@ -1227,12 +1230,12 @@ describe("Pages page", () => {
     let counterImage = 0;
 
     let counterDeleteImages = 0;
-    let counterDeleteOneImage= 0;
+    let counterDeleteOneImage = 0;
     beforeEach(() => {
       counterUpload = 0;
       counterImage = 0;
       counterDeleteImages = 0;
-      counterDeleteOneImage= 0;
+      counterDeleteOneImage = 0;
       server.use(
         http.post("/api/image/page/3", async () => {
           counterUpload += 1;
@@ -1283,7 +1286,6 @@ describe("Pages page", () => {
             success: true,
           });
         }),
-
       );
     });
 
@@ -1353,23 +1355,23 @@ describe("Pages page", () => {
       await setup_edit_page();
       expect(counterImage).toBe(0);
 
-      const allCheckbox = screen.queryAllByRole("check_image");            
-      expect(images.length).toBe(2);      
+      const allCheckbox = screen.queryAllByRole("check_image");
+      expect(images.length).toBe(2);
       expect(allCheckbox.length).toBe(2);
 
       await userEvent.click(allCheckbox[0]);
       await userEvent.click(allCheckbox[1]);
 
       const deleteImages = screen.queryByRole("delete_many_images");
-      await userEvent.click(deleteImages);     
-      
+      await userEvent.click(deleteImages);
+
       await waitFor(() => {
         const alertSuccessAfter = screen.queryByRole("alert_success");
         expect(alertSuccessAfter).toBeInTheDocument();
-          
-        expect( counterDeleteOneImage ).toBe(0);
-        expect( counterDeleteImages ).toBe(1);
-  
+
+        expect(counterDeleteOneImage).toBe(0);
+        expect(counterDeleteImages).toBe(1);
+
         const successMsg = trans.ttt("success_images_delete");
         screen.findByText(successMsg);
       });
@@ -1380,8 +1382,8 @@ describe("Pages page", () => {
       await setup_edit_page();
       expect(counterImage).toBe(0);
 
-      const allCheckbox = screen.queryAllByRole("check_image");            
-      expect(images.length).toBe(2);      
+      const allCheckbox = screen.queryAllByRole("check_image");
+      expect(images.length).toBe(2);
       expect(allCheckbox.length).toBe(2);
 
       await userEvent.click(allCheckbox[0]);
@@ -1389,19 +1391,19 @@ describe("Pages page", () => {
       await userEvent.click(allCheckbox[0]);
 
       const deleteImages = screen.queryByRole("delete_many_images");
-      await userEvent.click(deleteImages);     
-      
+      await userEvent.click(deleteImages);
+
       await waitFor(() => {
         const alertSuccessAfter = screen.queryByRole("alert_success");
         expect(alertSuccessAfter).toBeInTheDocument();
-  
-        expect( counterDeleteOneImage ).toBe(1);
-        expect( counterDeleteImages ).toBe(0);
-  
+
+        expect(counterDeleteOneImage).toBe(1);
+        expect(counterDeleteImages).toBe(0);
+
         const successMsg = trans.ttt("success_images_delete");
         screen.findByText(successMsg);
-      });    
-    });    
+      });
+    });
 
     it("click icon delete many images without check any item", async () => {
       confirmSpy.mockReturnValueOnce(true);
@@ -1409,7 +1411,7 @@ describe("Pages page", () => {
       expect(counterImage).toBe(0);
 
       const deleteImages = screen.queryByRole("delete_many_images");
-      await userEvent.click(deleteImages);   
+      await userEvent.click(deleteImages);
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect(alertDangerAfter).toBeInTheDocument();
     });
@@ -1496,7 +1498,7 @@ describe("Pages page", () => {
   });
 
   describe("go to direct page", () => {
-    const firstPageIdOnThePage = 3;    
+    const firstPageIdOnThePage = 3;
     const setupEdit = async () => {
       router.push("/pages/3");
       await router.isReady();
@@ -1506,7 +1508,7 @@ describe("Pages page", () => {
         },
       });
     };
-    
+
     it("display first page", async () => {
       await setupEdit();
       await waitForAjaxes();
@@ -1519,5 +1521,4 @@ describe("Pages page", () => {
       expect(title).toHaveValue(page.title["en"]);
     });
   });
-
 });

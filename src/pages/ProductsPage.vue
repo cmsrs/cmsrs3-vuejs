@@ -1,16 +1,11 @@
 <template>
   <div data-testid="products-page">
-
     <div class="container">
       <div class="row mt-3 mb-3">
         <h3 class="col-10">Products</h3>
-        <ChangeLang 
-          :lang="lang"
-          @exec-change-lang="changeLang"
-        ></ChangeLang>
+        <ChangeLang :lang="lang" @exec-change-lang="changeLang"></ChangeLang>
       </div>
     </div>
-
 
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
@@ -136,7 +131,7 @@
                 :column="column"
                 :direction="direction"
               ></TableSort>
-            </th>            
+            </th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -144,19 +139,26 @@
           <tr v-for="(p, index) in products.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
             <td>
-              <span v-if="(p.images !== null) && (typeof p.images === 'object') && (typeof p.images[0] === 'object')">
-              <img
-                style="width: 40%"
-                :src="SERVER_URL + p.images[0]['fs']['small']"
-                :alt="p.images[0]['alt'][lang]"
-              />    
-              </span>     
-              <span v-else>
-                no image
-              </span>             
-            </td>          
+              <span
+                v-if="
+                  p.images !== null &&
+                  typeof p.images === 'object' &&
+                  typeof p.images[0] === 'object'
+                "
+              >
+                <img
+                  style="width: 40%"
+                  :src="SERVER_URL + p.images[0]['fs']['small']"
+                  :alt="p.images[0]['alt'][lang]"
+                />
+              </span>
+              <span v-else> no image </span>
+            </td>
             <td>
-              <span  @click="goToPage(p['page_id'])" class="cursor-pointer text-primary">
+              <span
+                @click="goToPage(p['page_id'])"
+                class="cursor-pointer text-primary"
+              >
                 {{ p["page_short_title"] }}
               </span>
             </td>
@@ -164,11 +166,19 @@
               {{ p["product_name"] }}
             </td>
             <td>{{ p["sku"] }}</td>
-            <td>{{ p["price"] }}</td>            
+            <td>{{ p["price"] }}</td>
             <td>
-              <i v-if="p['published']"  class="fa fa-check" aria-hidden="true"></i>
-              <i v-if="!p['published']" class="fa fa-times" aria-hidden="true"></i>
-            </td>            
+              <i
+                v-if="p['published']"
+                class="fa fa-check"
+                aria-hidden="true"
+              ></i>
+              <i
+                v-if="!p['published']"
+                class="fa fa-times"
+                aria-hidden="true"
+              ></i>
+            </td>
             <td>{{ p["created_at"] ? p["created_at"].split("T")[0] : "" }}</td>
             <td>
               <span
@@ -271,7 +281,7 @@ async function changeLang(inLang) {
   if (refreshP) {
     pre_loader.value = false;
   }
-};
+}
 
 const searchProducts = async () => {
   pre_loader.value = true;
@@ -285,7 +295,7 @@ const searchProducts = async () => {
 };
 
 const goToPage = (pageId) => {
-  router.push("/pages/"+pageId);
+  router.push("/pages/" + pageId);
 };
 
 const delProduct = async (id) => {

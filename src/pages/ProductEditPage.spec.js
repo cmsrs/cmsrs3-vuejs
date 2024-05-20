@@ -52,8 +52,8 @@ const responseGetProduct = {
         fs: {
           org: "/images/product/1/1/phpunittest1.jpg",
           small: "/images/product/1/1/phpunittest1-small.jpg",
-          medium: "/images/product/1/1/phpunittest1-medium.jpg"
-        }
+          medium: "/images/product/1/1/phpunittest1-medium.jpg",
+        },
       },
       {
         id: 2,
@@ -70,41 +70,41 @@ const responseGetProduct = {
         fs: {
           org: "/images/product/1/2/phpunittest2.jpg",
           small: "/images/product/1/2/phpunittest2-small.jpg",
-          medium: "/images/product/1/2/phpunittest2-medium.jpg"
-        }
-      }
-    ]
-}};
-
-const responsePagesTypeShop = {
-    success: 1,
-    data: [
-        {
-            id: 1,
-            published: 0,
-            commented: 0,
-            after_login: 0,
-            position: 1,
-            type: 'shop',
-            menu_id: null,
-            page_id: null,
-            title: {
-                en: 'test p2'
-            },
-            short_title: {
-                en: 'p22'
-            },
-            description: {
-                en: ''
-            },
-            content: {
-                en: 'aaa bbbb'
-            },
-            images: []
-        }
-    ]
+          medium: "/images/product/1/2/phpunittest2-medium.jpg",
+        },
+      },
+    ],
+  },
 };
 
+const responsePagesTypeShop = {
+  success: 1,
+  data: [
+    {
+      id: 1,
+      published: 0,
+      commented: 0,
+      after_login: 0,
+      position: 1,
+      type: "shop",
+      menu_id: null,
+      page_id: null,
+      title: {
+        en: "test p2",
+      },
+      short_title: {
+        en: "p22",
+      },
+      description: {
+        en: "",
+      },
+      content: {
+        en: "aaa bbbb",
+      },
+      images: [],
+    },
+  ],
+};
 
 let server = setupServer(
   http.get("/api/pages/type/shop", () => {
@@ -223,20 +223,25 @@ describe("Product edit or add page", () => {
       expect(counter).toBe(2);
 
       const product_name = screen.queryByPlaceholderText("product name");
-      expect(product_name).toHaveValue(responseGetProduct.data.product_name['en']);
+      expect(product_name).toHaveValue(
+        responseGetProduct.data.product_name["en"],
+      );
 
       const sku = screen.queryByPlaceholderText("sku");
       expect(sku).toHaveValue(responseGetProduct.data.sku);
 
       const price = screen.queryByPlaceholderText("price");
-      expect(price).toHaveValue(  responseGetProduct.data.price.toString()  );
+      expect(price).toHaveValue(responseGetProduct.data.price.toString());
 
       const published = screen.queryByLabelText("Published");
-      expect(published).toBeChecked();//  toHaveValue(responseGetProduct.data.published);
+      expect(published).toBeChecked(); //  toHaveValue(responseGetProduct.data.published);
 
-      const productDescription = screen.queryByPlaceholderText("product description");
-      expect(productDescription).toHaveValue(responseGetProduct.data.product_description['en']);
-
+      const productDescription = screen.queryByPlaceholderText(
+        "product description",
+      );
+      expect(productDescription).toHaveValue(
+        responseGetProduct.data.product_description["en"],
+      );
     });
 
     it("load add product", async () => {
@@ -251,12 +256,14 @@ describe("Product edit or add page", () => {
       expect(product_name).toHaveValue("");
 
       const price = screen.queryByPlaceholderText("price");
-      expect(price).toHaveValue(  ""  );
+      expect(price).toHaveValue("");
 
       const published = screen.queryByLabelText("Published");
       expect(published).not.toBeChecked();
 
-      const productDescription = screen.queryByPlaceholderText("product description");
+      const productDescription = screen.queryByPlaceholderText(
+        "product description",
+      );
       expect(productDescription).toHaveValue("");
     });
 
@@ -286,16 +293,18 @@ describe("Product edit or add page", () => {
       await userEvent.type(product_name, "aaaaaaaaaaaaa");
 
       const sku = screen.queryByPlaceholderText("sku");
-      await userEvent.type(sku, "aaaabb/16/3"); 
+      await userEvent.type(sku, "aaaabb/16/3");
 
       const price = screen.queryByPlaceholderText("price");
-      await userEvent.type(price, "323"); 
+      await userEvent.type(price, "323");
 
       //const published = screen.queryByLabelText("Published");
       //expect(published).toBeChecked();//  toHaveValue(responseGetProduct.data.published);
 
-      const productDescription = screen.queryByPlaceholderText("product description");
-      await userEvent.type(productDescription, "323"); 
+      const productDescription = screen.queryByPlaceholderText(
+        "product description",
+      );
+      await userEvent.type(productDescription, "323");
 
       const buttonSubmit = screen.queryByRole("button_save_edit_product");
       await userEvent.click(buttonSubmit);
@@ -308,51 +317,49 @@ describe("Product edit or add page", () => {
   });
 
   describe("Interactions edit product change lang", () => {
-
-    const jsonStore2 ={
+    const jsonStore2 = {
       auth: {
-        token:  "abcde12345",
+        token: "abcde12345",
       },
       //this data came from api/config and save to local storage
       config: {
-        page_types: ['cms', 'gallery', 'main_page'],
-        langs: ['pl', 'en'],
-        default_lang: 'pl',
-        cache_enable: 1
-      }
+        page_types: ["cms", "gallery", "main_page"],
+        langs: ["pl", "en"],
+        default_lang: "pl",
+        cache_enable: 1,
+      },
     };
 
-    it("show data in Polish language", async () => {      
+    it("show data in Polish language", async () => {
       localStorage.clear();
       storage.setItem("auth", jsonStore2.auth);
-      storage.setItem("config", jsonStore2.config);  
+      storage.setItem("config", jsonStore2.config);
       await setupEdit();
       await waitForAjax();
-      expect(counter).toBe(2); 
+      expect(counter).toBe(2);
 
       await waitFor(() => {
         const productPl = screen.queryByRole("product_name_pl");
         expect(productPl).toBeInTheDocument();
 
-        const product_name1 = responseGetProduct.data.product_name['pl'];
+        const product_name1 = responseGetProduct.data.product_name["pl"];
         expect(productPl.value).toBe(product_name1);
-  
+
         const productEn = screen.queryByRole("product_name_en");
         expect(productEn).not.toBeInTheDocument();
-  
+
         //const sku1 = responseGetProduct.data.sku;
         //screen.findByText(sku1);
 
         //const product_name1 = responseGetProduct.data.product_name['pl'];
         //screen.findByText(product_name1);
       });
-      
     });
 
-    it("change lang from Polish to England", async () => {      
+    it("change lang from Polish to England", async () => {
       localStorage.clear();
       storage.setItem("auth", jsonStore2.auth);
-      storage.setItem("config", jsonStore2.config);  
+      storage.setItem("config", jsonStore2.config);
       await setupEdit();
       await waitForAjax();
 
@@ -368,25 +375,21 @@ describe("Product edit or add page", () => {
 
       const langEn = screen.queryByRole("lang_en");
       await userEvent.click(langEn);
-      
-      await waitFor(() => {
 
-        const product_name2 = responseGetProduct.data.product_name['en'];
+      await waitFor(() => {
+        const product_name2 = responseGetProduct.data.product_name["en"];
         //screen.findByText(product_name2);
         //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa'); //it works too. i don't  know why
-  
+
         const productEn = screen.queryByRole("product_name_en");
-        expect(productEn).toBeInTheDocument()
+        expect(productEn).toBeInTheDocument();
         expect(productEn.value).toBe(product_name2);
-      
 
         const productPl = screen.queryByRole("product_name_pl");
-        expect(productPl).not.toBeInTheDocument()
+        expect(productPl).not.toBeInTheDocument();
       });
-
     });
-
-  });  
+  });
 
   describe("Interactions validation errors", () => {
     it("add product with errors", async () => {
@@ -396,9 +399,9 @@ describe("Product edit or add page", () => {
           sku: ["The sku has already been taken."],
           price: [
             "The price must be an integer.",
-            "The price field is required."
-          ]
-        }
+            "The price field is required.",
+          ],
+        },
       };
 
       server.use(
@@ -410,7 +413,6 @@ describe("Product edit or add page", () => {
           counter += 1;
           return HttpResponse.json(responsePagesTypeShop);
         }),
-      
       );
 
       await setupAdd();
@@ -418,7 +420,7 @@ describe("Product edit or add page", () => {
       expect(counter).toBe(1);
 
       //const sku = screen.queryByPlaceholderText("sku");
-      //await userEvent.type(sku, "b/4345"); 
+      //await userEvent.type(sku, "b/4345");
 
       const product_name = screen.queryByPlaceholderText("product name");
       await userEvent.type(product_name, "TV");

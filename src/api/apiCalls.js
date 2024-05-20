@@ -27,7 +27,7 @@ export const getPages = (token) => {
 
 //it use in products, where type = 'shop'
 export const getPagesByType = (type, token) => {
-  return axios.get("/api/pages/type/"+type+"?token=" + token);
+  return axios.get("/api/pages/type/" + type + "?token=" + token);
 };
 
 //when click edit  page we get new data
@@ -119,7 +119,7 @@ export const getProducts = (lang, column, direction, token, page, search) => {
   const url =
     "/api/products/pagination/" +
     lang +
-    "/" +    
+    "/" +
     column +
     "/" +
     direction +

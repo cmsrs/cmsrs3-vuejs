@@ -28,7 +28,6 @@
 </template>
 
 <script setup>
-
 defineProps({
   pre_loader: Boolean,
   sortColumn: String,
@@ -36,5 +35,5 @@ defineProps({
   direction: String,
 });
 
-defineEmits(['sortAsc', 'sortDesc'])
+defineEmits(["sortAsc", "sortDesc"]);
 </script>

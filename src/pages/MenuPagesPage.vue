@@ -4,10 +4,7 @@
     <div class="container">
       <div class="row mt-3 mb-3">
         <h3 class="col-10" role="head_menu_pages">CMS - menus and pages</h3>
-        <ChangeLang 
-          :lang="lang"
-          @exec-change-lang="changeLang"
-        ></ChangeLang>
+        <ChangeLang :lang="lang" @exec-change-lang="changeLang"></ChangeLang>
       </div>
     </div>
 
@@ -282,10 +279,10 @@
 
             <div class="form-check mt-2 row">
               <label>
-                <input 
-                  class="col-1" 
-                  name="commented" 
-                  type="checkbox" 
+                <input
+                  class="col-1"
+                  name="commented"
+                  type="checkbox"
                   v-model="commented"
                   :true-value="1"
                 />
@@ -295,10 +292,10 @@
 
             <div class="form-check mt-2 row">
               <label>
-                <input 
-                  class="col-1" 
-                  name="after_login" 
-                  type="checkbox" 
+                <input
+                  class="col-1"
+                  name="after_login"
+                  type="checkbox"
                   v-model="after_login"
                   :true-value="1"
                 />
@@ -399,7 +396,9 @@
               <div class="col-5">
                 <label
                   class="custom-file-upload mt-3 mb-3"
-                  :style="{ opacity: pre_loader || !currentPageId ? '0.6' : '1' }"
+                  :style="{
+                    opacity: pre_loader || !currentPageId ? '0.6' : '1',
+                  }"
                 >
                   <input
                     role="upload_images"
@@ -417,37 +416,35 @@
                   ></span>
                   <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
                 </label>
-              </div>  
+              </div>
 
-              <div class="col-5">
-                &nbsp;
-              </div>    
+              <div class="col-5">&nbsp;</div>
 
               <div class="col-1">
-
                 <div
                   role="delete_many_images"
                   class="trash mt-3"
                   :class="{ 'disabled-if-loader': pre_loader }"
-                  :style="{ opacity: pre_loader || !currentPageId ? '0.6' : '1' }"
+                  :style="{
+                    opacity: pre_loader || !currentPageId ? '0.6' : '1',
+                  }"
                   :disabled="pre_loader || !currentPageId"
                   @click="deleteImages"
                 >
                   <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
                 </div>
-
-              </div>              
+              </div>
 
               <div class="col-1">
-                  <input
-                    class="form-check-input  mt-4"
-                    type="checkbox"
-                    v-model="selectedAllItems"
-                    :true-value="true"
-                    @click="selectAllItems()"
-                  />
+                <input
+                  class="form-check-input mt-4"
+                  type="checkbox"
+                  v-model="selectedAllItems"
+                  :true-value="true"
+                  @click="selectAllItems()"
+                />
               </div>
-            </div>    
+            </div>
 
             <div
               class="row mt-2"
@@ -507,9 +504,7 @@
                 />
               </div>
 
-              <div 
-                class="col-1"
-              >
+              <div class="col-1">
                 <input
                   class="form-check-input"
                   role="check_image"
@@ -518,7 +513,6 @@
                   @change="selectItem(image.id, $event.target.checked)"
                 />
               </div>
-
             </div>
           </form>
         </div>
@@ -641,12 +635,12 @@ const saveEditPage = async () => {
 
     if (retPage.data.success) {
       if (!currentPageId.value) {
-        const pageId =  retPage.data.data.pageId;
+        const pageId = retPage.data.data.pageId;
         currentPageId.value = pageId;
-        router.push("/pages/"+pageId);
+        router.push("/pages/" + pageId);
         msgGood.value = trans.ttt("success_page_add");
       } else {
-        await getPageById(currentPageId.value); //refresh fields especially images.position 
+        await getPageById(currentPageId.value); //refresh fields especially images.position
         msgGood.value = trans.ttt("success_page_edit");
       }
     } else if (retPage.data.success === false) {
@@ -666,9 +660,9 @@ const saveEditPage = async () => {
   pre_loader.value = false;
 };
 
-const selectItem = ( imageId, isCheck ) => {
+const selectItem = (imageId, isCheck) => {
   clearMsg();
-  if(!selectedItems.value[currentPageId.value]){
+  if (!selectedItems.value[currentPageId.value]) {
     selectedItems.value[currentPageId.value] = {};
   }
   selectedItems.value[currentPageId.value][imageId] = isCheck;
@@ -676,42 +670,42 @@ const selectItem = ( imageId, isCheck ) => {
 
 const selectAllItems = () => {
   selectedAllItems.value = !selectedAllItems.value;
-  if(!selectedItems.value[currentPageId.value]){
+  if (!selectedItems.value[currentPageId.value]) {
     selectedItems.value[currentPageId.value] = {};
   }
 
-  images.value.forEach(image => {
+  images.value.forEach((image) => {
     selectedItems.value[currentPageId.value][image.id] = false;
     //image.selected = selectedAllItems.value;
   });
-}
+};
 
-const deleteImages =  async () => {
-  if(!selectedItems.value[currentPageId.value]){
-    msgWrong.value = trans.ttt("fail_delete_images_no_items"); 
+const deleteImages = async () => {
+  if (!selectedItems.value[currentPageId.value]) {
+    msgWrong.value = trans.ttt("fail_delete_images_no_items");
     return false;
   }
 
   let items = [];
-  for( const imageId in selectedItems.value[currentPageId.value]  ){
-    if( selectedItems.value[currentPageId.value][imageId] === true ){
+  for (const imageId in selectedItems.value[currentPageId.value]) {
+    if (selectedItems.value[currentPageId.value][imageId] === true) {
       items.push(imageId);
     }
   }
 
-  if(!items.length){
-    msgWrong.value = trans.ttt("fail_delete_images_no_items"); 
+  if (!items.length) {
+    msgWrong.value = trans.ttt("fail_delete_images_no_items");
     return false;
   }
 
-  if (window.confirm("Are you sure you wish to delete these items?")) {  
+  if (window.confirm("Are you sure you wish to delete these items?")) {
     if (!startLoading()) {
       return false;
     }
 
-    let ids = items.join(',');
+    let ids = items.join(",");
     const ret = await delImagesWrap(ids, true);
-    if(ret){
+    if (ret) {
       selectedItems.value[currentPageId.value] = {};
     }
   }
@@ -721,7 +715,7 @@ const clearDataPage = () => {
   if (!startLoading()) {
     return false;
   }
-  router.push("/pages");  
+  router.push("/pages");
 
   title.value = {};
   short_title.value = {};
@@ -949,23 +943,24 @@ const delImage = async (id) => {
 
 const delImagesWrap = async (id, isMany) => {
   try {
-      const objDeleteImage = await deleteImage(id, token);
-      if (objDeleteImage.data.success) {
-        const dbImages = await getImagesByCurrentId();
-        if (dbImages.data.success) {
-          images.value = dbImages.data.data;
-          msgGood.value =  isMany ?  trans.ttt("success_images_delete") : trans.ttt("success_image_delete"); //  "Image has been deleted";
-          pre_loader.value = false;
-        }
+    const objDeleteImage = await deleteImage(id, token);
+    if (objDeleteImage.data.success) {
+      const dbImages = await getImagesByCurrentId();
+      if (dbImages.data.success) {
+        images.value = dbImages.data.data;
+        msgGood.value = isMany
+          ? trans.ttt("success_images_delete")
+          : trans.ttt("success_image_delete"); //  "Image has been deleted";
+        pre_loader.value = false;
       }
-      return true;
-    } catch (error) {
-      console.log("_is_error_del_image_", error);
-      msgWrong.value = "Delete menu problem = " + error;
-      return false;
     }
-}
-
+    return true;
+  } catch (error) {
+    console.log("_is_error_del_image_", error);
+    msgWrong.value = "Delete menu problem = " + error;
+    return false;
+  }
+};
 
 const positionImage = async (direction, imageId) => {
   if (!currentPageId.value) {
@@ -993,15 +988,15 @@ const positionImage = async (direction, imageId) => {
   }
 };
 
-const getPageById =  async (pageId) => {
-  try{
+const getPageById = async (pageId) => {
+  try {
     const dbPage = await getPage(pageId, token);
     if (dbPage.data.success) {
       const p = dbPage.data.data;
       //console.log( p);
       //console.log('id', p.id);
-      //console.log('images',  p.images);      
-      //console.log('title', p.title);      
+      //console.log('images',  p.images);
+      //console.log('title', p.title);
 
       currentPageId.value = p.id;
 
@@ -1036,41 +1031,40 @@ const getPageById =  async (pageId) => {
   }
 };
 
-const getImagesByCurrentId =  async () => {
+const getImagesByCurrentId = async () => {
   const dbImages = await getImages("page", currentPageId.value, token);
   await resetSelectedItems();
   return dbImages;
 };
 
-const resetSelectedItems =  async () => {
-    if(!currentPageId.value){
-      return false;
-    }
+const resetSelectedItems = async () => {
+  if (!currentPageId.value) {
+    return false;
+  }
 
-    if (!images.value || !images.value.length) {
-        return false; 
-    }
+  if (!images.value || !images.value.length) {
+    return false;
+  }
 
-    if(!selectedItems.value[currentPageId.value]){
-      selectedItems.value[currentPageId.value] = {};
-    }
+  if (!selectedItems.value[currentPageId.value]) {
+    selectedItems.value[currentPageId.value] = {};
+  }
 
-    images.value.forEach(image => {
-      selectedItems.value[currentPageId.value][image.id] = false;
-    });
+  images.value.forEach((image) => {
+    selectedItems.value[currentPageId.value][image.id] = false;
+  });
 };
 
-
-const editPage =  async (pageId) => {
+const editPage = async (pageId) => {
   if (!startLoading()) {
     return false;
   }
 
   const getSomePage = await getPageById(pageId);
-  if(getSomePage){
-    router.push("/pages/"+pageId);
-    pre_loader.value = false;      
-  }else{
+  if (getSomePage) {
+    router.push("/pages/" + pageId);
+    pre_loader.value = false;
+  } else {
     msgWrong.value = "Get page problem = " + error;
   }
 };
@@ -1118,7 +1112,8 @@ const positionPage = async (direction, pageId) => {
         msgGood.value = "Position page has been changed";
         pre_loader.value = false;
       }
-    } else if ( pos.data.success === false ){ //in case one page to sorting
+    } else if (pos.data.success === false) {
+      //in case one page to sorting
       pre_loader.value = false;
     }
   } catch (error) {
@@ -1184,7 +1179,7 @@ onMounted(async () => {
   const refreshP = await refreshPages();
 
   const pageId = router.currentRoute.value.params.id;
-  if(pageId){
+  if (pageId) {
     currentPageId.value = parseInt(pageId);
     await resetSelectedItems();
 
@@ -1192,12 +1187,11 @@ onMounted(async () => {
     if (refreshM && refreshP && getSomePage) {
       pre_loader.value = false;
     }
-  }else{
+  } else {
     if (refreshM && refreshP) {
       pre_loader.value = false;
     }
   }
-
 });
 
 watch(

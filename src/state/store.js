@@ -47,7 +47,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   function setDefaultLang(lang) {
     config.default_lang = lang;
-  }  
+  }
 
   function logout() {
     auth.token = 0;

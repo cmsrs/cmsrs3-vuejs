@@ -70,7 +70,6 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-
   http.get("/api/menus", async () => {
     counter += 1;
     const jsonRes = {
@@ -103,23 +102,21 @@ const waitForAjaxes = async () => {
 
 describe("Pages page", () => {
   describe("Interactions many langs", () => {
-
-    const jsonStore2 ={
+    const jsonStore2 = {
       auth: {
-        token:  "abcde12345",
+        token: "abcde12345",
       },
       //this data came from api/config and save to local storage
       config: {
-        page_types: ['cms', 'gallery', 'main_page'],
-        langs: ['pl', 'en'],
-        default_lang: 'pl',
-        cache_enable: 1
-      }
+        page_types: ["cms", "gallery", "main_page"],
+        langs: ["pl", "en"],
+        default_lang: "pl",
+        cache_enable: 1,
+      },
     };
-    
-    const setup2 = async () => {
 
-      const firstPageIdOnThePage = 1;    
+    const setup2 = async () => {
+      const firstPageIdOnThePage = 1;
       router.push("/pages/1");
       await router.isReady();
       return render(MenuPagesPage, {
@@ -138,7 +135,6 @@ describe("Pages page", () => {
       await waitForAjaxes();
       expect(counter).toBe(3);
 
-      
       await screen.findByText("short p22 pl");
 
       const shortTitle = screen.queryByPlaceholderText("short title pl");
@@ -151,10 +147,9 @@ describe("Pages page", () => {
         const shortTitleE = screen.queryByPlaceholderText("short title en");
         expect(shortTitleE).toHaveValue("short p22 en");
         expect(shortTitleE).not.toHaveValue("short p22 pl");
-  
+
         //screen.findByText("it is not exist test23423423423423423423");     //is is working too - i don't know why - todo
       });
-
     });
   });
 });

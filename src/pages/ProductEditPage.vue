@@ -1,14 +1,10 @@
 <template>
   <div data-testid="product-edit-page">
-
     <div class="container">
       <div class="row mt-3 mb-3">
-        <h3  class="col-10" v-if="mode === 'edit'">Edit product</h3>
-        <h3  class="col-10" v-else>Add product</h3>
-        <ChangeLang 
-          :lang="lang"
-          @exec-change-lang="changeLang"
-        ></ChangeLang>
+        <h3 class="col-10" v-if="mode === 'edit'">Edit product</h3>
+        <h3 class="col-10" v-else>Add product</h3>
+        <ChangeLang :lang="lang" @exec-change-lang="changeLang"></ChangeLang>
       </div>
     </div>
 
@@ -28,8 +24,7 @@
       </div>
 
       <div class="row pb-4 pt-4">
-        <form>          
-
+        <form>
           <div class="mb-3">
             <label for="product_name" class="form-label">Product Name</label>
             <input
@@ -50,7 +45,7 @@
               v-model="sku"
               class="form-control"
               :class="{ 'is-invalid': errFields.includes('sku') }"
-              id="sku"              
+              id="sku"
               placeholder="sku"
             />
           </div>
@@ -79,33 +74,29 @@
               Published
             </label>
           </div>
-          
+
           <div class="form-group">
             <textarea
               class="form-control textarea-rs"
               rows="20"
               cols="50"
-              v-model="product_description[lang]"                                    
+              v-model="product_description[lang]"
               placeholder="product description"
             ></textarea>
           </div>
 
           <div class="form-group mt-3">
-              <label for="page" class="text-secondary">Page:</label>
-              <select
-                role="page_items"
-                class="rs-select form-control"
-                v-model="page_id"
-              >
-                <option value=""></option>
-                <option
-                  v-for="page in shopPages"
-                  :key="page.id"
-                  :value="page.id"
-                >
-                  {{ page.short_title[lang] }}
-                </option>
-              </select>
+            <label for="page" class="text-secondary">Page:</label>
+            <select
+              role="page_items"
+              class="rs-select form-control"
+              v-model="page_id"
+            >
+              <option value=""></option>
+              <option v-for="page in shopPages" :key="page.id" :value="page.id">
+                {{ page.short_title[lang] }}
+              </option>
+            </select>
           </div>
 
           <button
@@ -122,27 +113,31 @@
             ></span>
             <span v-if="mode === 'edit'">Edit product</span>
             <span v-else>Add product</span>
-          </button>          
+          </button>
         </form>
       </div>
-    </div><!--  container -->
+    </div>
+    <!--  container -->
   </div>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { getProduct, postProduct, putProduct, getPagesByType } from "../api/apiCalls.js";
+import {
+  getProduct,
+  postProduct,
+  putProduct,
+  getPagesByType,
+} from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
 import trans from "../helpers/trans.js";
 import { useAuthStore } from "../state/store.js";
 const { auth, setDefaultLang } = useAuthStore();
 
-const {
-  configLangs: langs,
-  configDefaultLang,
-} = functions.retrieveParamsFromStorage();
+const { configLangs: langs, configDefaultLang } =
+  functions.retrieveParamsFromStorage();
 
 const lang = ref(configDefaultLang);
 
@@ -167,11 +162,10 @@ const page_id = ref("");
 const images = ref([]);
 //form data - stop
 
-
 async function changeLang(inLang) {
   lang.value = inLang;
   setDefaultLang(inLang);
-};
+}
 
 const back = () => {
   router.push({ name: "products" });
@@ -187,7 +181,6 @@ const addEditProduct = async () => {
   clearMsg();
   pre_loader.value = true;
   try {
-
     const product = {
       id: currentId.value,
       product_name: product_name.value,
@@ -221,7 +214,7 @@ const addEditProduct = async () => {
 
 const loadProduct = async (id) => {
   try {
-    const response = await getProduct(id, auth.token);    
+    const response = await getProduct(id, auth.token);
     if (response.data.success) {
       const productData = response.data.data;
       currentId.value = productData.id;
@@ -232,7 +225,7 @@ const loadProduct = async (id) => {
       product_description.value = productData.product_description; //[lang.value];
       page_id.value = productData.page_id;
       images.value = productData.images;
-      
+
       return true;
     } else {
       msgWrong.value = "Sth wrong with get product";
@@ -245,10 +238,9 @@ const loadProduct = async (id) => {
   return false;
 };
 
-
 const getShopPages = async () => {
   try {
-    const response = await getPagesByType('shop', auth.token);
+    const response = await getPagesByType("shop", auth.token);
     if (response.data.success) {
       shopPages.value = response.data.data;
       return true;
@@ -263,7 +255,6 @@ const getShopPages = async () => {
   return false;
 };
 
-
 onMounted(async () => {
   if (!auth.token) {
     router.push("/");
@@ -275,7 +266,7 @@ onMounted(async () => {
   }
 
   clearMsg();
-  pre_loader.value = true;  
+  pre_loader.value = true;
   await getShopPages();
 
   if (mode === "edit") {
@@ -285,7 +276,7 @@ onMounted(async () => {
     if (loadC) {
       pre_loader.value = false;
     }
-  }else{
+  } else {
     pre_loader.value = false;
   }
 });
