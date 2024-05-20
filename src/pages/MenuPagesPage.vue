@@ -982,10 +982,6 @@ const getPageById = async (pageId) => {
     const dbPage = await getPage(pageId, token);
     if (dbPage.data.success) {
       const p = dbPage.data.data;
-      //console.log( p);
-      //console.log('id', p.id);
-      //console.log('images',  p.images);
-      //console.log('title', p.title);
 
       currentPageId.value = p.id;
 
