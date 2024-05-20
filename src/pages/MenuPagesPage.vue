@@ -510,7 +510,7 @@
                   class="form-check-input"
                   role="check_image"
                   type="checkbox"
-                  v-model="selectedItems[currentPageId][image.id]"
+                  v-model="selectedItems[image.id]"
                   @change="selectItem(image.id, $event.target.checked)"
                 />
               </div>
@@ -663,36 +663,21 @@ const saveEditPage = async () => {
 
 const selectItem = (imageId, isCheck) => {
   clearMsg();
-  if (!selectedItems.value[currentPageId.value]) {
-    selectedItems.value[currentPageId.value] = {};
-  }
-  selectedItems.value[currentPageId.value][imageId] = isCheck;
+  selectedItems.value[imageId] = isCheck;
 };
 
 const selectAllItems = () => {
   selectedAllItems.value = !selectedAllItems.value;
-  //console.log( 'aaaaa', selectedAllItems.value);
-
-  if (!selectedItems.value[currentPageId.value]) {
-    selectedItems.value[currentPageId.value] = {};
-  }
 
   images.value.forEach((image) => {
-    selectedItems.value[currentPageId.value][image.id] = selectedAllItems.value;
+    selectedItems.value[image.id] = selectedAllItems.value;
   });
-
-  //console.log(selectedItems.value[currentPageId.value]);
 };
 
 const deleteImages = async () => {
-  if (!selectedItems.value[currentPageId.value]) {
-    msgWrong.value = trans.ttt("fail_delete_images_no_items");
-    return false;
-  }
-
   let items = [];
-  for (const imageId in selectedItems.value[currentPageId.value]) {
-    if (selectedItems.value[currentPageId.value][imageId] === true) {
+  for (const imageId in selectedItems.value) {
+    if (selectedItems.value[imageId] === true) {
       items.push(imageId);
     }
   }
@@ -710,7 +695,7 @@ const deleteImages = async () => {
     let ids = items.join(",");
     const ret = await delImagesWrap(ids, true);
     if (ret) {
-      selectedItems.value[currentPageId.value] = {};
+      selectedItems.value = {};
     }
   }
 };
@@ -1050,12 +1035,8 @@ const resetSelectedItems = async () => {
     return false;
   }
 
-  if (!selectedItems.value[currentPageId.value]) {
-    selectedItems.value[currentPageId.value] = {};
-  }
-
   images.value.forEach((image) => {
-    selectedItems.value[currentPageId.value][image.id] = false;
+    selectedItems.value[image.id] = false;
   });
 };
 
