@@ -1377,6 +1377,52 @@ describe("Pages page", () => {
       });
     });
 
+    it("successfully delete all images by selecting select all", async () => {
+      confirmSpy.mockReturnValueOnce(true);
+      await setup_edit_page();
+
+      const checkboxSelectedAllItems = screen.queryByRole("selected_all_items");
+      await userEvent.click(checkboxSelectedAllItems);
+
+      const deleteImages = screen.queryByRole("delete_many_images");
+      await userEvent.click(deleteImages);
+
+      await waitFor(() => {
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect(alertSuccessAfter).toBeInTheDocument();
+
+        expect(counterDeleteOneImage).toBe(0);
+        expect(counterDeleteImages).toBe(1);
+
+        const successMsg = trans.ttt("success_images_delete");
+        screen.findByText(successMsg);
+      });
+    });
+
+    it("click select all two times", async () => {
+      confirmSpy.mockReturnValueOnce(true);
+      await setup_edit_page();
+
+      const checkboxSelectedAllItems = screen.queryByRole("selected_all_items");
+      await userEvent.click(checkboxSelectedAllItems);
+      await userEvent.click(checkboxSelectedAllItems);
+
+      const deleteImages = screen.queryByRole("delete_many_images");
+      await userEvent.click(deleteImages);
+
+      await waitFor(() => {
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect(alertSuccessAfter).not.toBeInTheDocument();
+
+        const alertDangerAfter = screen.queryByRole("alert_danger");
+        expect(alertDangerAfter).toBeInTheDocument();
+  
+        const msg = trans.ttt("fail_delete_images_no_items");
+        screen.findByText(msg);
+      });
+    });
+
+
     it("delete one image success", async () => {
       confirmSpy.mockReturnValueOnce(true);
       await setup_edit_page();

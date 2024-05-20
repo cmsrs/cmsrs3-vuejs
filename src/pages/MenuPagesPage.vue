@@ -437,6 +437,7 @@
 
               <div class="col-1">
                 <input
+                  role="selected_all_items"
                   class="form-check-input mt-4"
                   type="checkbox"
                   v-model="selectedAllItems"
@@ -605,7 +606,7 @@ editor.value = ClassicEditor;
 const ckeditor = CKEditor.component;
 
 const selectedItems = ref({});
-const selectedAllItems = ref({});
+const selectedAllItems = ref(false);
 // Computed
 //const SERVER_URL = computed(() => SERVER_URL);
 
@@ -670,14 +671,17 @@ const selectItem = (imageId, isCheck) => {
 
 const selectAllItems = () => {
   selectedAllItems.value = !selectedAllItems.value;
+  //console.log( 'aaaaa', selectedAllItems.value);
+
   if (!selectedItems.value[currentPageId.value]) {
     selectedItems.value[currentPageId.value] = {};
   }
 
   images.value.forEach((image) => {
-    selectedItems.value[currentPageId.value][image.id] = false;
-    //image.selected = selectedAllItems.value;
+    selectedItems.value[currentPageId.value][image.id] = selectedAllItems.value;
   });
+
+  //console.log(selectedItems.value[currentPageId.value]);
 };
 
 const deleteImages = async () => {
