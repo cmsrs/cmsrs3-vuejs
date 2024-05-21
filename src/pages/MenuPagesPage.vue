@@ -392,129 +392,20 @@
               </div>
             </div>
 
-            <div class="row mt-3">
-              <div class="col-5">
-                <label
-                  class="custom-file-upload mt-3 mb-3"
-                  :style="{
-                    opacity: pre_loader || !currentPageId ? '0.6' : '1',
-                  }"
-                >
-                  <input
-                    role="upload_images"
-                    class="upload-img"
-                    type="file"
-                    name="images"
-                    @change="handleUploadFile"
-                    multiple
-                    :disabled="pre_loader || !currentPageId"
-                  />
-                  <span
-                    role="pre_loader_upload_images"
-                    v-if="pre_loader"
-                    class="spinner-grow spinner-grow-sm"
-                  ></span>
-                  <i v-if="!pre_loader" class="fas fa-plus"></i>Upload Images
-                </label>
-              </div>
+            <!-- manage image parent - start -->
+            <ManageImages
+              ref="childComponentRef"
+              v-model:internal-images="images"
+              v-model:internal-msg-wrong="msgWrong"
+              v-model:internal-msg-good="msgGood"
+              v-model:internal-pre-loader="pre_loader"
+              :lang="lang"
+              :currentPageId="currentPageId"
+              :startLoading="startLoading"
+              :clearMsg="clearMsg"
+            ></ManageImages>
 
-              <div class="col-5">&nbsp;</div>
-
-              <div class="col-1">
-                <div
-                  role="delete_many_images"
-                  class="trash mt-3"
-                  :class="{ 'disabled-if-loader': pre_loader }"
-                  :style="{
-                    opacity: pre_loader || !currentPageId ? '0.6' : '1',
-                  }"
-                  :disabled="pre_loader || !currentPageId"
-                  @click="deleteImages"
-                >
-                  <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
-                </div>
-              </div>
-
-              <div class="col-1">
-                <input
-                  role="selected_all_items"
-                  class="form-check-input mt-4"
-                  type="checkbox"
-                  v-model="selectedAllItems"
-                  :true-value="true"
-                  @click="selectAllItems()"
-                />
-              </div>
-            </div>
-
-            <div
-              class="row mt-2"
-              v-for="(image, index) in images"
-              :key="image.id"
-            >
-              <img
-                class="col-2"
-                :src="SERVER_URL + image['fs']['small']"
-                :alt="image['alt'][lang]"
-              />
-
-              <div class="form-group col-4">
-                <input
-                  class="form-control"
-                  v-model="images[index]['alt'][lang]"
-                />
-              </div>
-
-              <div
-                role="del_image"
-                class="trash col-1"
-                :class="{ 'disabled-if-loader': pre_loader }"
-                @click="delImage(image.id)"
-              >
-                <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
-              </div>
-
-              <div
-                role="down_image"
-                :class="{ 'disabled-if-loader': pre_loader }"
-                class="col-1"
-                @click="positionImage('down', image.id)"
-              >
-                <i
-                  class="fas fa-arrow-down cursor-pointer"
-                  aria-hidden="true"
-                ></i>
-              </div>
-
-              <div
-                role="up_image"
-                :class="{ 'disabled-if-loader': pre_loader }"
-                class="col-1"
-                @click="positionImage('up', image.id)"
-              >
-                <i
-                  class="fas fa-arrow-up cursor-pointer"
-                  aria-hidden="true"
-                ></i>
-              </div>
-
-              <div class="form-group col-2">
-                <input
-                  class="form-control"
-                  v-model="images[index]['position']"
-                />
-              </div>
-
-              <div class="col-1">
-                <input
-                  class="form-check-input"
-                  role="check_image"
-                  type="checkbox"
-                  v-model="selectedItems[image.id]"
-                  @change="selectItem(image.id, $event.target.checked)"
-                />
-              </div>
-            </div>
+            <!-- manage image - stop -->
           </form>
         </div>
       </div>
@@ -525,9 +416,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { SERVER_URL } from "../config.js";
 import functions from "../helpers/functions.js";
-import imgs from "../helpers/imgs.js";
 import cms from "../helpers/cms.js";
 import trans from "../helpers/trans.js";
 import {
@@ -542,10 +431,6 @@ import {
   setMenuPosition,
   deletePage,
   setPagePosition,
-  uploadImage,
-  getImages, // as getImages,
-  deleteImage,
-  setImagePosition,
 } from "../api/apiCalls";
 import CKEditor from "@ckeditor/ckeditor5-vue";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -553,14 +438,15 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import PageTitle from "../components/PageTitle.vue";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
+import ManageImages from "../components/ManageImages.vue";
 
-import jsonStoreTest from "../../test/jsonStore.js";
 import { useAuthStore } from "../state/store.js";
 
 const router = useRouter();
 const { auth, setDefaultLang } = useAuthStore();
 
-// Data
+const childComponentRef = ref(null);
+
 const {
   configLangs: langs,
   configDefaultLang,
@@ -605,8 +491,6 @@ const editorConfig = ref({});
 editor.value = ClassicEditor;
 const ckeditor = CKEditor.component;
 
-const selectedItems = ref({});
-const selectedAllItems = ref(false);
 // Computed
 //const SERVER_URL = computed(() => SERVER_URL);
 
@@ -661,45 +545,6 @@ const saveEditPage = async () => {
   pre_loader.value = false;
 };
 
-const selectItem = (imageId, isCheck) => {
-  clearMsg();
-  selectedItems.value[imageId] = isCheck;
-};
-
-const selectAllItems = () => {
-  selectedAllItems.value = !selectedAllItems.value;
-
-  images.value.forEach((image) => {
-    selectedItems.value[image.id] = selectedAllItems.value;
-  });
-};
-
-const deleteImages = async () => {
-  let items = [];
-  for (const imageId in selectedItems.value) {
-    if (selectedItems.value[imageId] === true) {
-      items.push(imageId);
-    }
-  }
-
-  if (!items.length) {
-    msgWrong.value = trans.ttt("fail_delete_images_no_items");
-    return false;
-  }
-
-  if (window.confirm("Are you sure you wish to delete these items?")) {
-    if (!startLoading()) {
-      return false;
-    }
-
-    let ids = items.join(",");
-    const ret = await delImagesWrap(ids, true);
-    if (ret) {
-      selectedItems.value = {};
-    }
-  }
-};
-
 const clearDataPage = () => {
   if (!startLoading()) {
     return false;
@@ -722,48 +567,6 @@ const clearDataPage = () => {
 
   pre_loader.value = false;
 };
-
-async function handleUploadFile(event) {
-  if (pre_loader.value) {
-    return false;
-  }
-
-  const files = event.target.files || event.dataTransfer.files;
-  if (!files.length) {
-    return false;
-  }
-
-  if (!currentPageId.value) {
-    return false;
-  }
-
-  if (!startLoading()) {
-    return false;
-  }
-
-  const newImages = await imgs.getImagesUpload(files);
-
-  for (let i = 0; i < newImages.length; i++) {
-    let ret = uploadImage(newImages[i], "page", currentPageId.value, token);
-
-    if (auth.token !== jsonStoreTest.getTestToken()) {
-      //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
-      await functions.delay(6000); //in test we not execute this line//test token = 'abcde12345'
-    }
-
-    if (ret) {
-      msgGood.value =
-        "Images has been uploaded " + (i + 1) + "/" + newImages.length;
-    }
-  }
-
-  const dbImages = await getImagesByCurrentId();
-  if (dbImages.data.success) {
-    images.value = dbImages.data.data;
-    msgGood.value = "Images has been uploaded";
-    pre_loader.value = false;
-  }
-}
 
 async function changeLang(inLang) {
   lang.value = inLang;
@@ -915,68 +718,6 @@ const positionMenu = async (direction, menuId) => {
   }
 };
 
-const delImage = async (id) => {
-  if (!currentPageId.value) {
-    console.log("cant find page_id");
-    return false;
-  }
-
-  if (window.confirm("Are you sure you wish to delete this item?")) {
-    if (!startLoading()) {
-      return false;
-    }
-
-    await delImagesWrap(id, false);
-  }
-};
-
-const delImagesWrap = async (id, isMany) => {
-  try {
-    const objDeleteImage = await deleteImage(id, token);
-    if (objDeleteImage.data.success) {
-      const dbImages = await getImagesByCurrentId();
-      if (dbImages.data.success) {
-        images.value = dbImages.data.data;
-        msgGood.value = isMany
-          ? trans.ttt("success_images_delete")
-          : trans.ttt("success_image_delete"); //  "Image has been deleted";
-        pre_loader.value = false;
-      }
-    }
-    return true;
-  } catch (error) {
-    console.log("_is_error_del_image_", error);
-    msgWrong.value = "Delete menu problem = " + error;
-    return false;
-  }
-};
-
-const positionImage = async (direction, imageId) => {
-  if (!currentPageId.value) {
-    console.log("cant find page_id");
-    return false;
-  }
-
-  if (!startLoading()) {
-    return false;
-  }
-  try {
-    const pos = await setImagePosition(direction, imageId, token);
-
-    if (pos.data.success) {
-      const dbImages = await getImagesByCurrentId();
-      if (dbImages.data.success) {
-        images.value = dbImages.data.data;
-        msgGood.value = trans.ttt("success_image_position"); //"Position image has been changed";
-        pre_loader.value = false;
-      }
-    }
-  } catch (error) {
-    console.log("_is_error_pos_image_", error);
-    msgWrong.value = "Position image problem = " + error;
-  }
-};
-
 const getPageById = async (pageId) => {
   try {
     const dbPage = await getPage(pageId, token);
@@ -1005,7 +746,7 @@ const getPageById = async (pageId) => {
       page_id.value = p.page_id;
       images.value = p.images;
 
-      await resetSelectedItems();
+      await childComponentRef.value.resetSelectedItems();
 
       return true;
     }
@@ -1014,28 +755,6 @@ const getPageById = async (pageId) => {
     //msgWrong.value = "Get page problem = " + error;
     return false;
   }
-};
-
-const getImagesByCurrentId = async () => {
-  const dbImages = await getImages("page", currentPageId.value, token);
-  await resetSelectedItems();
-  return dbImages;
-};
-
-const resetSelectedItems = async () => {
-  selectedAllItems.value = false;
-  
-  if (!currentPageId.value) {
-    return false;
-  }
-
-  if (!images.value || !images.value.length) {
-    return false;
-  }
-
-  images.value.forEach((image) => {
-    selectedItems.value[image.id] = false;
-  });
 };
 
 const editPage = async (pageId) => {
@@ -1164,7 +883,7 @@ onMounted(async () => {
   const pageId = router.currentRoute.value.params.id;
   if (pageId) {
     currentPageId.value = parseInt(pageId);
-    await resetSelectedItems();
+    await childComponentRef.value.resetSelectedItems();
 
     const getSomePage = await getPageById(pageId);
     if (refreshM && refreshP && getSomePage) {
