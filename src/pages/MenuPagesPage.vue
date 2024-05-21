@@ -394,7 +394,7 @@
 
             <!-- manage image -->
             <ManageImages
-              ref="childComponentRef"
+              ref="childImageComponentRef"
               v-model:internal-images="images"
               v-model:internal-msg-wrong="msgWrong"
               v-model:internal-msg-good="msgGood"
@@ -445,7 +445,7 @@ import { useAuthStore } from "../state/store.js";
 const router = useRouter();
 const { auth, setDefaultLang } = useAuthStore();
 
-const childComponentRef = ref(null);
+const childImageComponentRef = ref(null);
 
 const {
   configLangs: langs,
@@ -746,7 +746,7 @@ const getPageById = async (pageId) => {
       page_id.value = p.page_id;
       images.value = p.images;
 
-      await childComponentRef.value.resetSelectedItems();
+      await childImageComponentRef.value.resetSelectedItems();
 
       return true;
     }
@@ -883,7 +883,7 @@ onMounted(async () => {
   const pageId = router.currentRoute.value.params.id;
   if (pageId) {
     currentPageId.value = parseInt(pageId);
-    await childComponentRef.value.resetSelectedItems();
+    await childImageComponentRef.value.resetSelectedItems();
 
     const getSomePage = await getPageById(pageId);
     if (refreshM && refreshP && getSomePage) {
