@@ -400,9 +400,9 @@
               v-model:internal-msg-good="msgGood"
               v-model:internal-pre-loader="pre_loader"
               :lang="lang"
-              :currentPageId="currentPageId"
               :startLoading="startLoading"
               :clearMsg="clearMsg"
+              :currentId="currentPageId"              
               type="page"
             ></ManageImages>
 

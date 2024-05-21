@@ -4,7 +4,7 @@
       <label
         class="custom-file-upload mt-3 mb-3"
         :style="{
-          opacity: internalPreLoader || !currentPageId ? '0.6' : '1',
+          opacity: internalPreLoader || !currentId ? '0.6' : '1',
         }"
       >
         <input
@@ -14,7 +14,7 @@
           name="images"
           @change="handleUploadFile"
           multiple
-          :disabled="internalPreLoader || !currentPageId"
+          :disabled="internalPreLoader || !currentId"
         />
         <span
           role="internalPreLoader_upload_images"
@@ -33,9 +33,9 @@
         class="trash mt-3"
         :class="{ 'disabled-if-loader': internalPreLoader }"
         :style="{
-          opacity: internalPreLoader || !currentPageId ? '0.6' : '1',
+          opacity: internalPreLoader || !currentId ? '0.6' : '1',
         }"
-        :disabled="internalPreLoader || !currentPageId"
+        :disabled="internalPreLoader || !currentId"
         @click="deleteImages"
       >
         <i class="fas fa-trash cursor-pointer" aria-hidden="true"></i>
@@ -136,7 +136,7 @@ const selectedAllItems = ref(false);
 const props = defineProps({
   startLoading: Function,
   lang: String,
-  currentPageId: [Number, Boolean],
+  currentId: [Number, Boolean],
   clearMsg: Function,
   type: String,
 });
@@ -156,7 +156,7 @@ async function handleUploadFile(event) {
     return false;
   }
 
-  if (!props.currentPageId) {
+  if (!props.currentId) {
     return false;
   }
 
@@ -170,7 +170,7 @@ async function handleUploadFile(event) {
     let ret = uploadImage(
       newImages[i],
       props.type,
-      props.currentPageId,
+      props.currentId,
       auth.token,
     );
 
@@ -194,7 +194,7 @@ async function handleUploadFile(event) {
 }
 
 const delImage = async (id) => {
-  if (!props.currentPageId) {
+  if (!props.currentId) {
     console.log("cant find page_id");
     return false;
   }
@@ -230,7 +230,7 @@ const delImagesWrap = async (id, isMany) => {
 };
 
 const positionImage = async (direction, imageId) => {
-  if (!props.currentPageId) {
+  if (!props.currentId) {
     console.log("cant find page_id");
     return false;
   }
@@ -259,7 +259,7 @@ const positionImage = async (direction, imageId) => {
 };
 
 const getImagesByCurrentId = async () => {
-  const dbImages = await getImages(props.type, props.currentPageId, auth.token);
+  const dbImages = await getImages(props.type, props.currentId, auth.token);
   await resetSelectedItems();
   return dbImages;
 };
@@ -309,7 +309,7 @@ const deleteImages = async () => {
 const resetSelectedItems = async () => {
   selectedAllItems.value = false;
 
-  if (!props.currentPageId) {
+  if (!props.currentId) {
     return false;
   }
 
