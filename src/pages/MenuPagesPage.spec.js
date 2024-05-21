@@ -863,7 +863,7 @@ describe("Pages page", () => {
       });
     });
 
-    it("edit menu name the success msg should be apear", async () => {
+    it("edit menu name the success msg should be appear", async () => {
       await setup();
       await waitForAjaxes();
 
@@ -882,7 +882,7 @@ describe("Pages page", () => {
       });
     });
 
-    it("edit menu name the failed msg should be apear", async () => {
+    it("edit menu name the failed msg should be appears", async () => {
       await setup();
       await waitForAjaxes();
 
@@ -1204,7 +1204,7 @@ describe("Pages page", () => {
 -----------------
 */
 
-  describe("Images tests", () => {
+  describe("pages images tests", () => {
     const setup_edit_page = async () => {
       await setup();
       await waitForAjaxes();

@@ -28,7 +28,11 @@ else
     #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'delete many images success' 
     #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'click icon delete many images without check any item' 
     #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'click icon delete many images' 
-    npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t    'Images tests'
+
+
+    ######npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t   'image position down success'
+    npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t    'pages images tests'
+    #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'image delete success'
 
 
 
@@ -42,6 +46,3 @@ else
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product with errors"
 
 fi
-
-
-
