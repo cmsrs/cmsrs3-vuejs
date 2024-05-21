@@ -31,7 +31,7 @@ else
 
 
     ######npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t   'image position down success'
-    npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t    'pages images tests'
+    #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t    'pages images tests'
     #npm run test  ./src/pages/MenuPagesPage.spec.js  -- -t  'image delete success'
 
 
@@ -44,5 +44,9 @@ else
 
     #npm run test  ./src/pages/ProductEditPage.spec.js 
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product with errors"
+    #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "Products images tests"
+    #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "delete many images success"
+
+    npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product by click"
 
 fi

@@ -99,6 +99,20 @@
             </select>
           </div>
 
+          <!-- manage image -->
+          <ManageImages
+            ref="childImageComponentRef"
+            v-model:internal-images="images"
+            v-model:internal-msg-wrong="msgWrong"
+            v-model:internal-msg-good="msgGood"
+            v-model:internal-pre-loader="pre_loader"
+            :lang="lang"
+            :startLoading="startLoading"
+            :clearMsg="clearMsg"
+            :currentId="currentProductId"              
+            type="product"
+          ></ManageImages>
+
           <button
             role="button_save_edit_product"
             @click.prevent="addEditProduct"
@@ -122,8 +136,8 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
+import trans from "../helpers/trans.js";
 import {
   getProduct,
   postProduct,
@@ -132,9 +146,12 @@ import {
 } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
-import trans from "../helpers/trans.js";
+import ManageImages from "../components/ManageImages.vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
 const { auth, setDefaultLang } = useAuthStore();
+
+const childImageComponentRef = ref(null);
 
 const { configLangs: langs, configDefaultLang } =
   functions.retrieveParamsFromStorage();
@@ -150,6 +167,8 @@ const errFields = ref([]);
 
 const pre_loader = ref(false);
 const shopPages = ref([]);
+
+const currentProductId = ref(false);
 
 //form data - start
 const currentId = ref("");
@@ -171,6 +190,15 @@ const back = () => {
   router.push({ name: "products" });
 };
 
+const startLoading = async () => {
+  clearMsg();
+  if (pre_loader.value) {
+    return false;
+  }
+  pre_loader.value = true;
+  return true;
+};
+
 const clearMsg = () => {
   msgWrong.value = "";
   msgGood.value = "";
@@ -178,8 +206,9 @@ const clearMsg = () => {
 };
 
 const addEditProduct = async () => {
-  clearMsg();
-  pre_loader.value = true;
+  if (!startLoading()) {
+    return false;
+  }
   try {
     const product = {
       id: currentId.value,
@@ -265,12 +294,16 @@ onMounted(async () => {
     router.push("/"); //TODO test manually
   }
 
-  clearMsg();
-  pre_loader.value = true;
+  if (!startLoading()) {
+    return false;
+  }
+
+  await childImageComponentRef.value.resetSelectedItems();
   await getShopPages();
 
   if (mode === "edit") {
     const id = router.currentRoute.value.params.id;
+    currentProductId.value = parseInt(id);
     const loadC = await loadProduct(id);
 
     if (loadC) {
