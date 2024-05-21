@@ -248,7 +248,7 @@ const positionImage = async (direction, imageId) => {
         internalMsgGood.value = trans.ttt("success_image_position"); //"Position image has been changed";
         internalPreLoader.value = false;
       }
-    }else{    
+    } else {
       internalPreLoader.value = false;
       return false; //When one image occurs, we can't change its position.
     }

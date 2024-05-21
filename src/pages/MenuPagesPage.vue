@@ -402,10 +402,9 @@
               :lang="lang"
               :startLoading="startLoading"
               :clearMsg="clearMsg"
-              :currentId="currentPageId"              
+              :currentId="currentPageId"
               type="page"
             ></ManageImages>
-
           </form>
         </div>
       </div>

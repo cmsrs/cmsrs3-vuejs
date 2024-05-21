@@ -109,7 +109,7 @@
             :lang="lang"
             :startLoading="startLoading"
             :clearMsg="clearMsg"
-            :currentId="currentProductId"              
+            :currentId="currentProductId"
             type="product"
           ></ManageImages>
 

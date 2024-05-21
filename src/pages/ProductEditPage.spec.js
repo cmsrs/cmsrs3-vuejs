@@ -587,7 +587,7 @@ describe("Product edit or add page", () => {
 
       expect(counterImage).toBe(0);
 
-      const allCheckbox = screen.queryAllByRole("check_image");      
+      const allCheckbox = screen.queryAllByRole("check_image");
       //console.log( images );
       expect(images.length).toBe(2);
       expect(allCheckbox.length).toBe(2);
@@ -727,5 +727,4 @@ describe("Product edit or add page", () => {
       });
     });
   });
-
 });
