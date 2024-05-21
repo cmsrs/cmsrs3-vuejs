@@ -13,6 +13,10 @@ export const useAuthStore = defineStore("auth", () => {
     default_lang: "",
   };
 
+  let initialModal = {
+    visible: false,
+  };
+
   const storedState = localStorage.getItem("auth");
   if (storedState !== null) {
     try {
@@ -29,6 +33,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const auth = reactive(initialState);
   const config = reactive(initialConfig);
+  const modal = reactive(initialModal);
 
   //function setLoggedIn(data) {
   function setAuth(data) {
@@ -36,6 +41,10 @@ export const useAuthStore = defineStore("auth", () => {
     //auth.id = data.id
     //auth.username = data.username
     //auth.email = data.email
+  }
+
+  function setModal(visible) {
+    modal.visible = visible;
   }
 
   function setConfig(data) {
@@ -69,5 +78,5 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.setItem("config", JSON.stringify(config));
   });
 
-  return { auth, setDefaultLang, setAuth, setConfig, logout };
+  return { auth, modal, setDefaultLang, setAuth, setConfig, setModal, logout };
 });

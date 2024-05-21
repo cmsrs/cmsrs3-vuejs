@@ -128,7 +128,7 @@ import {
   setImagePosition,
 } from "../api/apiCalls";
 import { useAuthStore } from "../state/store.js";
-const { auth } = useAuthStore();
+const { auth, setModal } = useAuthStore();
 
 const selectedItems = ref({});
 const selectedAllItems = ref(false);
@@ -164,6 +164,7 @@ async function handleUploadFile(event) {
     return false;
   }
 
+  setModal(true);
   const newImages = await imgs.getImagesUpload(files);
 
   for (let i = 0; i < newImages.length; i++) {
@@ -190,6 +191,7 @@ async function handleUploadFile(event) {
     internalImages.value = dbImages.data.data;
     internalMsgGood.value = "Images has been uploaded";
     internalPreLoader.value = false;
+    setModal(false);
   }
 }
 

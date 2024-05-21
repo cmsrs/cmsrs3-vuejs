@@ -1,4 +1,5 @@
 <template>
+  <BlockingModal v-if="modal.visible" />
   <NavBar />
   <div class="container">
     <router-view />
@@ -6,7 +7,10 @@
 </template>
 
 <script setup>
+import BlockingModal from "./components/BlockingModal.vue";
 import NavBar from "./components/NavBar.vue";
+import { useAuthStore } from "./state/store.js";
+const { modal } = useAuthStore();
 </script>
 
 <style>
