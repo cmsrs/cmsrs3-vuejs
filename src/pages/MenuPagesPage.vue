@@ -392,7 +392,7 @@
               </div>
             </div>
 
-            <!-- manage image parent - start -->
+            <!-- manage image -->
             <ManageImages
               ref="childComponentRef"
               v-model:internal-images="images"
@@ -403,9 +403,9 @@
               :currentPageId="currentPageId"
               :startLoading="startLoading"
               :clearMsg="clearMsg"
+              type="page"
             ></ManageImages>
 
-            <!-- manage image - stop -->
           </form>
         </div>
       </div>

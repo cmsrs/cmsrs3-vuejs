@@ -115,7 +115,7 @@
   </div>
 </template>
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { SERVER_URL } from "../config.js";
 import imgs from "../helpers/imgs.js";
 import jsonStoreTest from "../../test/jsonStore.js";
@@ -138,6 +138,7 @@ const props = defineProps({
   lang: String,
   currentPageId: [Number, Boolean],
   clearMsg: Function,
+  type: String,
 });
 
 const internalImages = defineModel("internalImages");
@@ -168,7 +169,7 @@ async function handleUploadFile(event) {
   for (let i = 0; i < newImages.length; i++) {
     let ret = uploadImage(
       newImages[i],
-      "page",
+      props.type,
       props.currentPageId,
       auth.token,
     );
@@ -258,7 +259,7 @@ const positionImage = async (direction, imageId) => {
 };
 
 const getImagesByCurrentId = async () => {
-  const dbImages = await getImages("page", props.currentPageId, auth.token);
+  const dbImages = await getImages(props.type, props.currentPageId, auth.token);
   await resetSelectedItems();
   return dbImages;
 };
