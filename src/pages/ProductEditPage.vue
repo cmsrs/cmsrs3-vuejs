@@ -135,7 +135,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
 import {
@@ -184,6 +184,7 @@ const images = ref([]);
 async function changeLang(inLang) {
   lang.value = inLang;
   setDefaultLang(inLang);
+  clearOnlyMsg();
 }
 
 const back = () => {
@@ -197,6 +198,11 @@ const startLoading = async () => {
   }
   pre_loader.value = true;
   return true;
+};
+
+const clearOnlyMsg = () => {
+  msgWrong.value = "";
+  msgGood.value = "";
 };
 
 const clearMsg = () => {
@@ -316,4 +322,32 @@ onMounted(async () => {
     pre_loader.value = false;
   }
 });
+      
+watch(
+  product_name,
+  () => {
+    clearOnlyMsg();
+  },
+  { deep: true },
+);
+watch(
+  product_description,
+  () => {
+    clearOnlyMsg();
+  },
+  { deep: true },
+);
+watch(sku, () => {
+  clearOnlyMsg();
+});
+watch(price, () => {
+  clearOnlyMsg();
+});
+watch(published, () => {
+  clearOnlyMsg();
+});
+watch(page_id, () => {
+  clearOnlyMsg();
+});
+
 </script>
