@@ -62,11 +62,11 @@
             <th scope="col">Image</th>
 
             <th scope="col">
-              Page
+              Product name
               <TableSort
-                :sortColumn="'page_short_title'"
-                @sort-asc="sortingAsc('page_short_title')"
-                @sort-desc="sortingDesc('page_short_title')"
+                :sortColumn="'product_name'"
+                @sort-asc="sortingAsc('product_name')"
+                @sort-desc="sortingDesc('product_name')"
                 :pre_loader="pre_loader"
                 :column="column"
                 :direction="direction"
@@ -74,11 +74,11 @@
             </th>
 
             <th scope="col">
-              Product name
+              Page
               <TableSort
-                :sortColumn="'product_name'"
-                @sort-asc="sortingAsc('product_name')"
-                @sort-desc="sortingDesc('product_name')"
+                :sortColumn="'page_short_title'"
+                @sort-asc="sortingAsc('page_short_title')"
+                @sort-desc="sortingDesc('page_short_title')"
                 :pre_loader="pre_loader"
                 :column="column"
                 :direction="direction"
@@ -138,7 +138,7 @@
         <tbody>
           <tr v-for="(p, index) in products.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
-            <td>
+            <td @click="editProduct(p['id'])">
               <span
                 v-if="
                   p.images !== null &&
@@ -152,7 +152,16 @@
                   :alt="p.images[0]['alt'][lang]"
                 />
               </span>
-              <span v-else> no image </span>
+              <span v-else>
+                <i :class="iconClass"></i>
+              </span>
+            </td>
+            <td
+              @click="editProduct(p['id'])"
+              :role="'product_name_' + lang"
+              class="cursor-pointer text-primary"
+            >
+              {{ p["product_name"] }}
             </td>
             <td>
               <span
@@ -161,9 +170,6 @@
               >
                 {{ p["page_short_title"] }}
               </span>
-            </td>
-            <td :role="'product_name_' + lang">
-              {{ p["product_name"] }}
             </td>
             <td>{{ p["sku"] }}</td>
             <td>{{ p["price"] }}</td>
@@ -225,7 +231,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { SERVER_URL } from "../config.js";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
@@ -262,6 +268,18 @@ const direction = ref("");
 const page = ref("");
 const search = ref(""); //after click button
 const searchValue = ref(""); // current value
+
+const windowWidth = ref(window.innerWidth);
+
+const updateWindowWidth = () => {
+  windowWidth.value = window.innerWidth;
+};
+
+const iconClass = computed(() => {
+  return windowWidth.value < 990
+    ? "fa fa-camera-retro fa-lg"
+    : "fa fa-camera-retro fa-3x";
+});
 
 const addProduct = () => {
   router.push({ name: "product", params: { mode: "add" } });
@@ -382,7 +400,7 @@ onMounted(async () => {
   }
 
   pre_loader.value = true;
-
+  window.addEventListener("resize", updateWindowWidth);
   // set up sorting on the start
   column.value = "created_at";
   direction.value = "desc";
