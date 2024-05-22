@@ -47,6 +47,8 @@ else
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "Products images tests"
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "delete many images success"
 
-    npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product by click"
+    #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product by click"
 
+
+    npm run test  ./src/pages/ProductEditPageImage.spec.js 
 fi
