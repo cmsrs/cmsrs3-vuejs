@@ -18,9 +18,9 @@
     >
       <div class="modal-content" style="pointer-events: auto">
         <div class="modal-header">
-          <h5 class="modal-title">Please wait.</h5>
+          <h5 class="modal-title">..</h5>
         </div>
-        <div class="modal-body">...</div>
+        <div class="modal-body">.</div>
       </div>
     </div>
   </div>

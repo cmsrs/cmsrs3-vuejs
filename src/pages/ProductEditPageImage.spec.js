@@ -269,7 +269,7 @@ describe("Product edit or add images", () => {
       await waitFor(() => {
         expect(counterUpload).toBe(2);
 
-        const successMsg = "Images has been uploaded";
+        const successMsg = trans.ttt('success_images_upload'); // "Images have been uploaded";
         screen.findByText(successMsg);
       });
     });

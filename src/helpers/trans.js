@@ -9,6 +9,7 @@ const ttt = (key) => {
     success_image_position: "Position image has been changed",
     success_image_delete: "Image has been deleted",
     success_images_delete: "Images has been deleted",
+    success_images_upload: "Images have been uploaded",
 
     fail_delete_images_no_items: "fail delete images no items",
   };
