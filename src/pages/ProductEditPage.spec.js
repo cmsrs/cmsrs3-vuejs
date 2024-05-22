@@ -317,6 +317,8 @@ describe("Product edit or add page", () => {
       expect(counter).toBe(2);
 
       expect(router.currentRoute.value.path).toBe("/product/edit/1");
+      const header = screen.queryByRole("heading", { name: "Edit product" });
+      expect(header).toBeInTheDocument();
 
       const successMsg = trans.ttt("success_product_add");
       expect(successMsg).not.toBe("");

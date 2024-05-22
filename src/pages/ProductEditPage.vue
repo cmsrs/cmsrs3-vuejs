@@ -2,7 +2,7 @@
   <div data-testid="product-edit-page">
     <div class="container">
       <div class="row mt-3 mb-3">
-        <h3 class="col-10" v-if="mode === 'edit'">Edit product</h3>
+        <h3 class="col-10" v-if="currentProductId">Edit product</h3>
         <h3 class="col-10" v-else>Add product</h3>
         <ChangeLang :lang="lang" @exec-change-lang="changeLang"></ChangeLang>
       </div>
@@ -168,10 +168,8 @@ const errFields = ref([]);
 const pre_loader = ref(false);
 const shopPages = ref([]);
 
-const currentProductId = ref(false);
-
 //form data - start
-const currentId = ref("");
+const currentProductId = ref(false);
 const product_name = ref(functions.createEmptyObj(langs));
 const sku = ref("");
 const price = ref("");
@@ -217,7 +215,7 @@ const addEditProduct = async () => {
   }
   try {
     const product = {
-      id: currentId.value,
+      id: currentProductId.value,
       product_name: product_name.value,
       sku: sku.value,
       price: price.value,
@@ -236,6 +234,7 @@ const addEditProduct = async () => {
       } else {
         msgGood.value = trans.ttt("success_product_add");
         router.push("/product/edit/" + retProduct.data.data.productId);
+        currentProductId.value = retProduct.data.data.productId;
       }
     } else if (retProduct.data.success === false) {
       msgWrong.value = await functions.parseError(retProduct.data.error);
@@ -255,7 +254,7 @@ const loadProduct = async (id) => {
     const response = await getProduct(id, auth.token);
     if (response.data.success) {
       const productData = response.data.data;
-      currentId.value = productData.id;
+      currentProductId.value = productData.id;
       product_name.value = productData.product_name; //[lang.value];
       sku.value = productData.sku;
       price.value = productData.price;
