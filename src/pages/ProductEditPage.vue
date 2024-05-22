@@ -225,9 +225,12 @@ const addEditProduct = async () => {
       ? await putProduct(product, auth.token)
       : await postProduct(product, auth.token);
     if (retProduct.data.success) {
-      msgGood.value = product.id
-        ? trans.ttt("success_product_edit")
-        : trans.ttt("success_product_add");
+      if(product.id){
+        msgGood.value =  trans.ttt("success_product_edit");
+      }else{
+        msgGood.value =  trans.ttt("success_product_add");                                                      
+        router.push("/product/edit/"+ retProduct.data.data.productId );
+      }    
     } else if (retProduct.data.success === false) {
       msgWrong.value = await functions.parseError(retProduct.data.error);
       errFields.value = await functions.getErrorFields(retProduct.data.error);

@@ -42,7 +42,7 @@ else
 
     #npm run test   ./src/helpers/functions.spec.js 
 
-    #npm run test  ./src/pages/ProductEditPage.spec.js 
+    npm run test  ./src/pages/ProductEditPage.spec.js 
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product with errors"
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "Products images tests"
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "delete many images success"
@@ -50,5 +50,5 @@ else
     #npm run test  ./src/pages/ProductEditPage.spec.js -- -t "add product by click"
 
 
-    npm run test  ./src/pages/ProductEditPageImage.spec.js 
+    ######npm run test  ./src/pages/ProductEditPageImage.spec.js 
 fi

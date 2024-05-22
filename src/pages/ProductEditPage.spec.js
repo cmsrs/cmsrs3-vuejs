@@ -130,6 +130,10 @@ let server = setupServer(
     counter += 1;
     return HttpResponse.json({
       success: true,
+      data: {
+        productId : 1,
+        data : {}
+      }
     });
   }),
 );
@@ -286,7 +290,7 @@ describe("Product edit or add page", () => {
       await screen.findByText(successMsg);
     });
 
-    it("add product by click", async () => {
+    it("add product by click and redirect to edit page", async () => {
       await setupAdd();
       await waitForAjax();
       expect(counter).toBe(1);
@@ -311,6 +315,8 @@ describe("Product edit or add page", () => {
       const buttonSubmit = screen.queryByRole("button_save_edit_product");
       await userEvent.click(buttonSubmit);
       expect(counter).toBe(2);
+
+      expect(router.currentRoute.value.path).toBe("/product/edit/1");
 
       const successMsg = trans.ttt("success_product_add");
       expect(successMsg).not.toBe("");
