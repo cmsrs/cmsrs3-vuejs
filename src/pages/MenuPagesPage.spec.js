@@ -1319,7 +1319,7 @@ describe("Pages page", () => {
       await waitFor(() => {
         expect(counterUpload).toBe(2);
 
-        const successMsg =  trans.ttt('success_images_upload'); // "Images has been uploaded";
+        const successMsg = trans.ttt("success_images_upload"); // "Images has been uploaded";
         screen.findByText(successMsg);
       });
     });

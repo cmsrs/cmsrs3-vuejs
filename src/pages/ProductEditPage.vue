@@ -231,12 +231,12 @@ const addEditProduct = async () => {
       ? await putProduct(product, auth.token)
       : await postProduct(product, auth.token);
     if (retProduct.data.success) {
-      if(product.id){
-        msgGood.value =  trans.ttt("success_product_edit");
-      }else{
-        msgGood.value =  trans.ttt("success_product_add");                                                      
-        router.push("/product/edit/"+ retProduct.data.data.productId );
-      }    
+      if (product.id) {
+        msgGood.value = trans.ttt("success_product_edit");
+      } else {
+        msgGood.value = trans.ttt("success_product_add");
+        router.push("/product/edit/" + retProduct.data.data.productId);
+      }
     } else if (retProduct.data.success === false) {
       msgWrong.value = await functions.parseError(retProduct.data.error);
       errFields.value = await functions.getErrorFields(retProduct.data.error);
@@ -322,7 +322,7 @@ onMounted(async () => {
     pre_loader.value = false;
   }
 });
-      
+
 watch(
   product_name,
   () => {
@@ -330,6 +330,7 @@ watch(
   },
   { deep: true },
 );
+
 watch(
   product_description,
   () => {
@@ -337,17 +338,20 @@ watch(
   },
   { deep: true },
 );
+
 watch(sku, () => {
   clearOnlyMsg();
 });
+
 watch(price, () => {
   clearOnlyMsg();
 });
+
 watch(published, () => {
   clearOnlyMsg();
 });
+
 watch(page_id, () => {
   clearOnlyMsg();
 });
-
 </script>

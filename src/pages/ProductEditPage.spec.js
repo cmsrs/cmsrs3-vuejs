@@ -131,9 +131,9 @@ let server = setupServer(
     return HttpResponse.json({
       success: true,
       data: {
-        productId : 1,
-        data : {}
-      }
+        productId: 1,
+        data: {},
+      },
     });
   }),
 );
@@ -452,5 +452,4 @@ describe("Product edit or add page", () => {
       });
     });
   });
-
 });

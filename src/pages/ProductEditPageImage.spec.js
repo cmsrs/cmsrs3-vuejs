@@ -153,7 +153,7 @@ let server = setupServer(
     counterImage += 1;
     return HttpResponse.json({
       success: true,
-    });          
+    });
   }),
 
   http.get("/api/images/position/up/2", async () => {
@@ -184,7 +184,6 @@ let server = setupServer(
     });
   }),
 );
-
 
 const images = responseGetProduct.data.images;
 
@@ -245,15 +244,11 @@ const setup_edit_product = async () => {
   await waitForAjax();
 };
 
-
 describe("Product edit or add images", () => {
-
   /**
    * products images
-   */  
+   */
   describe("Products images tests", () => {
-
-
     it("upload one image success", async () => {
       expect(counterUpload).toBe(0);
       await setup_edit_product();
@@ -269,7 +264,7 @@ describe("Product edit or add images", () => {
       await waitFor(() => {
         expect(counterUpload).toBe(2);
 
-        const successMsg = trans.ttt('success_images_upload'); // "Images have been uploaded";
+        const successMsg = trans.ttt("success_images_upload"); // "Images have been uploaded";
         screen.findByText(successMsg);
       });
     });
@@ -287,7 +282,6 @@ describe("Product edit or add images", () => {
       expect(positionDownImages.length).toBe(2);
       expect(positionUpImages.length).toBe(2);
     });
-
 
     it("upload images is prohibit without edit product", async () => {
       //await setup_edit_product();
@@ -307,8 +301,6 @@ describe("Product edit or add images", () => {
         expect(counterUpload).toBe(0);
       });
     });
-
-
 
     it("image delete success", async () => {
       confirmSpy.mockReturnValueOnce(true);
@@ -472,5 +464,4 @@ describe("Product edit or add images", () => {
       });
     });
   });
-
 });

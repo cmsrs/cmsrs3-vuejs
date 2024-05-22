@@ -182,14 +182,17 @@ async function handleUploadFile(event) {
 
     if (ret) {
       internalMsgGood.value =
-        "Please wait. Images have been uploaded " + (i + 1) + "/" + newImages.length;
+        "Please wait. Images have been uploaded " +
+        (i + 1) +
+        "/" +
+        newImages.length;
     }
   }
 
   const dbImages = await getImagesByCurrentId();
   if (dbImages.data.success) {
     internalImages.value = dbImages.data.data;
-    internalMsgGood.value =  trans.ttt('success_images_upload'); //  "Images have been uploaded";
+    internalMsgGood.value = trans.ttt("success_images_upload"); //  "Images have been uploaded";
     internalPreLoader.value = false;
     setModal(false);
   }
