@@ -108,6 +108,27 @@ export const getClients = (column, direction, token, page, search) => {
   return axios.get(url);
 };
 
+export const getContacts = (column, direction, token, page, search) => {
+  let strSearch = "";
+  if (search) {
+    strSearch = "&search=" + search;
+  }
+
+  const pageNumber = page ? page : "1";
+  const url =
+    "/api/contacts/pagination/" +
+    column +
+    "/" +
+    direction +
+    "?token=" +
+    token +
+    "&page=" +
+    pageNumber +
+    strSearch;
+
+  return axios.get(url);
+};
+
 export const getProducts = (lang, column, direction, token, page, search) => {
   let strSearch = "";
   if (search) {
@@ -138,6 +159,10 @@ export const deleteProduct = (id, token) => {
 
 export const deleteClient = (id, token) => {
   return axios.delete("/api/clients/" + id + "?token=" + token);
+};
+
+export const deleteContact = (id, token) => {
+  return axios.delete("/api/contacts/" + id + "?token=" + token);
 };
 
 export const getClient = (id, token) => {
