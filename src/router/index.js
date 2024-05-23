@@ -5,6 +5,7 @@ import LoginPage from "../pages/LoginPage.vue";
 import UsersPage from "../pages/UsersPage.vue";
 import UserEditPage from "../pages/UserEditPage.vue";
 import ProductsPage from "../pages/ProductsPage.vue";
+import ContactsPage from "../pages/ContactsPage.vue";
 import ProductEditPage from "../pages/ProductEditPage.vue";
 
 //import UserPage from "../pages/UserPage";
@@ -45,7 +46,12 @@ const router = createRouter({
       component: ProductEditPage,
       name: "product",
       props: true,
+    },    
+    {
+      path: "/contacts",
+      component: ContactsPage,
     },
+
 
     // {
     //   path: "/*",
