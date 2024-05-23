@@ -13,7 +13,7 @@
         <div class="col-7 d-flex align-items-baseline">
           <input
             type="input"
-            placeholder="search: name or email"
+            placeholder="search: email or message"
             class="form-control col"
             name="search"
             v-model="searchValue"
@@ -31,7 +31,7 @@
               v-if="pre_loader"
               class="spinner-grow spinner-grow-sm"
             ></span>
-            <span>Search contact</span>
+            <span>Search contacts</span>
           </button>
         </div>
       </div>
@@ -55,7 +55,7 @@
 
 
             <th scope="col">
-              Name
+              Message
               <TableSort
                 :sortColumn="'message'"
                 @sort-asc="sortingAsc('message')"
@@ -152,6 +152,7 @@ const searchValue = ref(""); // current value
 
 const searchContacts = async () => {
   pre_loader.value = true;
+  page.value = "1";
   search.value = searchValue.value;
 
   const refreshC = await refreshContacts();

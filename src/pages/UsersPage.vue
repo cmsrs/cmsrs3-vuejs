@@ -178,6 +178,7 @@ const editClient = (id) => {
 
 const searchClients = async () => {
   pre_loader.value = true;
+  page.value = "1";
   search.value = searchValue.value;
 
   const refreshC = await refreshClients();

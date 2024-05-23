@@ -303,6 +303,7 @@ async function changeLang(inLang) {
 
 const searchProducts = async () => {
   pre_loader.value = true;
+  page.value = "1";
   search.value = searchValue.value;
 
   const refreshP = await refreshProducts();
