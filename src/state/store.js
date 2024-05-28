@@ -10,6 +10,7 @@ export const useAuthStore = defineStore("auth", () => {
     page_types: [],
     langs: [],
     cache_enable: 0,
+    is_cache_enable: 0,
     default_lang: "",
   };
 
@@ -52,6 +53,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.langs = data.langs;
     config.default_lang = data.default_lang;
     config.cache_enable = data.cache_enable;
+    config.is_cache_enable = is_cache_enable;
   }
 
   function setDefaultLang(lang) {
@@ -63,6 +65,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.page_types = [];
     config.langs = [];
     config.cache_enable = 0;
+    config.is_cache_enable = 0;
     config.default_lang = "";
 
     //auth.id = 0
@@ -78,5 +81,5 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.setItem("config", JSON.stringify(config));
   });
 
-  return { auth, modal, setDefaultLang, setAuth, setConfig, setModal, logout };
+  return { auth, modal, config, setDefaultLang, setAuth, setConfig, setModal, logout };
 });

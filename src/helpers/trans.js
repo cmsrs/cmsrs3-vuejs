@@ -12,6 +12,11 @@ const ttt = (key) => {
     success_images_upload: "Images have been uploaded",
 
     fail_delete_images_no_items: "fail delete images no items",
+
+    toggle_cache_enable: "toggle cache",
+    clear_cache: "clear cache",
+    create_sitemap: "create sitemap",
+
   };
 
   return d[key] ? d[key] : key;

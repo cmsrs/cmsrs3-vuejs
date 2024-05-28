@@ -26,4 +26,21 @@ describe("Layout", () => {
     expect(header).toBeInTheDocument();
   });
 
+  it("display all checkbox for is_cache_enable is true see afterlogin.js file", async () => {
+    await setupSettings();
+
+    //it is always exists
+    const s3 = trans.ttt("create_sitemap");
+    await screen.findByText(s3);
+
+    //depends on is_cache_enable == true
+    const s1 = trans.ttt("toggle_cache_enable");
+    await screen.findByText(s1);
+
+    //depends on is_cache_enable == true
+    const s2 = trans.ttt("clear_cache");
+    await screen.findByText(s2);
+  });
+
+
 });

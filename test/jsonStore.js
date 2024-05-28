@@ -7,7 +7,8 @@ const testJsonStore ={
     page_types: ['cms', 'gallery', 'main_page'],
     langs: ['en'],
     default_lang: 'en',
-    cache_enable: 1
+    cache_enable: 1,
+    is_cache_enable: 1
   }
 };
 

@@ -6,18 +6,46 @@
 
     <div class="container">
         <form>
-          <div if="cacheEnable" class="form-check mt-2 row">
+
+          <div if="config.is_cache_enable" class="form-check mt-2 row">
             <label>
               <input
                 class="col-1"
-                name="published"
                 type="checkbox"
-                v-model="published"
+                v-model="toggleCacheEnable"
                 :true-value="1"
               />
-              Published
+              {{ trans.ttt("toggle_cache_enable") }}    
             </label>
           </div>
+
+          <div if="config.is_cache_enable" class="form-check mt-2 row">
+            <label>
+              <input
+                class="col-1"
+                type="checkbox"
+                v-model="clearCache"
+                :true-value="1"
+              />
+              {{  trans.ttt("clear_cache") }}    
+            </label>
+          </div>
+
+
+          <div class="form-check mt-2 row">
+            <label>
+              <input
+                class="col-1"
+                type="checkbox"
+                v-model="createSitemap"
+                :true-value="1"
+              />
+              {{  trans.ttt("create_sitemap") }}    
+            </label>
+          </div>
+          
+
+
         </form>
     </div><!--  container -->
   </div>
@@ -26,20 +54,23 @@
 import { ref, onMounted } from "vue";
 //import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { checkCache } from "../api/apiCalls";
+//import { checkCache } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
-//import trans from "../helpers/trans.js";
+import trans from "../helpers/trans.js";
 import { useAuthStore } from "../state/store.js";
-const { auth } = useAuthStore();
+const { auth, config } = useAuthStore();
 
-const {
-  cacheEnable
-} = functions.retrieveParamsFromStorage();
-
+//const {
+//  cacheEnable
+//} = functions.retrieveParamsFromStorage();
 
 
 const msgWrong = ref("");
 const msgGood = ref("");
+
+const toggleCacheEnable = ref(false);
+const clearCache = ref(false);
+const createSitemap = ref(false);
 
 const pre_loader = ref(false);
 
