@@ -52,5 +52,8 @@ else
 
     ######npm run test  ./src/pages/ProductEditPageImage.spec.js 
 
-    npm run test  ./src/pages/ContactsPage.spec.js 
+    #npm run test  ./src/pages/ContactsPage.spec.js 
+
+    npm run test   ./src/pages/SettingsPage.spec.js 
 fi
+

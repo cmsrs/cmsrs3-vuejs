@@ -190,3 +190,7 @@ export const putProduct = (post, token) => {
   const id = post["id"];
   return axios.put("/api/products/" + id + "?token=" + token, post);
 };
+
+//export const checkCache = (token) => {
+//  return axios.get("/api/config/is-cache-enable?token=" + token);
+//};
