@@ -18,51 +18,53 @@ const confirmSpy = vi.spyOn(window, "confirm");
 const responseGetContacts = {
   success: 1,
   data: {
-      current_page: 1,
-      data: [
-          {
-              id: 2,
-              email: 'tt@cmsrs.pl',
-              message: 'test contact abc',
-              created_at: '2024-05-23T11:21:56.000000Z',
-              updated_at: '2024-05-23T11:21:56.000000Z'
-          },
-          {
-              id: 1,
-              email: 'abc@cmsrs.pl',
-              message: 'test contact message',
-              created_at: '2024-05-23T11:21:56.000000Z',
-              updated_at: '2024-05-23T11:21:56.000000Z'
-          }
-      ],
-      first_page_url: 'http://127.0.0.1:8000/api/contacts/pagination/id/desc?page=1',
-      from: 1,
-      last_page: 1,
-      last_page_url: 'http://127.0.0.1:8000/api/contacts/pagination/id/desc?page=1',
-      links: [
-          {
-              url: null,
-              label: '« Previous',
-              active: false
-          },
-          {
-              url: 'http://127.0.0.1:8000/api/contacts/pagination/id/desc?page=1',
-              label: '1',
-              active: true
-          },
-          {
-              url: null,
-              label: 'Next »',
-              active: false
-          }
-      ],
-      next_page_url: null,
-      path: 'http://127.0.0.1:8000/api/contacts/pagination/id/desc',
-      per_page: 10,
-      prev_page_url: null,
-      to: 2,
-      total: 2
-  }
+    current_page: 1,
+    data: [
+      {
+        id: 2,
+        email: "tt@cmsrs.pl",
+        message: "test contact abc",
+        created_at: "2024-05-23T11:21:56.000000Z",
+        updated_at: "2024-05-23T11:21:56.000000Z",
+      },
+      {
+        id: 1,
+        email: "abc@cmsrs.pl",
+        message: "test contact message",
+        created_at: "2024-05-23T11:21:56.000000Z",
+        updated_at: "2024-05-23T11:21:56.000000Z",
+      },
+    ],
+    first_page_url:
+      "http://127.0.0.1:8000/api/contacts/pagination/id/desc?page=1",
+    from: 1,
+    last_page: 1,
+    last_page_url:
+      "http://127.0.0.1:8000/api/contacts/pagination/id/desc?page=1",
+    links: [
+      {
+        url: null,
+        label: "« Previous",
+        active: false,
+      },
+      {
+        url: "http://127.0.0.1:8000/api/contacts/pagination/id/desc?page=1",
+        label: "1",
+        active: true,
+      },
+      {
+        url: null,
+        label: "Next »",
+        active: false,
+      },
+    ],
+    next_page_url: null,
+    path: "http://127.0.0.1:8000/api/contacts/pagination/id/desc",
+    per_page: 10,
+    prev_page_url: null,
+    to: 2,
+    total: 2,
+  },
 };
 
 let server = setupServer(

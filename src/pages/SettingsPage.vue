@@ -5,49 +5,45 @@
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
     <div class="container">
-        <form>
+      <form>
+        <div if="config.is_cache_enable" class="form-check mt-2 row">
+          <label>
+            <input
+              class="col-1"
+              type="checkbox"
+              v-model="toggleCacheEnable"
+              :true-value="1"
+            />
+            {{ trans.ttt("toggle_cache_enable") }}
+          </label>
+        </div>
 
-          <div if="config.is_cache_enable" class="form-check mt-2 row">
-            <label>
-              <input
-                class="col-1"
-                type="checkbox"
-                v-model="toggleCacheEnable"
-                :true-value="1"
-              />
-              {{ trans.ttt("toggle_cache_enable") }}    
-            </label>
-          </div>
+        <div if="config.is_cache_enable" class="form-check mt-2 row">
+          <label>
+            <input
+              class="col-1"
+              type="checkbox"
+              v-model="clearCache"
+              :true-value="1"
+            />
+            {{ trans.ttt("clear_cache") }}
+          </label>
+        </div>
 
-          <div if="config.is_cache_enable" class="form-check mt-2 row">
-            <label>
-              <input
-                class="col-1"
-                type="checkbox"
-                v-model="clearCache"
-                :true-value="1"
-              />
-              {{  trans.ttt("clear_cache") }}    
-            </label>
-          </div>
-
-
-          <div class="form-check mt-2 row">
-            <label>
-              <input
-                class="col-1"
-                type="checkbox"
-                v-model="createSitemap"
-                :true-value="1"
-              />
-              {{  trans.ttt("create_sitemap") }}    
-            </label>
-          </div>
-          
-
-
-        </form>
-    </div><!--  container -->
+        <div class="form-check mt-2 row">
+          <label>
+            <input
+              class="col-1"
+              type="checkbox"
+              v-model="createSitemap"
+              :true-value="1"
+            />
+            {{ trans.ttt("create_sitemap") }}
+          </label>
+        </div>
+      </form>
+    </div>
+    <!--  container -->
   </div>
 </template>
 <script setup>
@@ -63,7 +59,6 @@ const { auth, config } = useAuthStore();
 //const {
 //  cacheEnable
 //} = functions.retrieveParamsFromStorage();
-
 
 const msgWrong = ref("");
 const msgGood = ref("");
@@ -104,11 +99,7 @@ onMounted(async () => {
     router.push("/");
     return false;
   }
-  
+
   clearMsg();
-
-  
-
-
 });
 </script>

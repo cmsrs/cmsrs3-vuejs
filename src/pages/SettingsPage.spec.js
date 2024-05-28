@@ -41,6 +41,4 @@ describe("Layout", () => {
     const s2 = trans.ttt("clear_cache");
     await screen.findByText(s2);
   });
-
-
 });

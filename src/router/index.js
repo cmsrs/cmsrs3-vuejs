@@ -46,12 +46,11 @@ const router = createRouter({
       component: ProductEditPage,
       name: "product",
       props: true,
-    },    
+    },
     {
       path: "/contacts",
       component: ContactsPage,
     },
-
 
     // {
     //   path: "/*",

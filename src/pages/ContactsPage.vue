@@ -6,9 +6,7 @@
 
     <div class="container">
       <div class="row mb-4">
-        <div class="col-5">
-          &nbsp;
-        </div>
+        <div class="col-5">&nbsp;</div>
 
         <div class="col-7 d-flex align-items-baseline">
           <input
@@ -53,7 +51,6 @@
               ></TableSort>
             </th>
 
-
             <th scope="col">
               Message
               <TableSort
@@ -65,7 +62,6 @@
                 :direction="direction"
               ></TableSort>
             </th>
-
 
             <th scope="col">
               Created
@@ -148,7 +144,6 @@ const direction = ref("");
 const page = ref("");
 const search = ref(""); //after click button
 const searchValue = ref(""); // current value
-
 
 const searchContacts = async () => {
   pre_loader.value = true;

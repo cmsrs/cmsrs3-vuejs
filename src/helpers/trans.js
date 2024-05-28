@@ -16,7 +16,6 @@ const ttt = (key) => {
     toggle_cache_enable: "toggle cache",
     clear_cache: "clear cache",
     create_sitemap: "create sitemap",
-
   };
 
   return d[key] ? d[key] : key;

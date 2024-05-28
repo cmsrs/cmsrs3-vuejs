@@ -81,5 +81,14 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.setItem("config", JSON.stringify(config));
   });
 
-  return { auth, modal, config, setDefaultLang, setAuth, setConfig, setModal, logout };
+  return {
+    auth,
+    modal,
+    config,
+    setDefaultLang,
+    setAuth,
+    setConfig,
+    setModal,
+    logout,
+  };
 });
