@@ -29,6 +29,7 @@
               class="col-1"
               type="checkbox"
               v-model="clearCache"
+              @click.prevent="actionClearCache"
               :class="{ 'disabled-if-loader': pre_loader }"
               :disabled="pre_loader"
               :true-value="1"
@@ -44,6 +45,7 @@
               class="col-1"
               type="checkbox"
               v-model="createSitemap"
+              @click.prevent="actionCreateSitemap"
               :class="{ 'disabled-if-loader': pre_loader }"
               :disabled="pre_loader"
               :true-value="1"
@@ -60,7 +62,11 @@
 import { ref, onMounted } from "vue";
 //import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { postToggleCacheEnableFile } from "../api/apiCalls";
+import {
+  postToggleCacheEnableFile,
+  getClearCache,
+  getCreateSitemap,
+} from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
 import { useAuthStore } from "../state/store.js";
@@ -118,6 +124,52 @@ const changeCacheEnable = async () => {
   } catch (error) {
     msgWrong.value = "Sth wrong with changeCacheEnable (error)";
     console.log("error changeCacheEnable", error);
+  }
+  return false;
+};
+
+const actionClearCache = async () => {
+  if (!startLoading()) {
+    return false;
+  }
+
+  try {
+    const response = await getClearCache(auth.token);
+    if (response.data.success) {
+      clearCache.value = false;
+      msgGood.value = trans.ttt("cache_was_cleared");
+      pre_loader.value = false;
+      return true;
+    } else {
+      msgWrong.value = "Sth wrong with actionClearCache";
+      console.log("error actionClearCache", response.data);
+    }
+  } catch (error) {
+    msgWrong.value = "Sth wrong with actionClearCache (error)";
+    console.log("error actionClearCache", error);
+  }
+  return false;
+};
+
+const actionCreateSitemap = async () => {
+  if (!startLoading()) {
+    return false;
+  }
+
+  try {
+    const response = await getCreateSitemap(auth.token);
+    if (response.data.success) {
+      clearCache.value = false;
+      msgGood.value = trans.ttt("sitemap_was_created");
+      pre_loader.value = false;
+      return true;
+    } else {
+      msgWrong.value = "Sth wrong with actionCreateSitemap";
+      console.log("error actionCreateSitemap", response.data);
+    }
+  } catch (error) {
+    msgWrong.value = "Sth wrong with actionCreateSitemap (error)";
+    console.log("error actionCreateSitemap", error);
   }
   return false;
 };

@@ -55,5 +55,7 @@ else
     #npm run test  ./src/pages/ContactsPage.spec.js 
 
     npm run test   ./src/pages/SettingsPage.spec.js 
+    #npm run test   ./src/pages/SettingsPage.spec.js  -- -t     "cache enable by click input toggle cache"
+
 fi
 

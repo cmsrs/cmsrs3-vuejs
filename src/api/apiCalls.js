@@ -198,3 +198,11 @@ export const putProduct = (post, token) => {
 export const postToggleCacheEnableFile = (post, token) => {
   return axios.post("api/config/toggle-cache-enable-file?token=" + token, post);
 };
+
+export const getClearCache = (token) => {
+  return axios.get("/api/config/clearcache?token=" + token);
+};
+
+export const getCreateSitemap = (token) => {
+  return axios.get("/api/config/createsitemap?token=" + token);
+};

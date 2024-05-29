@@ -16,6 +16,8 @@ import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 
 let counterToggle = 0;
+let counterCacheClear = 0;
+let counterCreateSitemap = 0;
 const successMsgToggle = "Cache enabled";
 
 let responseToggle = {
@@ -31,6 +33,20 @@ let server = setupServer(
     counterToggle += 1;
     return HttpResponse.json(responseToggle);
   }),
+
+  http.get("/api/config/clearcache", () => {
+    counterCacheClear += 1;
+    return HttpResponse.json({
+      success: true,
+    });
+  }),
+
+  http.get("/api/config/createsitemap", () => {
+    counterCreateSitemap += 1;
+    return HttpResponse.json({
+      success: true,
+    });
+  }),
 );
 
 beforeAll(() => {
@@ -39,6 +55,8 @@ beforeAll(() => {
 
 beforeEach(() => {
   counterToggle = 0;
+  counterCacheClear = 0;
+  counterCreateSitemap = 0;
   server.resetHandlers();
 });
 
@@ -129,5 +147,35 @@ describe("Interaction", () => {
     expect(alertSuccessAfter).toBeInTheDocument();
 
     await screen.findByText(successMsgToggle);
+  });
+
+  it("cache clear", async () => {
+    await setupSettings();
+
+    expect(counterCacheClear).toBe(0);
+
+    const clearCache = screen.queryByRole("clear_cache");
+    await userEvent.click(clearCache);
+    expect(counterCacheClear).toBe(1);
+
+    const alertSuccessAfter = screen.queryByRole("alert_success");
+    expect(alertSuccessAfter).toBeInTheDocument();
+
+    await screen.findByText(trans.ttt("cache_was_cleared"));
+  });
+
+  it("create sitemap", async () => {
+    await setupSettings();
+
+    expect(counterCreateSitemap).toBe(0);
+
+    const createSitemap = screen.queryByRole("create_sitemap");
+    await userEvent.click(createSitemap);
+    expect(counterCreateSitemap).toBe(1);
+
+    const alertSuccessAfter = screen.queryByRole("alert_success");
+    expect(alertSuccessAfter).toBeInTheDocument();
+
+    await screen.findByText(trans.ttt("sitemap_was_created"));
   });
 });
