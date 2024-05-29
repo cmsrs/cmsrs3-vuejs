@@ -27,6 +27,12 @@
             :class="{ 'text-primary': $route.path.startsWith('/contact') }"
             >Contacts</router-link
           >
+          <router-link
+            class="nav-link"
+            to="/settings"
+            :class="{ 'text-primary': $route.path.startsWith('/setting') }"
+            >Settings</router-link
+          >
         </ul>
         <ul class="navbar-nav justify-content-end col-2">
           <li
