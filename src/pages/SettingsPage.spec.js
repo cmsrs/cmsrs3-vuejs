@@ -1,10 +1,4 @@
-import {
-  render,
-  router,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "../../test/helper.js";
+import { render, screen } from "../../test/helper.js";
 import "../../test/afterlogin.js";
 
 import SettingsPage from "./SettingsPage.vue";

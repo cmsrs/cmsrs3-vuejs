@@ -1,20 +1,20 @@
 <template>
-  <div data-testid="user-edit-page">
+  <div data-testid="settings-page">
     <h3>Settings</h3>
 
     <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
 
     <div class="container">
       <form>
-        <div v-if="config.cache_enable" class="form-check mt-2 row">
-          <label>
+        <div v-if="config.cache_enable" class="form-check mt-4 row">
+          <label
+            :class="{ 'disabled-if-loader': pre_loader }"
+            :disabled="pre_loader"
+          >
             <input
               role="toggle_cache_enable"
-              class="col-1"
               type="checkbox"
               v-model="toggleCacheEnable"
-              :class="{ 'disabled-if-loader': pre_loader }"
-              :disabled="pre_loader"
               @click.prevent="changeCacheEnable"
               :true-value="true"
             />
@@ -22,34 +22,26 @@
           </label>
         </div>
 
-        <div v-if="config.cache_enable" class="form-check mt-2 row">
-          <label>
-            <input
-              role="clear_cache"
-              class="col-1"
-              type="checkbox"
-              v-model="clearCache"
-              @click.prevent="actionClearCache"
-              :class="{ 'disabled-if-loader': pre_loader }"
-              :disabled="pre_loader"
-              :true-value="1"
-            />
+        <div v-if="config.cache_enable" class="form-check mt-4 row">
+          <label
+            role="clear_cache"
+            @click.prevent="actionClearCache"
+            :class="{ 'disabled-if-loader': pre_loader }"
+            :disabled="pre_loader"
+          >
+            <i class="fa fa-cog" aria-hidden="true"></i>
             {{ trans.ttt("clear_cache") }}
           </label>
         </div>
 
-        <div class="form-check mt-2 row">
-          <label>
-            <input
-              role="create_sitemap"
-              class="col-1"
-              type="checkbox"
-              v-model="createSitemap"
-              @click.prevent="actionCreateSitemap"
-              :class="{ 'disabled-if-loader': pre_loader }"
-              :disabled="pre_loader"
-              :true-value="1"
-            />
+        <div class="form-check mt-4 row">
+          <label
+            role="create_sitemap"
+            @click.prevent="actionCreateSitemap"
+            :class="{ 'disabled-if-loader': pre_loader }"
+            :disabled="pre_loader"
+          >
+            <i class="fa fa-cog" aria-hidden="true"></i>
             {{ trans.ttt("create_sitemap") }}
           </label>
         </div>
@@ -60,8 +52,6 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-//import { useRouter } from "vue-router";
-import functions from "../helpers/functions.js";
 import {
   postToggleCacheEnableFile,
   getClearCache,
@@ -80,9 +70,8 @@ const msgWrong = ref("");
 const msgGood = ref("");
 
 const toggleCacheEnable = ref(config.is_cache_enable); //we assume that in config cache_enable == true, because:  is_cache_enable=cache_enable (in config) && file_exist(cache_enable_file))
-const clearCache = ref(false);
-
-const createSitemap = ref(false);
+//const clearCache = ref(false);
+//const createSitemap = ref(false);
 
 const pre_loader = ref(false);
 
@@ -136,7 +125,6 @@ const actionClearCache = async () => {
   try {
     const response = await getClearCache(auth.token);
     if (response.data.success) {
-      clearCache.value = false;
       msgGood.value = trans.ttt("cache_was_cleared");
       pre_loader.value = false;
       return true;
@@ -159,7 +147,6 @@ const actionCreateSitemap = async () => {
   try {
     const response = await getCreateSitemap(auth.token);
     if (response.data.success) {
-      clearCache.value = false;
       msgGood.value = trans.ttt("sitemap_was_created");
       pre_loader.value = false;
       return true;

@@ -265,7 +265,10 @@
             </div>
 
             <div class="form-check mt-2 row">
-              <label>
+              <label
+                :class="{ 'disabled-if-loader': pre_loader }"
+                :disabled="pre_loader"
+              >
                 <input
                   class="col-1"
                   name="published"
@@ -278,7 +281,10 @@
             </div>
 
             <div class="form-check mt-2 row">
-              <label>
+              <label
+                :class="{ 'disabled-if-loader': pre_loader }"
+                :disabled="pre_loader"
+              >
                 <input
                   class="col-1"
                   name="commented"
@@ -291,7 +297,10 @@
             </div>
 
             <div class="form-check mt-2 row">
-              <label>
+              <label
+                :class="{ 'disabled-if-loader': pre_loader }"
+                :disabled="pre_loader"
+              >
                 <input
                   class="col-1"
                   name="after_login"
@@ -306,6 +315,8 @@
             <div class="form-group mt-3">
               <label for="pageType" class="text-secondary">Page type:</label>
               <select
+                :class="{ 'disabled-if-loader': pre_loader }"
+                :disabled="pre_loader"
                 class="rs-select form-control"
                 id="pageType"
                 v-model="page_type"
@@ -331,6 +342,8 @@
               <div class="form-group mt-3">
                 <label for="menu_items" class="text-secondary">Menu:</label>
                 <select
+                  :class="{ 'disabled-if-loader': pre_loader }"
+                  :disabled="pre_loader"
                   role="menu_items"
                   class="rs-select form-control"
                   v-model="menu_id"
@@ -346,6 +359,8 @@
               <div class="form-group mt-3">
                 <label for="page" class="text-secondary">Parent page:</label>
                 <select
+                  :class="{ 'disabled-if-loader': pre_loader }"
+                  :disabled="pre_loader"
                   role="page_items"
                   class="rs-select form-control"
                   v-model="page_id"
