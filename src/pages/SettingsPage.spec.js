@@ -15,6 +15,35 @@ import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 
+let counterToggle = 0;
+const successMsgToggle = "Cache enabled";
+
+let responseToggle = {
+  success: 1,
+  data: {
+    value: 1,
+    message: successMsgToggle,
+  },
+};
+
+let server = setupServer(
+  http.post("/api/config/toggle-cache-enable-file", () => {
+    counterToggle += 1;
+    return HttpResponse.json(responseToggle);
+  }),
+);
+
+beforeAll(() => {
+  server.listen();
+});
+
+beforeEach(() => {
+  counterToggle = 0;
+  server.resetHandlers();
+});
+
+afterAll(() => server.close());
+
 const setupSettings = async () => {
   return render(SettingsPage);
 };
@@ -83,5 +112,22 @@ describe("Layout for is_cache_enable is true", () => {
     expect(r1).not.toBeInTheDocument();
     const r2 = screen.queryByRole("clear_cache");
     expect(r2).not.toBeInTheDocument();
+  });
+});
+
+describe("Interaction", () => {
+  it("cache enable by click input toggle cache", async () => {
+    await setupSettings();
+
+    expect(counterToggle).toBe(0);
+
+    const changeCacheEnable = screen.queryByRole("toggle_cache_enable");
+    await userEvent.click(changeCacheEnable);
+    expect(counterToggle).toBe(1);
+
+    const alertSuccessAfter = screen.queryByRole("alert_success");
+    expect(alertSuccessAfter).toBeInTheDocument();
+
+    await screen.findByText(successMsgToggle);
   });
 });

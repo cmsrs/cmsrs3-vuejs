@@ -48,6 +48,10 @@ export const useAuthStore = defineStore("auth", () => {
     modal.visible = visible;
   }
 
+  function setIsCacheEnable(isCacheEnable) {
+    config.is_cache_enable = isCacheEnable;
+  }
+
   function setConfig(data) {
     config.page_types = data.page_types;
     config.langs = data.langs;
@@ -85,6 +89,7 @@ export const useAuthStore = defineStore("auth", () => {
     auth,
     modal,
     config,
+    setIsCacheEnable,
     setDefaultLang,
     setAuth,
     setConfig,

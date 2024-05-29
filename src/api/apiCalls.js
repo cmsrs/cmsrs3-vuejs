@@ -194,3 +194,7 @@ export const putProduct = (post, token) => {
 //export const checkCache = (token) => {
 //  return axios.get("/api/config/is-cache-enable?token=" + token);
 //};
+
+export const postToggleCacheEnableFile = (post, token) => {
+  return axios.post("api/config/toggle-cache-enable-file?token=" + token, post);
+};

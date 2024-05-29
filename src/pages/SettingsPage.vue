@@ -13,7 +13,10 @@
               class="col-1"
               type="checkbox"
               v-model="toggleCacheEnable"
-              :true-value="1"
+              :class="{ 'disabled-if-loader': pre_loader }"
+              :disabled="pre_loader"
+              @click.prevent="changeCacheEnable"
+              :true-value="true"
             />
             {{ trans.ttt("toggle_cache_enable") }}
           </label>
@@ -26,6 +29,8 @@
               class="col-1"
               type="checkbox"
               v-model="clearCache"
+              :class="{ 'disabled-if-loader': pre_loader }"
+              :disabled="pre_loader"
               :true-value="1"
             />
             {{ trans.ttt("clear_cache") }}
@@ -39,6 +44,8 @@
               class="col-1"
               type="checkbox"
               v-model="createSitemap"
+              :class="{ 'disabled-if-loader': pre_loader }"
+              :disabled="pre_loader"
               :true-value="1"
             />
             {{ trans.ttt("create_sitemap") }}
@@ -53,11 +60,11 @@
 import { ref, onMounted } from "vue";
 //import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-//import { checkCache } from "../api/apiCalls";
+import { postToggleCacheEnableFile } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
 import { useAuthStore } from "../state/store.js";
-const { auth, config } = useAuthStore();
+const { auth, config, setIsCacheEnable } = useAuthStore();
 
 //const {
 //  cacheEnable
@@ -66,8 +73,9 @@ const { auth, config } = useAuthStore();
 const msgWrong = ref("");
 const msgGood = ref("");
 
-const toggleCacheEnable = ref(false);
+const toggleCacheEnable = ref(config.is_cache_enable); //we assume that in config cache_enable == true, because:  is_cache_enable=cache_enable (in config) && file_exist(cache_enable_file))
 const clearCache = ref(false);
+
 const createSitemap = ref(false);
 
 const pre_loader = ref(false);
@@ -77,25 +85,42 @@ const clearMsg = () => {
   msgGood.value = "";
 };
 
-// cache_enable and file_exist
-/*
-const getStatusCache = async () => {
+const startLoading = async () => {
+  clearMsg();
+  if (pre_loader.value) {
+    return false;
+  }
+  pre_loader.value = true;
+  return true;
+};
+
+const changeCacheEnable = async () => {
+  if (!startLoading()) {
+    return false;
+  }
+
   try {
-    const response = await getPagesByType("shop", auth.token);
+    const postData = toggleCacheEnable.value ? "disable" : "enable"; //reverse the logic
+    const response = await postToggleCacheEnableFile(
+      { action: postData },
+      auth.token,
+    );
     if (response.data.success) {
-      shopPages.value = response.data.data;
+      toggleCacheEnable.value = response.data.data.value;
+      setIsCacheEnable(response.data.data.value);
+      msgGood.value = response.data.data.message;
+      pre_loader.value = false;
       return true;
     } else {
-      msgWrong.value = "Sth wrong with get pages by type";
-      console.log("error get pages by type=", response.data);
+      msgWrong.value = "Sth wrong with changeCacheEnable";
+      console.log("error changeCacheEnable", response.data);
     }
   } catch (error) {
-    msgWrong.value = "Sth wrong with get pages by type (error)";
-    console.log("error get pages by type=", error);
+    msgWrong.value = "Sth wrong with changeCacheEnable (error)";
+    console.log("error changeCacheEnable", error);
   }
   return false;
 };
-*/
 
 onMounted(async () => {
   if (!auth.token) {

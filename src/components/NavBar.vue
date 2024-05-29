@@ -35,6 +35,9 @@
           >
         </ul>
         <ul class="navbar-nav justify-content-end col-2">
+          <li class="nav-link" v-if="config.is_cache_enable">
+            <p class="text-info">cache enable</p>
+          </li>
           <li
             role="link_sign_out"
             :onClick="signOut"
@@ -53,7 +56,7 @@ import { ref } from "vue";
 import { logout } from "../api/apiCalls.js";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
-const { auth, logout: logoutStore } = useAuthStore();
+const { auth, config, logout: logoutStore } = useAuthStore();
 
 const router = useRouter();
 const pre_loader = ref(false);
