@@ -40,5 +40,51 @@ describe("Layout", () => {
     //depends on is_cache_enable == true
     const s2 = trans.ttt("clear_cache");
     await screen.findByText(s2);
+
+
+    const r3 = screen.queryByRole("create_sitemap");  
+    expect(r3).toBeInTheDocument();  
+    const r1 = screen.queryByRole("toggle_cache_enable");    
+    expect(r1).toBeInTheDocument();  
+    const r2 = screen.queryByRole("clear_cache");    
+    expect(r2).toBeInTheDocument();  
   });
+});
+
+describe("Layout for is_cache_enable is true", () => {
+
+  const jsonStore2 = {
+    auth: {
+      token:  "abcde12345",
+    },
+    //this data came from api/config and save to local storage
+    config: {
+      page_types: ['cms', 'gallery', 'main_page'],
+      langs: ['en'],
+      default_lang: 'en',
+      cache_enable: 0,
+      is_cache_enable: 0 //!!
+    }
+  };
+
+  const setupSettings2 = async () => {
+    localStorage.clear();
+    storage.setItem("auth", jsonStore2.auth);
+    storage.setItem("config", jsonStore2.config);
+
+    return render(SettingsPage);
+  };
+  
+  it("input with cache not available ", async () => {
+    await setupSettings2();
+
+    const r3 = screen.queryByRole("create_sitemap");  
+    expect(r3).toBeInTheDocument();  
+
+    const r1 = screen.queryByRole("toggle_cache_enable");    
+    expect(r1).not.toBeInTheDocument();  
+    const r2 = screen.queryByRole("clear_cache");    
+    expect(r2).not.toBeInTheDocument();  
+  });
+
 });

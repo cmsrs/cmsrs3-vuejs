@@ -53,7 +53,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.langs = data.langs;
     config.default_lang = data.default_lang;
     config.cache_enable = data.cache_enable;
-    config.is_cache_enable = is_cache_enable;
+    config.is_cache_enable = data.is_cache_enable;
   }
 
   function setDefaultLang(lang) {

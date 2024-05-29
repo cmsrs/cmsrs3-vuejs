@@ -6,9 +6,10 @@
 
     <div class="container">
       <form>
-        <div if="config.is_cache_enable" class="form-check mt-2 row">
+        <div v-if="config.cache_enable" class="form-check mt-2 row">
           <label>
             <input
+              role="toggle_cache_enable"
               class="col-1"
               type="checkbox"
               v-model="toggleCacheEnable"
@@ -18,9 +19,10 @@
           </label>
         </div>
 
-        <div if="config.is_cache_enable" class="form-check mt-2 row">
+        <div v-if="config.cache_enable" class="form-check mt-2 row">
           <label>
             <input
+              role="clear_cache"
               class="col-1"
               type="checkbox"
               v-model="clearCache"
@@ -33,6 +35,7 @@
         <div class="form-check mt-2 row">
           <label>
             <input
+              role="create_sitemap"
               class="col-1"
               type="checkbox"
               v-model="createSitemap"
