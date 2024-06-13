@@ -92,6 +92,12 @@ const getItemFromArrayOrFalse = (arr, k) => {
   return arr[k];
 };
 
+const getPostToggleCacheEnableFile = () => {
+  const isCacheEnable = storage.getItem("config").is_cache_enable;
+  const postData = isCacheEnable ? "disable" : "enable"; //reverse logic
+  return { action: postData };
+};
+
 export default {
   getItemFromArrayOrFalse,
   delay,
@@ -101,4 +107,5 @@ export default {
   retrieveParamsFromStorage,
   retrieveParamsFromUrl,
   isNotEmptyObj,
+  getPostToggleCacheEnableFile,
 };

@@ -59,6 +59,7 @@ import {
 } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
+import functions from "../helpers/functions.js";
 import { useAuthStore } from "../state/store.js";
 const { auth, config, setIsCacheEnable } = useAuthStore();
 
@@ -95,9 +96,8 @@ const changeCacheEnable = async () => {
   }
 
   try {
-    const postData = toggleCacheEnable.value ? "disable" : "enable"; //reverse the logic
     const response = await postToggleCacheEnableFile(
-      { action: postData },
+      functions.getPostToggleCacheEnableFile(),
       auth.token,
     );
     if (response.data.success) {

@@ -131,6 +131,9 @@ describe("Interaction", () => {
   it("cache enable by click input toggle cache", async () => {
     await setupSettings();
 
+    const isCacheEnable0 = storage.getItem("config").is_cache_enable;
+    expect(isCacheEnable0).toBe(0);
+
     expect(counterToggle).toBe(0);
 
     const changeCacheEnable = screen.queryByRole("toggle_cache_enable");
@@ -141,6 +144,19 @@ describe("Interaction", () => {
     expect(alertSuccessAfter).toBeInTheDocument();
 
     await screen.findByText(successMsgToggle);
+
+    const isCacheEnable1 = storage.getItem("config").is_cache_enable;
+    expect(isCacheEnable1).toBe(1);
+
+    const changeCacheEnableToFalse = screen.queryByRole("toggle_cache_enable");
+    await userEvent.click(changeCacheEnableToFalse);
+    expect(counterToggle).toBe(2);
+
+    const alertSuccessAfter2 = screen.queryByRole("alert_success");
+    expect(alertSuccessAfter2).toBeInTheDocument();
+
+    const isCacheEnable2 = storage.getItem("config").is_cache_enable;
+    //expect(isCacheEnable2).toBe(0); //it should be 0 - but we need change server response depend on post request
   });
 
   it("cache clear", async () => {
