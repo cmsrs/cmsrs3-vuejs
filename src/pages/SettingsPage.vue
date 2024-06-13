@@ -51,7 +51,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import {
   postToggleCacheEnableFile,
   getClearCache,
@@ -169,4 +169,11 @@ onMounted(async () => {
 
   clearMsg();
 });
+
+watch(
+  () => config.is_cache_enable,
+  (newValue) => {
+    toggleCacheEnable.value = newValue;
+  },
+);
 </script>

@@ -19,7 +19,7 @@ else
 
     #npm run test ./src/App.spec.js  -- -t 'sign out'
 
-    npm run test   ./src/App.spec.js  -- -t     "in nav bar cache enable by click input toggle cache"
+    #npm run test   ./src/App.spec.js  -- -t     "in nav bar cache enable by click input toggle cache"
 
     #npm run test ./src/pages/UserEditPage.spec.js #-- -t 'load client data'
 
@@ -56,7 +56,7 @@ else
 
     #npm run test  ./src/pages/ContactsPage.spec.js 
 
-    #npm run test   ./src/pages/SettingsPage.spec.js 
+    npm run test   ./src/pages/SettingsPage.spec.js 
 
 
 fi
