@@ -153,6 +153,30 @@ export const getProducts = (lang, column, direction, token, page, search) => {
   return axios.get(url);
 };
 
+export const getCheckouts = (lang, column, direction, token, page, search) => {
+  let strSearch = "";
+  if (search) {
+    strSearch = "&search=" + search;
+  }
+
+  const pageNumber = page ? page : "1";
+  // /api/products/pagination/en/product_name/desc
+  const url =
+    "/api/checkouts/pagination/" +
+    lang +
+    "/" +
+    column +
+    "/" +
+    direction +
+    "?token=" +
+    token +
+    "&page=" +
+    pageNumber +
+    strSearch;
+
+  return axios.get(url);
+};
+
 export const deleteProduct = (id, token) => {
   return axios.delete("/api/products/" + id + "?token=" + token);
 };
