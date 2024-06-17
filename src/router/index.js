@@ -8,6 +8,7 @@ import ProductsPage from "../pages/ProductsPage.vue";
 import ContactsPage from "../pages/ContactsPage.vue";
 import SettingsPage from "../pages/SettingsPage.vue";
 import ProductEditPage from "../pages/ProductEditPage.vue";
+import CheckoutsPage from "../pages/CheckoutsPage.vue";
 
 //import UserPage from "../pages/UserPage";
 //import AccountActivationPage from "../pages/AccountActivationPage";
@@ -55,6 +56,11 @@ const router = createRouter({
     {
       path: "/settings",
       component: SettingsPage,
+    },
+
+    {
+      path: "/checkouts",
+      component: CheckoutsPage,
     },
 
     // {

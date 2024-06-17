@@ -32,7 +32,7 @@
         <div class="col-7 d-flex align-items-baseline">
           <input
             type="input"
-            placeholder="search: name or sku"
+            placeholder="search: email"
             class="form-control col"
             name="search"
             v-model="searchValue"
@@ -109,15 +109,13 @@
             <td>{{ p["email"] }}</td>
             <td>{{ p["telephone"] }}</td>
             <td>{{ p["id"] }}</td>
-            <td
-              :role="'price_total_add_deliver_' + lang"
-            >
+            <td :role="'price_total_add_deliver_' + lang">
               <b>{{ p["price_total_add_deliver"] }}</b>
             </td>
             <td>{{ p["price_total"] }}</td>
             <td>{{ p["price_deliver"] }}</td>
 
-            <td>Basket - todo</td>            
+            <td>Basket - todo</td>
 
             <td>{{ p["created_at"] ? p["created_at"].split("T")[0] : "" }}</td>
             <td>

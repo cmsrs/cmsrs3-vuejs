@@ -23,6 +23,12 @@
           >
           <router-link
             class="nav-link"
+            to="/checkouts"
+            :class="{ 'text-primary': $route.path.startsWith('/checkout') }"
+            >Checkouts</router-link
+          >
+          <router-link
+            class="nav-link"
             to="/contacts"
             :class="{ 'text-primary': $route.path.startsWith('/contact') }"
             >Contacts</router-link

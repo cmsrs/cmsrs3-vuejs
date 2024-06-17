@@ -43,16 +43,16 @@ const responseGetCheckouts = {
             price: 112,
             product_id: 1,
             product_name: "name11",
-            product_url: "/cms/books/programmer/name11"
+            product_url: "/cms/books/programmer/name11",
           },
           {
             qty: 8,
             price: 321,
             product_id: 2,
             product_name: "name22",
-            product_url: "/cms/books/programmer/name22"
-          }
-        ]
+            product_url: "/cms/books/programmer/name22",
+          },
+        ],
       },
       {
         id: 31,
@@ -76,46 +76,48 @@ const responseGetCheckouts = {
             price: 112,
             product_id: 1,
             product_name: "name11",
-            product_url: "/cms/books/programmer/name11"
+            product_url: "/cms/books/programmer/name11",
           },
           {
             qty: 35,
             price: 321,
             product_id: 2,
             product_name: "name22",
-            product_url: "/cms/books/programmer/name22"
-          }
-        ]
-      }
+            product_url: "/cms/books/programmer/name22",
+          },
+        ],
+      },
     ],
-    first_page_url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+    first_page_url:
+      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     from: 1,
     last_page: 1,
-    last_page_url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+    last_page_url:
+      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     links: [
       {
         url: null,
         label: "« Previous",
-        active: false
+        active: false,
       },
       {
         url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
         label: "1",
-        active: true
+        active: true,
       },
       {
         url: null,
         label: "Next »",
-        active: false
-      }
+        active: false,
+      },
     ],
     next_page_url: null,
     path: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc",
     per_page: 10,
     prev_page_url: null,
     to: 2,
-    total: 2
-  }
+    total: 2,
+  },
 };
 
 const responseGetCheckoutsPl = {
@@ -145,16 +147,16 @@ const responseGetCheckoutsPl = {
             price: 112,
             product_id: 1,
             product_name: "name11pl",
-            product_url: "/cms/books/programmer/name11pl"
+            product_url: "/cms/books/programmer/name11pl",
           },
           {
             qty: 8,
             price: 321,
             product_id: 2,
             product_name: "name22pl",
-            product_url: "/cms/books/programmer/name22pl"
-          }
-        ]
+            product_url: "/cms/books/programmer/name22pl",
+          },
+        ],
       },
       {
         id: 31,
@@ -178,46 +180,49 @@ const responseGetCheckoutsPl = {
             price: 112,
             product_id: 1,
             product_name: "name11pl",
-            product_url: "/cms/books/programmer/name11pl"
+            product_url: "/cms/books/programmer/name11pl",
           },
           {
             qty: 35,
             price: 321,
             product_id: 2,
             product_name: "name22pl",
-            product_url: "/cms/books/programmer/name22pl"
-          }
-        ]
-      }
+            product_url: "/cms/books/programmer/name22pl",
+          },
+        ],
+      },
     ],
-    first_page_url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+    first_page_url:
+      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     from: 1,
     last_page: 1,
-    last_page_url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+    last_page_url:
+      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     links: [
       {
         url: null,
         label: "« Previous",
-        active: false
+        active: false,
       },
       {
         url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
         label: "1",
-        active: true
+        active: true,
       },
       {
         url: null,
         label: "Next »",
-        active: false
-      }
+        active: false,
+      },
     ],
     next_page_url: null,
     path: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc",
     per_page: 10,
     prev_page_url: null,
     to: 2,
-    total: 2
-  }};
+    total: 2,
+  },
+};
 
 let server = setupServer(
   http.get("/api/checkouts/pagination/en/created_at/desc", () => {
@@ -410,8 +415,8 @@ describe("Checkouts page", () => {
       expect(counter).toBe(2); //mount+click
     });
 
-    
-    it.skip("delete checkout", async () => { //todo in future
+    it.skip("delete checkout", async () => {
+      //todo in future
       confirmSpy.mockReturnValueOnce(true);
       await setup();
       await waitForAjax();
@@ -426,7 +431,6 @@ describe("Checkouts page", () => {
         expect(alertSuccessAfter).toBeInTheDocument();
       });
     });
-    
 
     it.skip("edit checkout", async () => {
       await setup();
@@ -447,6 +451,5 @@ describe("Checkouts page", () => {
       userEvent.click(checkoutAdd);
       //todo
     });
-
   });
 });
