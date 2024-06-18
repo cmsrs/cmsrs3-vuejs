@@ -12,6 +12,8 @@
     <div class="container">
       <div class="row mb-4">
         <div class="col-5">
+          &nbsp;
+          <!--          
           <button
             role="button_add_checkout"
             @click.prevent="addCheckout"
@@ -19,14 +21,16 @@
             :disabled="pre_loader"
           >
             <i v-if="!pre_loader" class="fas fa-plus"></i>
+            
 
             <span
               role="pre_loader_add_checkout"
               v-if="pre_loader"
               class="spinner-grow spinner-grow-sm"
             ></span>
-            Add Checkout
+            Add Checkout            
           </button>
+          -->
         </div>
 
         <div class="col-7 d-flex align-items-baseline">
@@ -124,7 +128,7 @@
                 class="me-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
                 @click="editCheckout(p['id'])"
-                ><i class="far fa-edit cursor-pointer"></i
+                ><i class="far fa-money-bill-alt  cursor-pointer" aria-hidden="true"></i
               ></span>
             </td>
           </tr>
@@ -156,8 +160,7 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { SERVER_URL } from "../config.js";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import { getCheckouts } from "../api/apiCalls.js";
@@ -196,19 +199,19 @@ const searchValue = ref(""); // current value
 
 const windowWidth = ref(window.innerWidth);
 
-const updateWindowWidth = () => {
-  windowWidth.value = window.innerWidth;
-};
+// const updateWindowWidth = () => {
+//   windowWidth.value = window.innerWidth;
+// };
 
-const iconClass = computed(() => {
-  return windowWidth.value < 990
-    ? "fa fa-camera-retro fa-lg"
-    : "fa fa-camera-retro fa-3x";
-});
+// const iconClass = computed(() => {
+//   return windowWidth.value < 990
+//     ? "fa fa-camera-retro fa-lg"
+//     : "fa fa-camera-retro fa-3x";
+// });
 
-const addCheckout = () => {
-  router.push({ name: "checkout", params: { mode: "add" } });
-};
+// const addCheckout = () => {
+//   router.push({ name: "checkout", params: { mode: "add" } });
+// };
 
 const editCheckout = (id) => {
   alert(id);
