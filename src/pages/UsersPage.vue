@@ -96,8 +96,17 @@
         <tbody>
           <tr v-for="(c, index) in clients.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
-            <td>{{ c["name"] }}</td>
-            <td>{{ c["email"] }}</td>
+            <td>
+              <span
+                @click="editClient(c['id'])"
+                class="cursor-pointer text-primary"
+              >
+                {{ c["name"] }}
+              </span>
+            </td>
+            <td>
+              {{ c["email"] }}
+            </td>
             <td>{{ c["created_at"] ? c["created_at"].split("T")[0] : "" }}</td>
             <td>
               <span

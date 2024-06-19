@@ -90,7 +90,15 @@
         <tbody>
           <tr v-for="(p, index) in checkouts.data" :key="index">
             <th scope="row">{{ index + 1 }}</th>
-            <td>{{ p["email"] }}</td>
+            <td>
+              <a
+                :href="'/user/edit/' + p.user_id"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ p["email"] }}
+              </a>
+            </td>
             <td>{{ p["telephone"] }}</td>
             <td>{{ p["id"] }}</td>
             <td :role="'price_total_add_deliver_' + lang">
@@ -99,7 +107,24 @@
             <td>{{ p["price_total"] }}</td>
             <td>{{ p["price_deliver"] }}</td>
 
-            <td>Basket - todo</td>
+            <td>
+              <div>
+                <div
+                  v-for="basket in p.baskets"
+                  :key="basket.product_id"
+                  class="text-nowrap"
+                >
+                  <a
+                    :href="'/product/edit/' + basket.product_id"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ basket.product_name }}
+                  </a>
+                  {{ basket.qty }} x {{ basket.price }}
+                </div>
+              </div>
+            </td>
 
             <td>{{ p["created_at"] ? p["created_at"].split("T")[0] : "" }}</td>
             <td>
