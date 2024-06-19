@@ -19,6 +19,8 @@ const ttt = (key) => {
 
     cache_was_cleared: "Cache was cleared",
     sitemap_was_created: "Sitemap was created",
+
+    success_edit_checkout: "Checkout has been updated"
   };
 
   return d[key] ? d[key] : key;

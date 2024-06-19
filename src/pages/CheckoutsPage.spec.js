@@ -9,6 +9,7 @@ import "../../test/afterlogin.js";
 
 import CheckoutsPage from "./CheckoutsPage.vue";
 import storage from "../state/storage.js";
+import trans from "../helpers/trans.js";
 import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
@@ -245,7 +246,7 @@ let server = setupServer(
     return HttpResponse.json(responseGetCheckouts);
   }),
 
-  http.delete("/api/checkouts/1", () => {
+   http.put("api/checkouts/4", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -401,6 +402,25 @@ describe("Checkouts page", () => {
       await waitFor(() => {
         expect(counter).toBe(2);
       });
+    });
+
+    it("change checkout to is pay", async () => {
+      await setup();
+      await waitForAjax();
+
+      expect(counter).toBe(1); //mount
+      const editCheckouts = await screen.queryAllByRole("edit_checkout");
+      userEvent.click(editCheckouts[0]);
+
+      await waitFor(() => {
+        expect(counter).toBe(2);
+        const alertSuccessAfter = screen.queryByRole("alert_success");
+        expect(alertSuccessAfter).toBeInTheDocument();
+
+        const s1 = trans.ttt("success_edit_checkout");
+        screen.findByText(s1);            
+      });
+
     });
 
     /** skip */

@@ -163,7 +163,8 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { getCheckouts } from "../api/apiCalls.js";
+import trans from "../helpers/trans.js";
+import { getCheckouts, putCheckout } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
 import TableSort from "../components/TableSort.vue";
@@ -213,9 +214,32 @@ const windowWidth = ref(window.innerWidth);
 //   router.push({ name: "checkout", params: { mode: "add" } });
 // };
 
-const editCheckout = (id) => {
-  alert(id);
-  //router.push({ name: "checkout", params: { mode: "edit", id: id } });
+const editCheckout = async (id) => {
+  //console.log('editCheckout'+ id);
+
+  if (!startLoading()) {
+    return false;
+  }
+
+  try {
+    const response = await putCheckout(
+      {isPay: 1},
+      id,
+      auth.token,
+    );
+    if (response.data.success) {
+      msgGood.value = trans.ttt("success_edit_checkout");
+      pre_loader.value = false;
+      return true;
+    } else {
+      msgWrong.value = "Sth wrong with edit checkout";
+      console.log("error putCheckout", response.data);
+    }
+  } catch (error) {
+    msgWrong.value = "Sth wrong with edit checkout (error)";
+    console.log("error putCheckout", error);
+  }
+  return false;
 };
 
 async function changeLang(inLang) {
@@ -297,6 +321,15 @@ const sorting = async (col, dir) => {
   if (refreshP) {
     pre_loader.value = false;
   }
+};
+
+const startLoading = async () => {
+  clearMsg();
+  if (pre_loader.value) {
+    return false;
+  }
+  pre_loader.value = true;
+  return true;
 };
 
 const clearMsg = () => {
