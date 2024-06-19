@@ -413,14 +413,17 @@ describe("Checkouts page", () => {
       userEvent.click(editCheckouts[0]);
 
       await waitFor(() => {
-        expect(counter).toBe(2);
+        expect(counter).toBe(3); //update and refresh
         const alertSuccessAfter = screen.queryByRole("alert_success");
         expect(alertSuccessAfter).toBeInTheDocument();
 
         const s1 = trans.ttt("success_edit_checkout");
-        screen.findByText(s1);            
+        expect(screen.queryByText(s1)).toBeInTheDocument();
+  
+        //api must be changed in order to execute this tests:
+        //const ExpectedText = "Paid";
+        //expect(screen.queryByText(ExpectedText)).toBeInTheDocument();
       });
-
     });
 
     /** skip */

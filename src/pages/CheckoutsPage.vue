@@ -13,24 +13,6 @@
       <div class="row mb-4">
         <div class="col-5">
           &nbsp;
-          <!--          
-          <button
-            role="button_add_checkout"
-            @click.prevent="addCheckout"
-            class="add-page-btn btn btn-primary mt-2 mb-2 mr-2"
-            :disabled="pre_loader"
-          >
-            <i v-if="!pre_loader" class="fas fa-plus"></i>
-            
-
-            <span
-              role="pre_loader_add_checkout"
-              v-if="pre_loader"
-              class="spinner-grow spinner-grow-sm"
-            ></span>
-            Add Checkout            
-          </button>
-          -->
         </div>
 
         <div class="col-7 d-flex align-items-baseline">
@@ -123,13 +105,16 @@
 
             <td>{{ p["created_at"] ? p["created_at"].split("T")[0] : "" }}</td>
             <td>
-              <span
+              <span v-if="!p.is_pay"
                 role="edit_checkout"
                 class="me-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
                 @click="editCheckout(p['id'])"
                 ><i class="far fa-money-bill-alt  cursor-pointer" aria-hidden="true"></i
               ></span>
+              <span v-else>
+                Paid
+              </span>
             </td>
           </tr>
         </tbody>
@@ -160,7 +145,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
@@ -173,16 +158,10 @@ const { auth, setDefaultLang } = useAuthStore();
 
 const router = useRouter();
 
-//const { token } = functions.retrieveParamsFromStorage();
-
 // Data
 const {
-  //configLangs: langs,
   configDefaultLang,
-  //token,
 } = functions.retrieveParamsFromStorage();
-
-//console.log('def_lang', configDefaultLang);
 
 const lang = ref(configDefaultLang);
 const msgWrong = ref("");
@@ -198,24 +177,7 @@ const page = ref("");
 const search = ref(""); //after click button
 const searchValue = ref(""); // current value
 
-const windowWidth = ref(window.innerWidth);
-
-// const updateWindowWidth = () => {
-//   windowWidth.value = window.innerWidth;
-// };
-
-// const iconClass = computed(() => {
-//   return windowWidth.value < 990
-//     ? "fa fa-camera-retro fa-lg"
-//     : "fa fa-camera-retro fa-3x";
-// });
-
-// const addCheckout = () => {
-//   router.push({ name: "checkout", params: { mode: "add" } });
-// };
-
 const editCheckout = async (id) => {
-  //console.log('editCheckout'+ id);
 
   if (!startLoading()) {
     return false;
@@ -223,14 +185,17 @@ const editCheckout = async (id) => {
 
   try {
     const response = await putCheckout(
-      {isPay: 1},
+      {is_pay: 1},
       id,
       auth.token,
     );
     if (response.data.success) {
-      msgGood.value = trans.ttt("success_edit_checkout");
-      pre_loader.value = false;
-      return true;
+      const refreshP = await refreshCheckouts();
+      if (refreshP) {
+        msgGood.value = trans.ttt("success_edit_checkout");
+        pre_loader.value = false;
+        return true;
+      }    
     } else {
       msgWrong.value = "Sth wrong with edit checkout";
       console.log("error putCheckout", response.data);
@@ -265,31 +230,6 @@ const searchCheckouts = async () => {
     pre_loader.value = false;
   }
 };
-
-// const goToPage = (pageId) => {
-//   router.push("/pages/" + pageId);
-// };
-
-// const delCheckout = async (id) => {
-//   clearMsg();
-//   if (window.confirm("Are you sure you wish to delete this item?")) {
-//     pre_loader.value = true;
-
-//     try {
-//       const response = await deleteCheckout(id, auth.token);
-//       if (response.data.success) {
-//         const ret = await refreshCheckouts();
-//         if (ret) {
-//           msgGood.value = "Checkout has been deleted";
-//           pre_loader.value = false;
-//         }
-//       }
-//     } catch (error) {
-//       console.log("_is_error__", error);
-//       msgWrong.value = "Delete checkout problem = " + error;
-//     }
-//   }
-// };
 
 const changePageByUrl = async (url) => {
   pre_loader.value = true;
@@ -363,7 +303,6 @@ onMounted(async () => {
   }
 
   pre_loader.value = true;
-  //window.addEventListener("resize", updateWindowWidth);
   // set up sorting on the start
   column.value = "created_at";
   direction.value = "desc";
@@ -376,4 +315,9 @@ onMounted(async () => {
     pre_loader.value = false;
   }
 });
+
+watch(searchValue, () => {
+  clearMsg();
+});
+
 </script>
