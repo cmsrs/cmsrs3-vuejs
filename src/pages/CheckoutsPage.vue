@@ -11,9 +11,7 @@
 
     <div class="container">
       <div class="row mb-4">
-        <div class="col-5">
-          &nbsp;
-        </div>
+        <div class="col-5">&nbsp;</div>
 
         <div class="col-7 d-flex align-items-baseline">
           <input
@@ -105,16 +103,18 @@
 
             <td>{{ p["created_at"] ? p["created_at"].split("T")[0] : "" }}</td>
             <td>
-              <span v-if="!p.is_pay"
+              <span
+                v-if="!p.is_pay"
                 role="edit_checkout"
                 class="me-1"
                 :class="{ 'disabled-if-loader': pre_loader }"
                 @click="editCheckout(p['id'])"
-                ><i class="far fa-money-bill-alt  cursor-pointer" aria-hidden="true"></i
+                ><i
+                  class="far fa-money-bill-alt cursor-pointer"
+                  aria-hidden="true"
+                ></i
               ></span>
-              <span v-else>
-                Paid
-              </span>
+              <span v-else> Paid </span>
             </td>
           </tr>
         </tbody>
@@ -159,9 +159,7 @@ const { auth, setDefaultLang } = useAuthStore();
 const router = useRouter();
 
 // Data
-const {
-  configDefaultLang,
-} = functions.retrieveParamsFromStorage();
+const { configDefaultLang } = functions.retrieveParamsFromStorage();
 
 const lang = ref(configDefaultLang);
 const msgWrong = ref("");
@@ -178,24 +176,19 @@ const search = ref(""); //after click button
 const searchValue = ref(""); // current value
 
 const editCheckout = async (id) => {
-
   if (!startLoading()) {
     return false;
   }
 
   try {
-    const response = await putCheckout(
-      {is_pay: 1},
-      id,
-      auth.token,
-    );
+    const response = await putCheckout({ is_pay: 1 }, id, auth.token);
     if (response.data.success) {
       const refreshP = await refreshCheckouts();
       if (refreshP) {
         msgGood.value = trans.ttt("success_edit_checkout");
         pre_loader.value = false;
         return true;
-      }    
+      }
     } else {
       msgWrong.value = "Sth wrong with edit checkout";
       console.log("error putCheckout", response.data);
@@ -319,5 +312,4 @@ onMounted(async () => {
 watch(searchValue, () => {
   clearMsg();
 });
-
 </script>

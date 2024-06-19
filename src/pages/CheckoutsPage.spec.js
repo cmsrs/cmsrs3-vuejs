@@ -246,7 +246,7 @@ let server = setupServer(
     return HttpResponse.json(responseGetCheckouts);
   }),
 
-   http.put("api/checkouts/4", () => {
+  http.put("api/checkouts/4", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -419,7 +419,7 @@ describe("Checkouts page", () => {
 
         const s1 = trans.ttt("success_edit_checkout");
         expect(screen.queryByText(s1)).toBeInTheDocument();
-  
+
         //api must be changed in order to execute this tests:
         //const ExpectedText = "Paid";
         //expect(screen.queryByText(ExpectedText)).toBeInTheDocument();

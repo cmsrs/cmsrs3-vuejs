@@ -58,7 +58,7 @@ else
 
     #npm run test   ./src/pages/SettingsPage.spec.js 
 
-    npm run test  ./src/pages/CheckoutsPage.spec.js #-- -t "show data in table" 
+    npm run test  ./src/pages/CheckoutsPage.spec.js -- -t "change checkout to is pay" 
 
 fi
 

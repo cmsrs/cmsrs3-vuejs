@@ -178,7 +178,7 @@ export const getCheckouts = (lang, column, direction, token, page, search) => {
 };
 
 export const putCheckout = (post, id, token) => {
-  return axios.put("/api/checkouts/"+id+"?token=" + token, post);
+  return axios.put("/api/checkouts/" + id + "?token=" + token, post);
 };
 
 export const deleteProduct = (id, token) => {
