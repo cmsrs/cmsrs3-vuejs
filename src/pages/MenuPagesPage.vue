@@ -457,7 +457,7 @@ import ManageImages from "../components/ManageImages.vue";
 import { useAuthStore } from "../state/store.js";
 
 const router = useRouter();
-const { auth, setDefaultLang } = useAuthStore();
+const { auth, config, setDefaultLang } = useAuthStore();
 
 const childImageComponentRef = ref(null);
 
@@ -554,7 +554,11 @@ const saveEditPage = async () => {
       pre_loader.value = false;
     }
   } catch (error) {
-    console.log("_is_error__", error);
+    if(config.demo_status){
+      msgWrong.value =  trans.ttt("is_demo_true");
+    }else{
+      console.log("_is_error__", error);
+    }
   }
   pre_loader.value = false;
 };

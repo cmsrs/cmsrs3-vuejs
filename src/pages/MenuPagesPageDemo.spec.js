@@ -11,9 +11,10 @@ import MenuPagesPage from "./MenuPagesPage.vue";
 import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
+import trans from "../helpers/trans.js";
 //import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
-import { afterAll, beforeAll } from "vitest";
+import { afterAll, beforeAll, expect } from "vitest";
 //import { afterAll, beforeAll, describe, expect } from "vitest";
 
 const contentPl = "lorem ipsum pl";
@@ -48,6 +49,7 @@ const pages = [
 ];
 
 let counter = 0;
+let counterEdit = 0;
 
 let server = setupServer(
   http.get("/api/pages", async () => {
@@ -70,6 +72,14 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
+  http.put("/api/pages/1", async () => {
+    counterEdit += 1;
+    return new HttpResponse(null, {
+      status: 404,
+      statusText: 'Out Of Apples',
+    })
+  }),
+
   http.get("/api/menus", async () => {
     counter += 1;
     const jsonRes = {
@@ -87,6 +97,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   counter = 0;
+  counterEdit = 0;
   server.resetHandlers();
 });
 
@@ -101,7 +112,7 @@ const waitForAjaxes = async () => {
 };
 
 describe("Pages page", () => {
-  describe("Interactions many langs", () => {
+  describe("Interactions when demo_status is true", () => {
     const jsonStore2 = {
       auth: {
         token: "abcde12345",
@@ -112,6 +123,7 @@ describe("Pages page", () => {
         langs: ["pl", "en"],
         default_lang: "pl",
         cache_enable: 1,
+        demo_status: 1 //!!!
       },
     };
 
@@ -126,7 +138,7 @@ describe("Pages page", () => {
       });
     };
 
-    it("click change lang", async () => {
+    it("edit first page", async () => {
       localStorage.clear();
       storage.setItem("auth", jsonStore2.auth);
       storage.setItem("config", jsonStore2.config);
@@ -135,21 +147,19 @@ describe("Pages page", () => {
       await waitForAjaxes();
       expect(counter).toBe(3);
 
-      await screen.findByText("short p22 pl");
-
-      const shortTitle = screen.queryByPlaceholderText("short title pl");
-      expect(shortTitle).toHaveValue("short p22 pl");
-
-      const langEn = screen.queryByRole("lang_en");
-      await userEvent.click(langEn);
+      const pageEdit = screen.queryByRole("button_save_edit_page");
+      expect(counterEdit).toBe(0);
+      userEvent.click(pageEdit);
 
       await waitFor(() => {
-        const shortTitleE = screen.queryByPlaceholderText("short title en");
-        expect(shortTitleE).toHaveValue("short p22 en");
-        expect(shortTitleE).not.toHaveValue("short p22 pl");
+        expect(counterEdit).toBe(1);
+        const alertDangerAfter = screen.queryByRole("alert_danger");
+        expect(alertDangerAfter).toBeInTheDocument();
 
-        //screen.findByText("it is not exist test23423423423423423423");     //is is working too - is should be queryByText
+        const msg = trans.ttt("is_demo_true");
+        expect(screen.queryByText(msg)).toBeInTheDocument();
       });
+
     });
   });
 });

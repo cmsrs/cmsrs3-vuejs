@@ -21,6 +21,8 @@ const ttt = (key) => {
     sitemap_was_created: "Sitemap was created",
 
     success_edit_checkout: "Checkout has been updated",
+
+    is_demo_true: "We're sorry, but this action is not available in the demo version.",
   };
 
   return d[key] ? d[key] : key;

@@ -58,8 +58,11 @@ else
 
     #npm run test   ./src/pages/SettingsPage.spec.js 
 
-    npm run test  ./src/pages/CheckoutsPage.spec.js -- -t "change checkout to is pay" 
+    #npm run test  ./src/pages/CheckoutsPage.spec.js -- -t "change checkout to is pay" 
+
+    npm run test  ./src/pages/MenuPagesPageDemo.spec.js 
 
 fi
+
 
 
