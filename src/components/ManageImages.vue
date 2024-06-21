@@ -149,7 +149,11 @@ const internalMsgGood = defineModel("internalMsgGood");
 const internalPreLoader = defineModel("internalPreLoader");
 
 async function handleUploadFile(event) {
-  
+  if(config.demo_status){
+    internalMsgWrong.value = trans.ttt("is_demo_true");
+    return false;
+  }  
+
   if (internalPreLoader.value) {
     return false;
   }
@@ -172,17 +176,17 @@ async function handleUploadFile(event) {
 
   for (let i = 0; i < newImages.length; i++) {
     
-    try{
-      let ret = uploadImage(
-        newImages[i],
-        props.type,
-        props.currentId,
-        auth.token,
-      );
-    }catch (error) {
-      console.log('wrong upload');
-      //handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
-    }
+    //try{
+    let ret = uploadImage(
+      newImages[i],
+      props.type,
+      props.currentId,
+      auth.token,
+    );
+    //}catch (error) {
+    //      console.log('wrong upload');
+    //handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
+    //}
 
     if (auth.token !== jsonStoreTest.getTestToken()) {
       //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
