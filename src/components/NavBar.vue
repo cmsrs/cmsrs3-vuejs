@@ -98,6 +98,12 @@ const signOut = async () => {
 };
 
 const changeCacheEnableInNav = async () => {
+  if(config.demo_status){
+    const msg = trans.ttt("is_demo_true");
+    alert(msg);
+    return false;
+  }
+
   pre_loader.value = true;
 
   try {

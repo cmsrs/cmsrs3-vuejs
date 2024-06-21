@@ -121,6 +121,8 @@ import imgs from "../helpers/imgs.js";
 import jsonStoreTest from "../../test/jsonStore.js";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
+import { handleError  } from "../helpers/common.js";
+
 import {
   uploadImage,
   getImages,
@@ -128,7 +130,7 @@ import {
   setImagePosition,
 } from "../api/apiCalls";
 import { useAuthStore } from "../state/store.js";
-const { auth, setModal } = useAuthStore();
+const { auth, config, setModal } = useAuthStore();
 
 const selectedItems = ref({});
 const selectedAllItems = ref(false);
@@ -147,6 +149,7 @@ const internalMsgGood = defineModel("internalMsgGood");
 const internalPreLoader = defineModel("internalPreLoader");
 
 async function handleUploadFile(event) {
+  
   if (internalPreLoader.value) {
     return false;
   }
@@ -168,12 +171,18 @@ async function handleUploadFile(event) {
   const newImages = await imgs.getImagesUpload(files);
 
   for (let i = 0; i < newImages.length; i++) {
-    let ret = uploadImage(
-      newImages[i],
-      props.type,
-      props.currentId,
-      auth.token,
-    );
+    
+    try{
+      let ret = uploadImage(
+        newImages[i],
+        props.type,
+        props.currentId,
+        auth.token,
+      );
+    }catch (error) {
+      console.log('wrong upload');
+      //handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
+    }
 
     if (auth.token !== jsonStoreTest.getTestToken()) {
       //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
@@ -228,8 +237,9 @@ const delImagesWrap = async (id, isMany) => {
     }
     return true;
   } catch (error) {
-    console.log("_is_error_del_image_", error);
-    internalMsgWrong.value = "Delete menu problem = " + error;
+    handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
+    //console.log("_is_error_del_image_", error);
+    //internalMsgWrong.value = "Delete menu problem = " + error;
     return false;
   }
 };
@@ -258,8 +268,9 @@ const positionImage = async (direction, imageId) => {
       return false; //When one image occurs, we can't change its position.
     }
   } catch (error) {
-    console.log("_is_error_pos_image_", error);
-    internalMsgWrong.value = "Position image problem = " + error;
+    handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
+    //console.log("_is_error_pos_image_", error);
+    //internalMsgWrong.value = "Position image problem = " + error;
   }
 };
 
