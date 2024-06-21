@@ -8,6 +8,7 @@ import {
 } from "../test/helper.js";
 import "../test/afterlogin.js";
 import functions from "./helpers/functions.js";
+import trans from "./helpers/trans.js";
 import storage from "./state/storage.js";
 import App from "./App.vue";
 import { setupServer } from "msw/node";
@@ -148,6 +149,62 @@ describe("change cache in nav bar", () => {
     expect(isCacheEnable1).toBe(1);
   });
 });
+
+describe("change cache in nav bar for demo version", () => {
+
+  const jsonStore3 = {
+    auth: {
+      token: "abcde12345",
+    },
+    //this data came from api/config and save to local storage
+    config: {
+      page_types: ["cms", "gallery", "main_page"],
+      langs: ["en"],
+      default_lang: "en",
+      cache_enable: 1, //!!
+      is_cache_enable: 0, //!!
+      demo_status: 1 //!!!      
+    },
+  };
+  
+  const setupStorage3 = async () => {  
+    localStorage.clear();
+    storage.setItem("auth", jsonStore3.auth);
+    storage.setItem("config", jsonStore3.config);
+  }
+
+
+  it("in nav bar cache enable by click input toggle cache", async () => {
+    setupStorage3();
+    await setup("/pages");
+
+    const isCacheEnable0 = storage.getItem("config").is_cache_enable;
+    expect(isCacheEnable0).toBe(0);
+    expect(counterToggle).toBe(0);
+
+    const changeCacheEnable = await screen.queryByRole(
+      "toggle_cache_enable_in_nav_bar",
+    );
+
+    // Mock the alert function
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    await userEvent.click(changeCacheEnable);
+
+    // Check if the alert is displayed
+    //const alert = await screen.findByRole("alert"); // Adjust the selector based on how the alert is implemented
+    //expect(alert).toBeInTheDocument();
+
+
+    // Verify the alert message
+    const msg = trans.ttt("is_demo_true");
+    expect(alertSpy).toHaveBeenCalledWith(msg);
+
+    // Restore the original alert function
+    alertSpy.mockRestore();
+  });
+});
+
 
 describe("prevent redirect when user is auth", () => {
   it("prevent redirect lo login page when user is auth", async () => {

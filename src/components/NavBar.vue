@@ -72,6 +72,7 @@
 <script setup>
 import { ref } from "vue";
 import functions from "../helpers/functions.js";
+import trans from "../helpers/trans.js";
 import { postToggleCacheEnableFile, logout } from "../api/apiCalls.js";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";

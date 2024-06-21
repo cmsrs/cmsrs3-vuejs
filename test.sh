@@ -17,7 +17,7 @@ else
     #npm run test   -- -t   'save new menu - display error and clear msg after change menu name'
     #npm run test   -- -t     'display good message and click add menu button'
 
-    #npm run test ./src/App.spec.js  -- -t 'sign out'
+    npm run test ./src/App.spec.js  
 
     #npm run test   ./src/App.spec.js  -- -t     "in nav bar cache enable by click input toggle cache"
 
@@ -63,9 +63,12 @@ else
     #npm run test  ./src/pages/MenuPagesPageDemo.spec.js 
 
 
-    npm run test   ./src/pages/ProductEditPageImageDemo.spec.js
+    #npm run test   ./src/pages/ProductEditPageImageDemo.spec.js
+
+    #npm run test   ./src/pages/SettingsPageError.spec.js 
 
 fi
+
 
 
 
