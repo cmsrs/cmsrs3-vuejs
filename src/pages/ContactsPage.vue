@@ -124,9 +124,13 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
+import { handleError  } from "../helpers/common.js";
 import { getContacts, deleteContact } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import TableSort from "../components/TableSort.vue";
+
+import { useAuthStore } from "../state/store.js";
+const { config } = useAuthStore();
 
 const router = useRouter();
 
@@ -172,8 +176,9 @@ const delContact = async (id) => {
         }
       }
     } catch (error) {
-      console.log("_is_error__", error);
-      msgWrong.value = "Delete contact problem = " + error;
+      handleError(error, config.demo_status, msgWrong, pre_loader);
+      //console.log("_is_error__", error);
+      //msgWrong.value = "Delete contact problem = " + error;
     }
   }
 };

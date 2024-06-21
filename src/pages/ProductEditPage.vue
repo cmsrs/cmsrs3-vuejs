@@ -138,6 +138,7 @@
 import { ref, watch, onMounted } from "vue";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
+import { handleError  } from "../helpers/common.js";
 import {
   getProduct,
   postProduct,
@@ -149,7 +150,7 @@ import ChangeLang from "../components/ChangeLang.vue";
 import ManageImages from "../components/ManageImages.vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
-const { auth, setDefaultLang } = useAuthStore();
+const { auth, config,  setDefaultLang } = useAuthStore();
 
 const childImageComponentRef = ref(null);
 
@@ -244,7 +245,8 @@ const addEditProduct = async () => {
         "Something wrong with add or edit product - check response status";
     }
   } catch (error) {
-    console.log("_is_error__", error);
+    //console.log("_is_error__", error);
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   }
   pre_loader.value = false;
 };

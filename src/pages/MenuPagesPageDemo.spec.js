@@ -75,8 +75,7 @@ let server = setupServer(
   http.put("/api/pages/1", async () => {
     counterEdit += 1;
     return new HttpResponse(null, {
-      status: 404,
-      statusText: 'Out Of Apples',
+      status: 403
     })
   }),
 

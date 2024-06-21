@@ -433,6 +433,7 @@ import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import cms from "../helpers/cms.js";
 import trans from "../helpers/trans.js";
+import { handleError  } from "../helpers/common.js";
 import {
   postPage,
   putPage,
@@ -554,11 +555,7 @@ const saveEditPage = async () => {
       pre_loader.value = false;
     }
   } catch (error) {
-    if(config.demo_status){
-      msgWrong.value =  trans.ttt("is_demo_true");
-    }else{
-      console.log("_is_error__", error);
-    }
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   }
   pre_loader.value = false;
 };
@@ -630,8 +627,9 @@ async function saveMenu(index) {
           }
         }
       } catch (error) {
-        console.log("_is_error__", error);
-        msgWrong.value = "Add menu problem = " + error;
+        handleError(error, config.demo_status, msgWrong, pre_loader);
+        //console.log("_is_error__", error);
+        //msgWrong.value = "Add menu problem = " + error;
       }
       pre_loader.value = false;
     }
@@ -665,8 +663,9 @@ async function saveMenu(index) {
           msgGood.value = "Menu has been changed";
         }
       } catch (error) {
-        console.log("_is_error__", error);
-        msgWrong.value = "Add menu problem = " + error;
+        handleError(error, config.demo_status, msgWrong, pre_loader);
+        //console.log("_is_error__", error);
+        //msgWrong.value = "Add menu problem = " + error;
       }
       pre_loader.value = false;
     }
@@ -694,8 +693,9 @@ async function delMenu(index) {
           }
         }
       } catch (error) {
-        console.log("_is_error__", error);
-        msgWrong.value = "Delete menu problem = " + error;
+        handleError(error, config.demo_status, msgWrong, pre_loader);
+        //console.log("_is_error__", error);
+        //msgWrong.value = "Delete menu problem = " + error;
       }
     }
   }
@@ -731,8 +731,9 @@ const positionMenu = async (direction, menuId) => {
       }
     }
   } catch (error) {
-    console.log("_is_error__", error);
-    msgWrong.value = "Position menu problem = " + error;
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //console.log("_is_error__", error);
+    //msgWrong.value = "Position menu problem = " + error;
   }
 };
 
@@ -769,8 +770,9 @@ const getPageById = async (pageId) => {
       return true;
     }
   } catch (error) {
+    //handleError(error, config.demo_status, msgWrong, pre_loader);
     console.log("_is_error_get_page_", error);
-    //msgWrong.value = "Get page problem = " + error;
+    msgWrong.value = "Get page problem = " + error;
     return false;
   }
 };
@@ -806,8 +808,9 @@ const delPage = async (pageId) => {
         }
       }
     } catch (error) {
-      console.log("_is_error__", error);
-      msgWrong.value = "Delete menu problem = " + error;
+      handleError(error, config.demo_status, msgWrong, pre_loader);
+      //console.log("_is_error__", error);
+      //msgWrong.value = "Delete menu problem = " + error;
     }
   }
 };
@@ -837,8 +840,9 @@ const positionPage = async (direction, pageId) => {
       pre_loader.value = false;
     }
   } catch (error) {
-    console.log("_is_error__", error);
-    msgWrong.value = "Position page problem = " + error;
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //console.log("_is_error__", error);
+    //msgWrong.value = "Position page problem = " + error;
   }
 };
 
@@ -848,6 +852,7 @@ const refreshMenus = async () => {
     menus.value = responseM.data.data;
     return true;
   } catch (error) {
+    //handleError(error, config.demo_status, msgWrong, pre_loader);
     console.log("error get menu=", error);
   }
   return false;
@@ -864,6 +869,7 @@ const refreshPages = async () => {
     innerPages.value = cms.getInnerPages(responseP.data.data);
     return true;
   } catch (error) {
+    //handleError(error, config.demo_status, msgWrong, pre_loader);
     console.log("error get pages=", error);
   }
   return false;

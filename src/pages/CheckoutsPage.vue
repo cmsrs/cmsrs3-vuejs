@@ -174,12 +174,13 @@ import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
+import { handleError  } from "../helpers/common.js";
 import { getCheckouts, putCheckout } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
 import TableSort from "../components/TableSort.vue";
 import { useAuthStore } from "../state/store.js";
-const { auth, setDefaultLang } = useAuthStore();
+const { auth, config, setDefaultLang } = useAuthStore();
 
 const router = useRouter();
 
@@ -219,8 +220,9 @@ const editCheckout = async (id) => {
       console.log("error putCheckout", response.data);
     }
   } catch (error) {
-    msgWrong.value = "Sth wrong with edit checkout (error)";
-    console.log("error putCheckout", error);
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //msgWrong.value = "Sth wrong with edit checkout (error)";
+    //console.log("error putCheckout", error);
   }
   return false;
 };

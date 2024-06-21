@@ -235,12 +235,13 @@ import { ref, computed, onMounted } from "vue";
 import { SERVER_URL } from "../config.js";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
+import { handleError  } from "../helpers/common.js";
 import { getProducts, deleteProduct } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
 import TableSort from "../components/TableSort.vue";
 import { useAuthStore } from "../state/store.js";
-const { auth, setDefaultLang } = useAuthStore();
+const { auth, config, setDefaultLang } = useAuthStore();
 
 const router = useRouter();
 
@@ -332,8 +333,9 @@ const delProduct = async (id) => {
         }
       }
     } catch (error) {
-      console.log("_is_error__", error);
-      msgWrong.value = "Delete product problem = " + error;
+      handleError(error, config.demo_status, msgWrong, pre_loader);
+      //console.log("_is_error__", error);
+      //msgWrong.value = "Delete product problem = " + error;
     }
   }
 };

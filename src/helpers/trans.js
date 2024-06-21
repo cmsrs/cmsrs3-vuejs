@@ -23,6 +23,7 @@ const ttt = (key) => {
     success_edit_checkout: "Checkout has been updated",
 
     is_demo_true: "We're sorry, but this action is not available in the demo version.",
+    internal_problem: "internal problem, see logs"
   };
 
   return d[key] ? d[key] : key;

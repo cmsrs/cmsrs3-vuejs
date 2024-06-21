@@ -60,6 +60,7 @@ import {
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
 import functions from "../helpers/functions.js";
+import { handleError  } from "../helpers/common.js";
 import { useAuthStore } from "../state/store.js";
 const { auth, config, setIsCacheEnable } = useAuthStore();
 
@@ -111,8 +112,9 @@ const changeCacheEnable = async () => {
       console.log("error changeCacheEnable", response.data);
     }
   } catch (error) {
-    msgWrong.value = "Sth wrong with changeCacheEnable (error)";
-    console.log("error changeCacheEnable", error);
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //msgWrong.value = "Sth wrong with changeCacheEnable (error)";
+    //console.log("error changeCacheEnable", error);
   }
   return false;
 };
@@ -133,8 +135,9 @@ const actionClearCache = async () => {
       console.log("error actionClearCache", response.data);
     }
   } catch (error) {
-    msgWrong.value = "Sth wrong with actionClearCache (error)";
-    console.log("error actionClearCache", error);
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //msgWrong.value = "Sth wrong with actionClearCache (error)";
+    //console.log("error actionClearCache", error);
   }
   return false;
 };
@@ -155,8 +158,9 @@ const actionCreateSitemap = async () => {
       console.log("error actionCreateSitemap", response.data);
     }
   } catch (error) {
-    msgWrong.value = "Sth wrong with actionCreateSitemap (error)";
-    console.log("error actionCreateSitemap", error);
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //msgWrong.value = "Sth wrong with actionCreateSitemap (error)";
+    //console.log("error actionCreateSitemap", error);
   }
   return false;
 };

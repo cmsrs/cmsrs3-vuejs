@@ -99,6 +99,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
+import { handleError  } from "../helpers/common.js";
 import { getClient, postClient, putClient } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
@@ -107,6 +108,9 @@ const router = useRouter();
 
 const { token } = functions.retrieveParamsFromStorage();
 const mode = router.currentRoute.value.params.mode;
+
+import { useAuthStore } from "../state/store.js";
+const { config } = useAuthStore();
 
 const msgWrong = ref("");
 const msgGood = ref("");
@@ -153,7 +157,8 @@ const addEditClient = async () => {
         "Something wrong with add or edit client - check response status";
     }
   } catch (error) {
-    console.log("_is_error__", error);
+    handleError(error, config.demo_status, msgWrong, pre_loader);
+    //console.log("_is_error__", error);
   }
   pre_loader.value = false;
 };
