@@ -246,7 +246,7 @@ let server = setupServer(
     return HttpResponse.json(responseGetCheckouts);
   }),
 
-  http.put("api/checkouts/4", () => {
+  http.patch("api/checkouts/4", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,

@@ -30,14 +30,14 @@ let server = setupServer(
     })
   }),
 
-  http.get("/api/config/clearcache", () => {
+  http.put("/api/config/clearcache", () => {
     counterCacheClear += 1;
     return new HttpResponse(null, {
       status: 500
     })
   }),
 
-  http.get("/api/config/createsitemap", () => {
+  http.put("/api/config/createsitemap", () => {
     counterCreateSitemap += 1;
     return new HttpResponse(null, {
       status: 500

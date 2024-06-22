@@ -28,14 +28,14 @@ let server = setupServer(
     return HttpResponse.json(responseToggle);
   }),
 
-  http.get("/api/config/clearcache", () => {
+  http.put("/api/config/clearcache", () => {
     counterCacheClear += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.get("/api/config/createsitemap", () => {
+  http.put("/api/config/createsitemap", () => {
     counterCreateSitemap += 1;
     return HttpResponse.json({
       success: true,

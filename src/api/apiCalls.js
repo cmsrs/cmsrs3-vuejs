@@ -178,7 +178,7 @@ export const getCheckouts = (lang, column, direction, token, page, search) => {
 };
 
 export const putCheckout = (post, id, token) => {
-  return axios.put("/api/checkouts/" + id + "?token=" + token, post);
+  return axios.patch("/api/checkouts/" + id + "?token=" + token, post);
 };
 
 export const deleteProduct = (id, token) => {
@@ -228,9 +228,9 @@ export const postToggleCacheEnableFile = (post, token) => {
 };
 
 export const getClearCache = (token) => {
-  return axios.get("/api/config/clearcache?token=" + token);
+  return axios.put("/api/config/clearcache?token=" + token);
 };
 
 export const getCreateSitemap = (token) => {
-  return axios.get("/api/config/createsitemap?token=" + token);
+  return axios.put("/api/config/createsitemap?token=" + token);
 };
