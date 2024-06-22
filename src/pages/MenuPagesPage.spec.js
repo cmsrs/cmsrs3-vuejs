@@ -311,25 +311,25 @@ let server = setupServer(
     });
   }),
 
-  http.get("/api/menus/position/down/1", async () => {
+  http.patch("/api/menus/position/down/1", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.get("/api/menus/position/up/2", async () => {
+  http.patch("/api/menus/position/up/2", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.get("/api/pages/position/down/3", async () => {
+  http.patch("/api/pages/position/down/3", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.get("/api/pages/position/up/3", async () => {
+  http.patch("/api/pages/position/up/3", async () => {
     return HttpResponse.json({
       success: true,
     });
@@ -1245,21 +1245,20 @@ describe("Pages page", () => {
         }),
 
         http.get("/api/images/page/3", async () => {
-          //s !!
           return HttpResponse.json({
             success: true,
             data: images,
           });
         }),
 
-        http.get("/api/images/position/down/1", async () => {
+        http.patch("/api/images/position/down/1", async () => {
           counterImage += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
 
-        http.get("/api/images/position/up/2", async () => {
+        http.patch("/api/images/position/up/2", async () => {
           counterImage += 1;
           return HttpResponse.json({
             success: true,

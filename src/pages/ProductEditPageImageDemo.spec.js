@@ -149,15 +149,14 @@ let server = setupServer(
     });
   }),
 
-  //change to patch!!
-  http.get("/api/images/position/down/1", async () => {
+  http.patch("/api/images/position/down/1", async () => {
     counterImage += 1;
     return new HttpResponse(null, {
       status: 403
     })
   }),
 
-  http.get("/api/images/position/up/2", async () => {
+  http.patch("/api/images/position/up/2", async () => {
     counterImage += 1;
     return new HttpResponse(null, {
       status: 403

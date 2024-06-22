@@ -53,13 +53,13 @@ export const deleteMenu = (id, token) => {
 };
 
 export const setMenuPosition = (direction, id, token) => {
-  return axios.get(
+  return axios.patch(
     "/api/menus/position/" + direction + "/" + id + "?token=" + token,
   );
 };
 
 export const setPagePosition = (direction, id, token) => {
-  return axios.get(
+  return axios.patch(
     "/api/pages/position/" + direction + "/" + id + "?token=" + token,
   );
 };
@@ -82,7 +82,7 @@ export const deleteImage = (id, token) => {
 };
 
 export const setImagePosition = (direction, id, token) => {
-  return axios.get(
+  return axios.patch(
     "/api/images/position/" + direction + "/" + id + "?token=" + token,
   );
 };
