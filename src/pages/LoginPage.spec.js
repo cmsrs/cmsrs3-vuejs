@@ -19,6 +19,7 @@ import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 import jsonStoreModule from "../../test/jsonStore.js";
 const jsonStore = jsonStoreModule.getJsonStore();
+import { ADM_EMAIL, ADM_PASS } from "../config-demo.js";
 
 let requestBody;
 let counter = 0;
@@ -49,6 +50,17 @@ afterAll(() => server.close());
 const setup = async () => {
   render(LoginPage);
 };
+
+const setupDemo = async () => {
+  router.push("/demo");
+  await router.isReady();
+  return render(LoginPage, {
+    props: {
+      demo: "demo",
+    },
+  });
+};
+
 
 const authJson = jsonStore.auth;
 const loginSuccess = http.post("/api/login", async ({ request }) => {
@@ -104,6 +116,20 @@ describe("Login page", () => {
       await setup();
       const button = screen.queryByRole("button_login");
       expect(button).toBeDisabled();
+    });
+  });
+
+  describe("Interactions demo mode", () => {
+    const emailGoodDemo =  ADM_EMAIL; 
+    const passwordGoodDemo = ADM_PASS;
+
+    it("check is login and password was filled out", async () => {
+      await setupDemo();
+      const emailInput = screen.queryByLabelText("E-mail");
+      const passwordInput = screen.queryByLabelText("Password");
+
+      expect(emailInput.value).toBe(emailGoodDemo);
+      expect(passwordInput.value).toBe(passwordGoodDemo);      
     });
   });
 

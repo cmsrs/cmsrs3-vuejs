@@ -18,8 +18,9 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/:demo?",
       component: LoginPage,
+      props: true,      
     },
     {
       path: "/pages/:id?",

@@ -56,6 +56,7 @@ import { ref, computed, reactive, watch, onMounted } from "vue";
 import { login, config } from "../api/apiCalls.js";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
+import { ADM_EMAIL, ADM_PASS } from "../config-demo.js";
 const { auth, setAuth, setConfig } = useAuthStore();
 
 const router = useRouter();
@@ -63,7 +64,9 @@ const router = useRouter();
 const msgWrong = ref("");
 const msgGood = ref(""); //it is unused in this form, because we redirect but component Msg use this variable
 const pre_loader = ref(false);
-const formData = reactive({ email: "", password: "" });
+
+const demo = router.currentRoute.value.params.demo;
+const formData = (demo == "demo") ? reactive({ email: ADM_EMAIL, password: ADM_PASS }) : reactive({ email: "", password: "" });
 
 const submit = async () => {
   msgWrong.value = "";
