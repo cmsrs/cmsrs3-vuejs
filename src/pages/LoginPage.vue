@@ -64,9 +64,7 @@ const router = useRouter();
 const msgWrong = ref("");
 const msgGood = ref(""); //it is unused in this form, because we redirect but component Msg use this variable
 const pre_loader = ref(false);
-
-const demo = router.currentRoute.value.params.demo;
-const formData = (demo == "demo") ? reactive({ email: ADM_EMAIL, password: ADM_PASS }) : reactive({ email: "", password: "" });
+const formData = reactive({ email: "", password: "" });
 
 const submit = async () => {
   msgWrong.value = "";
@@ -100,6 +98,11 @@ onMounted(async () => {
     router.push("/pages");
     return false;
   }
+
+  const demo = router.currentRoute.value.params.demo;
+  formData.email = (demo == "demo") ? ADM_EMAIL : "";
+  formData.password = (demo == "demo") ? ADM_PASS : "";
+
 });
 
 watch(
