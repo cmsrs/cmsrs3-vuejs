@@ -402,7 +402,6 @@ onMounted(async () => {
     return false;
   }
 
-  console.log(config.is_shop);
   if (!config.is_shop) {
     router.push("/");
     return false;
