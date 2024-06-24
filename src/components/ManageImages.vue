@@ -21,7 +21,7 @@
           v-if="internalPreLoader"
           class="spinner-grow spinner-grow-sm"
         ></span>
-        <i v-if="!internalPreLoader" class="fas fa-plus"></i>Upload Images
+        <i v-if="!internalPreLoader" class="fas fa-upload"></i>Upload Images
       </label>
     </div>
 
@@ -60,12 +60,12 @@
     :key="image.id"
   >
     <img
-      class="col-2"
+      :class="props.type === 'page' ? 'col-2' : 'col-1'"
       :src="SERVER_URL + image['fs']['small']"
       :alt="image['alt'][lang]"
     />
 
-    <div class="form-group col-4">
+    <div class="form-group" :class="props.type === 'page' ? 'col-4' : 'col-5'"  >
       <input
         class="form-control"
         v-model="internalImages[index]['alt'][lang]"

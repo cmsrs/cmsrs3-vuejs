@@ -116,7 +116,7 @@
           <button
             role="button_save_edit_product"
             @click.prevent="addEditProduct"
-            class="add-page-btn btn btn-primary mt-2 mb-2 mr-2"
+            class="add-page-btn btn btn-primary mt-4 mb-2 mr-2"
             :disabled="pre_loader"
           >
             <i v-if="!pre_loader" class="fas fa-plus"></i>
