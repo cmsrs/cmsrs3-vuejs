@@ -8,7 +8,8 @@ const testJsonStore ={
     langs: ['en'],
     default_lang: 'en',
     cache_enable: 1,
-    is_cache_enable: 0
+    is_cache_enable: 0,
+    is_shop: 1
   }
 };
 

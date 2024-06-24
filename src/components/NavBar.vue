@@ -16,12 +16,14 @@
             >Users</router-link
           >
           <router-link
+            v-if="config.is_shop"
             class="nav-link"
             to="/products"
             :class="{ 'text-primary': $route.path.startsWith('/product') }"
             >Products</router-link
           >
           <router-link
+            v-if="config.is_shop"
             class="nav-link"
             to="/checkouts"
             :class="{ 'text-primary': $route.path.startsWith('/checkout') }"

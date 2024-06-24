@@ -195,7 +195,8 @@ const jsonStore2 = {
     langs: ["pl", "en"],
     default_lang: "pl",
     cache_enable: 1,
-    demo_status: 1 //!!!
+    demo_status: 1, //!!!
+    is_shop: 1
   },
 };
 

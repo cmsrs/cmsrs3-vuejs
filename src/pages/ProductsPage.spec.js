@@ -353,6 +353,7 @@ describe("Products page", () => {
         langs: ["pl", "en"],
         default_lang: "pl",
         cache_enable: 1,
+        is_shop: 1
       },
     };
 

@@ -300,6 +300,11 @@ onMounted(async () => {
     return false;
   }
 
+  if (!config.is_shop) {
+    router.push("/");
+    return false;
+  }   
+
   if (mode !== "edit" && mode !== "add") {
     router.push("/"); //TODO test manually
   }

@@ -316,8 +316,13 @@ const refreshCheckouts = async () => {
   return false;
 };
 
-onMounted(async () => {
+onMounted(async () => {  
   if (!auth.token) {
+    router.push("/");
+    return false;
+  }
+
+  if (!config.is_shop) {
     router.push("/");
     return false;
   }
