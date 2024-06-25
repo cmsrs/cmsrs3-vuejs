@@ -24,8 +24,6 @@ let responseToggle = {
   },  
 };
 
-console.log("/api"+apiSecret+"/config/clearcache");
-
 let server = setupServer(
   http.post("/api"+apiSecret+"/config/toggle-cache-enable-file", () => {
     counterToggle += 1;

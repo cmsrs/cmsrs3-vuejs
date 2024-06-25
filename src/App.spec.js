@@ -87,6 +87,7 @@ const jsonStore2 = {
     default_lang: "en",
     cache_enable: 1, //!!
     is_cache_enable: 0, //!!
+    demo_status: 0 //!!!
   },
 };
 
@@ -110,6 +111,7 @@ describe("sign out", () => {
   });
 
   it("click sign out link", async () => {
+    setupStorage();
     await setup("/pages");
     const { token } = functions.retrieveParamsFromStorage();
     expect(token).not.toBe(0);
@@ -121,6 +123,10 @@ describe("sign out", () => {
       expect(counter).toBe(1);
       const { token } = functions.retrieveParamsFromStorage();
       expect(token).toBe(0);
+      const header = screen.queryByRole("heading", { name: "Login" });
+      expect(header).toBeInTheDocument();      
+
+      //it's worked
       expect(screen.queryByTestId("login-page")).toBeInTheDocument();
       expect(router.currentRoute.value.path).toBe("/");
     });
@@ -209,7 +215,8 @@ describe("change cache in nav bar for demo version", () => {
 
 
 describe("prevent redirect when user is auth", () => {
-  it("prevent redirect lo login page when user is auth", async () => {
+  it("prevent redirect to login page when user is auth", async () => {
+    setupStorage();
     await setup("/");
     const { token } = functions.retrieveParamsFromStorage();
     expect(token).not.toBe(0);

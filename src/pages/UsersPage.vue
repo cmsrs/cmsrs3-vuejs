@@ -166,7 +166,7 @@ const router = useRouter();
 const { token } = functions.retrieveParamsFromStorage();
 
 import { useAuthStore } from "../state/store.js";
-const {  config } = useAuthStore();
+const { auth, config } = useAuthStore();
 
 const msgWrong = ref("");
 const msgGood = ref("");
@@ -279,7 +279,7 @@ const refreshClients = async () => {
 };
 
 onMounted(async () => {
-  if (!token) {
+  if (!auth.token) {
     router.push("/");
     return false;
   }

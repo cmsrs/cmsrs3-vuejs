@@ -895,7 +895,7 @@ function getPagesBelongsToPage(parentPageId) {
 }
 
 onMounted(async () => {
-  if (!token) {
+  if (!auth.token) {
     router.push("/");
     return false;
   }

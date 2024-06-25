@@ -93,11 +93,11 @@ const responseGetCheckouts = {
       },
     ],
     first_page_url:
-      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     from: 1,
     last_page: 1,
     last_page_url:
-      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     links: [
       {
         url: null,
@@ -105,7 +105,7 @@ const responseGetCheckouts = {
         active: false,
       },
       {
-        url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+        url: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
         label: "1",
         active: true,
       },
@@ -116,7 +116,7 @@ const responseGetCheckouts = {
       },
     ],
     next_page_url: null,
-    path: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc",
+    path: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc",
     per_page: 10,
     prev_page_url: null,
     to: 2,
@@ -197,11 +197,11 @@ const responseGetCheckoutsPl = {
       },
     ],
     first_page_url:
-      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     from: 1,
     last_page: 1,
     last_page_url:
-      "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     links: [
       {
         url: null,
@@ -209,7 +209,7 @@ const responseGetCheckoutsPl = {
         active: false,
       },
       {
-        url: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+        url: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
         label: "1",
         active: true,
       },
@@ -220,7 +220,7 @@ const responseGetCheckoutsPl = {
       },
     ],
     next_page_url: null,
-    path: "http://127.0.0.1:8000/api/checkouts/pagination/en/price_total_add_deliver/asc",
+    path: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc",
     per_page: 10,
     prev_page_url: null,
     to: 2,

@@ -110,7 +110,7 @@ const { token } = functions.retrieveParamsFromStorage();
 const mode = router.currentRoute.value.params.mode;
 
 import { useAuthStore } from "../state/store.js";
-const { config } = useAuthStore();
+const { auth, config } = useAuthStore();
 
 const msgWrong = ref("");
 const msgGood = ref("");
@@ -184,7 +184,7 @@ const loadClient = async (id) => {
 };
 
 onMounted(async () => {
-  if (!token) {
+  if (!auth.token) {
     router.push("/");
     return false;
   }

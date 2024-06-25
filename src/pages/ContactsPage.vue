@@ -130,7 +130,7 @@ import Msg from "../components/Msg.vue";
 import TableSort from "../components/TableSort.vue";
 
 import { useAuthStore } from "../state/store.js";
-const { config } = useAuthStore();
+const { auth, config } = useAuthStore();
 
 const router = useRouter();
 
@@ -239,7 +239,7 @@ const refreshContacts = async () => {
 };
 
 onMounted(async () => {
-  if (!token) {
+  if (!auth.token) {
     router.push("/");
     return false;
   }

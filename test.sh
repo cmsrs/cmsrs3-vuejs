@@ -13,11 +13,12 @@ elif [ "$1" = "-t" ]; then
 
 else
     
-    npm run test     -- -t   'send good data to server'  # 'change checkout to is pay' #   'images tests'
+    #npm run test     -- -t   'send good data to server'  # 'change checkout to is pay' #   'images tests'
     #npm run test   -- -t   'save new menu - display error and clear msg after change menu name'
     #npm run test   -- -t     'display good message and click add menu button'
 
-    #npm run test ./src/App.spec.js  
+    npm run test ./src/App.spec.js # -- -t  'prevent redirect to login page when user is auth'  #   'click sign out link'
+
 
     #npm run test   ./src/App.spec.js  -- -t     "in nav bar cache enable by click input toggle cache"
 

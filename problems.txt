@@ -1,6 +1,6 @@
 1.
 
-in case during changing lots of times positions we occure the following problem:
+in case during changing lots of times positions we occur the following problem:
 
 Position menu problem = Error: Request failed with status code 429
 (maybe required fixed in laravel)
