@@ -1,11 +1,9 @@
 export const SERVER_URL = 'http://127.0.0.1:8000';
 
 //must be the same as on the server site in .env file
-//export const API_SECRET = '';
+export const API_SECRET = '';
 
 //add addition string to admin area
-//if this derective === '' the url will be /admin
-//export const ADMIN_URL_SECRET = ''
+//if this directive === '' the url will be /admin
+export const ADMIN_URL_SECRET = ''
 
-
-//export const MENU_VISIBLE = ['pages', 'users',  'products',   'checkouts',  'contacts',  'settings'];

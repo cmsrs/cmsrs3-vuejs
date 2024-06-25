@@ -1,5 +1,10 @@
 # cmsrs3-vuejs
 
+## Prepare configuration
+```
+cp config.js.example config.js
+```
+
 ## Project setup
 ```
 npm install
@@ -7,7 +12,7 @@ npm install
 
 ## Run tests
 ```
-./node_modules/jest/bin/jest.js  --verbose
+./test.sh all
 ```
 or
 ```
@@ -27,6 +32,11 @@ npm run build
 ### Lints and fixes files
 ```
 npm run lint
+```
+
+### Format code
+```
+npm run format
 ```
 
 ### Customize configuration

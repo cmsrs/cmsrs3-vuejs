@@ -2,13 +2,14 @@
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { ADMIN_URL_SECRET } from "./src/config.js";
 
 export default defineConfig({
   cachedChecks: false,
   plugins: [
     vue()
   ],
-  //base: '/admin-vue/',
+  base: '/admin'+ADMIN_URL_SECRET,
   //problem with ckeditor5
   // resolve: {
   //   alias: {
