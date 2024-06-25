@@ -235,7 +235,7 @@ import { ref, computed, onMounted } from "vue";
 import { SERVER_URL } from "../config.js";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 import { getProducts, deleteProduct } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
@@ -405,7 +405,7 @@ onMounted(async () => {
   if (!config.is_shop) {
     router.push("/");
     return false;
-  }  
+  }
 
   pre_loader.value = true;
   window.addEventListener("resize", updateWindowWidth);

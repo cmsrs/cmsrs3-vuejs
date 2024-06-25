@@ -13,7 +13,7 @@ export const useAuthStore = defineStore("auth", () => {
     is_cache_enable: 0,
     default_lang: "",
     demo_status: 0,
-    is_shop: 1 
+    is_shop: 1,
   };
 
   let initialModal = {
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.cache_enable = data.cache_enable;
     config.is_cache_enable = data.is_cache_enable;
     config.demo_status = data.demo_status;
-    config.is_shop = data.is_shop;    
+    config.is_shop = data.is_shop;
   }
 
   function setDefaultLang(lang) {
@@ -77,7 +77,6 @@ export const useAuthStore = defineStore("auth", () => {
     config.default_lang = "";
     config.demo_status = 0;
     config.is_shop = 1;
-
 
     //auth.id = 0
     //delete auth.username

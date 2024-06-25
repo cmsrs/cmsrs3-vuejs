@@ -16,7 +16,7 @@ import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "./config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 const successMsgToggle = "Cache enabled";
 let responseToggle = {
@@ -30,12 +30,12 @@ let responseToggle = {
 let counterToggle = 0;
 let counter = 0;
 let server = setupServer(
-  http.post("/api"+apiSecret+"/config/toggle-cache-enable-file", () => {
+  http.post("/api" + apiSecret + "/config/toggle-cache-enable-file", () => {
     counterToggle += 1;
     return HttpResponse.json(responseToggle);
   }),
 
-  http.get("/api"+apiSecret+"/logout", async () => {
+  http.get("/api" + apiSecret + "/logout", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -45,7 +45,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api"+apiSecret+"/pages", async () => {
+  http.get("/api" + apiSecret + "/pages", async () => {
     const jsonRes = {
       success: true,
       data: [],
@@ -54,7 +54,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api"+apiSecret+"/menus", async () => {
+  http.get("/api" + apiSecret + "/menus", async () => {
     const jsonRes = {
       success: true,
       data: [],
@@ -87,7 +87,7 @@ const jsonStore2 = {
     default_lang: "en",
     cache_enable: 1, //!!
     is_cache_enable: 0, //!!
-    demo_status: 0 //!!!
+    demo_status: 0, //!!!
   },
 };
 
@@ -124,7 +124,7 @@ describe("sign out", () => {
       const { token } = functions.retrieveParamsFromStorage();
       expect(token).toBe(0);
       const header = screen.queryByRole("heading", { name: "Login" });
-      expect(header).toBeInTheDocument();      
+      expect(header).toBeInTheDocument();
 
       //it's worked
       expect(screen.queryByTestId("login-page")).toBeInTheDocument();
@@ -159,7 +159,6 @@ describe("change cache in nav bar", () => {
 });
 
 describe("change cache in nav bar for demo version", () => {
-
   const jsonStore3 = {
     auth: {
       token: "abcde12345",
@@ -171,16 +170,15 @@ describe("change cache in nav bar for demo version", () => {
       default_lang: "en",
       cache_enable: 1, //!!
       is_cache_enable: 0, //!!
-      demo_status: 1 //!!!      
+      demo_status: 1, //!!!
     },
   };
-  
-  const setupStorage3 = async () => {  
+
+  const setupStorage3 = async () => {
     localStorage.clear();
     storage.setItem("auth", jsonStore3.auth);
     storage.setItem("config", jsonStore3.config);
-  }
-
+  };
 
   it("in nav bar cache enable by click input toggle cache", async () => {
     setupStorage3();
@@ -195,14 +193,13 @@ describe("change cache in nav bar for demo version", () => {
     );
 
     // Mock the alert function
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
 
     await userEvent.click(changeCacheEnable);
 
     // Check if the alert is displayed
     //const alert = await screen.findByRole("alert"); // Adjust the selector based on how the alert is implemented
     //expect(alert).toBeInTheDocument();
-
 
     // Verify the alert message
     const msg = trans.ttt("is_demo_true");
@@ -212,7 +209,6 @@ describe("change cache in nav bar for demo version", () => {
     alertSpy.mockRestore();
   });
 });
-
 
 describe("prevent redirect when user is auth", () => {
   it("prevent redirect to login page when user is auth", async () => {

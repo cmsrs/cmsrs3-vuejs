@@ -21,14 +21,13 @@ import jsonStoreModule from "../../test/jsonStore.js";
 const jsonStore = jsonStoreModule.getJsonStore();
 import { ADM_EMAIL, ADM_PASS } from "../config-demo.js";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
-const apiSecretLogin = '';
-
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
+const apiSecretLogin = "";
 
 let requestBody;
 let counter = 0;
 const server = setupServer(
-  http.post("/api"+apiSecretLogin+"/login", async ({ request }) => {
+  http.post("/api" + apiSecretLogin + "/login", async ({ request }) => {
     requestBody = await request.json();
     counter += 1;
 
@@ -65,21 +64,23 @@ const setupDemo = async () => {
   });
 };
 
-
 const authJson = jsonStore.auth;
-const loginSuccess = http.post("/api"+apiSecretLogin+"/login", async ({ request }) => {
-  counter += 1;
-  requestBody = await request.json();
-  const jsonRes = {
-    success: true,
-    data: authJson,
-  };
+const loginSuccess = http.post(
+  "/api" + apiSecretLogin + "/login",
+  async ({ request }) => {
+    counter += 1;
+    requestBody = await request.json();
+    const jsonRes = {
+      success: true,
+      data: authJson,
+    };
 
-  return HttpResponse.json(jsonRes);
-});
+    return HttpResponse.json(jsonRes);
+  },
+);
 
 const configJson = jsonStore.config;
-const configSuccess = http.get("/api"+apiSecret+"/config", async () => {
+const configSuccess = http.get("/api" + apiSecret + "/config", async () => {
   const jsonRes = {
     success: true,
     data: configJson,
@@ -124,7 +125,7 @@ describe("Login page", () => {
   });
 
   describe("Interactions demo mode", () => {
-    const emailGoodDemo =  ADM_EMAIL; 
+    const emailGoodDemo = ADM_EMAIL;
     const passwordGoodDemo = ADM_PASS;
 
     it("check is login and password was filled out", async () => {
@@ -133,7 +134,7 @@ describe("Login page", () => {
       const passwordInput = screen.queryByLabelText("Password");
 
       expect(emailInput.value).toBe(emailGoodDemo);
-      expect(passwordInput.value).toBe(passwordGoodDemo);      
+      expect(passwordInput.value).toBe(passwordGoodDemo);
     });
   });
 

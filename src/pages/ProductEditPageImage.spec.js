@@ -15,7 +15,7 @@ import trans from "../helpers/trans.js";
 //import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -111,24 +111,24 @@ const responsePagesTypeShop = {
 };
 
 let server = setupServer(
-  http.get("/api"+apiSecret+"/pages/type/shop", () => {
+  http.get("/api" + apiSecret + "/pages/type/shop", () => {
     counter += 1;
     return HttpResponse.json(responsePagesTypeShop);
   }),
 
-  http.get("/api"+apiSecret+"/products/1", () => {
+  http.get("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json(responseGetProduct);
   }),
 
-  http.put("/api"+apiSecret+"/products/1", () => {
+  http.put("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.post("/api"+apiSecret+"/products", () => {
+  http.post("/api" + apiSecret + "/products", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -136,14 +136,14 @@ let server = setupServer(
   }),
 
   /**image */
-  http.post("/api"+apiSecret+"/image/product/1", async () => {
+  http.post("/api" + apiSecret + "/image/product/1", async () => {
     counterUpload += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.get("/api"+apiSecret+"/images/product/1", async () => {
+  http.get("/api" + apiSecret + "/images/product/1", async () => {
     //s !!
     return HttpResponse.json({
       success: true,
@@ -151,35 +151,35 @@ let server = setupServer(
     });
   }),
 
-  http.patch("/api"+apiSecret+"/images/position/down/1", async () => {
+  http.patch("/api" + apiSecret + "/images/position/down/1", async () => {
     counterImage += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.patch("/api"+apiSecret+"/images/position/up/2", async () => {
+  http.patch("/api" + apiSecret + "/images/position/up/2", async () => {
     counterImage += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.delete("/api"+apiSecret+"/images/1", async () => {
+  http.delete("/api" + apiSecret + "/images/1", async () => {
     counterImage += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.delete("/api"+apiSecret+"/images/1,2", async () => {
+  http.delete("/api" + apiSecret + "/images/1,2", async () => {
     counterDeleteImages += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.delete("/api"+apiSecret+"/images/2", async () => {
+  http.delete("/api" + apiSecret + "/images/2", async () => {
     counterDeleteOneImage += 1;
     return HttpResponse.json({
       success: true,

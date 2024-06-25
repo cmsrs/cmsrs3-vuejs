@@ -1,4 +1,4 @@
-import { render,waitFor, screen } from "../../test/helper.js";
+import { render, waitFor, screen } from "../../test/helper.js";
 import "../../test/afterlogin.js";
 
 import SettingsPage from "./SettingsPage.vue";
@@ -9,8 +9,7 @@ import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
-
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 let counterToggle = 0;
 let counterCacheClear = 0;
@@ -26,25 +25,25 @@ let responseToggle = {
 };
 
 let server = setupServer(
-  http.post("/api"+apiSecret+"/config/toggle-cache-enable-file", () => {
+  http.post("/api" + apiSecret + "/config/toggle-cache-enable-file", () => {
     counterToggle += 1;
     return new HttpResponse(null, {
-      status: 500
-    })
+      status: 500,
+    });
   }),
 
-  http.put("/api"+apiSecret+"/config/clearcache", () => {
+  http.put("/api" + apiSecret + "/config/clearcache", () => {
     counterCacheClear += 1;
     return new HttpResponse(null, {
-      status: 500
-    })
+      status: 500,
+    });
   }),
 
-  http.put("/api"+apiSecret+"/config/createsitemap", () => {
+  http.put("/api" + apiSecret + "/config/createsitemap", () => {
     counterCreateSitemap += 1;
     return new HttpResponse(null, {
-      status: 500
-    })
+      status: 500,
+    });
   }),
 );
 
@@ -147,7 +146,6 @@ describe("Interaction server Error", () => {
     await userEvent.click(changeCacheEnable);
 
     await waitFor(() => {
-
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect(alertDangerAfter).toBeInTheDocument();
 
@@ -185,15 +183,12 @@ describe("Interaction server Error", () => {
     await userEvent.click(clearCache);
 
     await waitFor(() => {
-
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect(alertDangerAfter).toBeInTheDocument();
 
       const msg = trans.ttt("internal_problem");
       expect(screen.queryByText(msg)).toBeInTheDocument();
     });
-
-
 
     // expect(counterCacheClear).toBe(1);
 
@@ -212,7 +207,6 @@ describe("Interaction server Error", () => {
     await userEvent.click(createSitemap);
 
     await waitFor(() => {
-
       const alertDangerAfter = screen.queryByRole("alert_danger");
       expect(alertDangerAfter).toBeInTheDocument();
 

@@ -433,7 +433,7 @@ import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import cms from "../helpers/cms.js";
 import trans from "../helpers/trans.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 import {
   postPage,
   putPage,

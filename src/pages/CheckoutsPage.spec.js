@@ -15,8 +15,7 @@ import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
-
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 //const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -93,11 +92,15 @@ const responseGetCheckouts = {
       },
     ],
     first_page_url:
-      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     from: 1,
     last_page: 1,
     last_page_url:
-      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     links: [
       {
         url: null,
@@ -105,7 +108,10 @@ const responseGetCheckouts = {
         active: false,
       },
       {
-        url: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+        url:
+          "http://127.0.0.1:8000/api" +
+          apiSecret +
+          "/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
         label: "1",
         active: true,
       },
@@ -116,7 +122,10 @@ const responseGetCheckouts = {
       },
     ],
     next_page_url: null,
-    path: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc",
+    path:
+      "http://127.0.0.1:8000/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/asc",
     per_page: 10,
     prev_page_url: null,
     to: 2,
@@ -197,11 +206,15 @@ const responseGetCheckoutsPl = {
       },
     ],
     first_page_url:
-      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     from: 1,
     last_page: 1,
     last_page_url:
-      "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+      "http://127.0.0.1:8000/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
     links: [
       {
         url: null,
@@ -209,7 +222,10 @@ const responseGetCheckoutsPl = {
         active: false,
       },
       {
-        url: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
+        url:
+          "http://127.0.0.1:8000/api" +
+          apiSecret +
+          "/checkouts/pagination/en/price_total_add_deliver/asc?page=1",
         label: "1",
         active: true,
       },
@@ -220,7 +236,10 @@ const responseGetCheckoutsPl = {
       },
     ],
     next_page_url: null,
-    path: "http://127.0.0.1:8000/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc",
+    path:
+      "http://127.0.0.1:8000/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/asc",
     per_page: 10,
     prev_page_url: null,
     to: 2,
@@ -229,27 +248,41 @@ const responseGetCheckoutsPl = {
 };
 
 let server = setupServer(
-  http.get("/api"+apiSecret+"/checkouts/pagination/en/created_at/desc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetCheckouts);
-  }),
+  http.get(
+    "/api" + apiSecret + "/checkouts/pagination/en/created_at/desc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetCheckouts);
+    },
+  ),
 
-  http.get("/api"+apiSecret+"/checkouts/pagination/pl/created_at/desc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetCheckoutsPl);
-  }),
+  http.get(
+    "/api" + apiSecret + "/checkouts/pagination/pl/created_at/desc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetCheckoutsPl);
+    },
+  ),
 
-  http.get("/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetCheckouts);
-  }),
+  http.get(
+    "/api" + apiSecret + "/checkouts/pagination/en/price_total_add_deliver/asc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetCheckouts);
+    },
+  ),
 
-  http.get("/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/desc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetCheckouts);
-  }),
+  http.get(
+    "/api" +
+      apiSecret +
+      "/checkouts/pagination/en/price_total_add_deliver/desc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetCheckouts);
+    },
+  ),
 
-  http.patch("/api"+apiSecret+"/checkouts/4", () => {
+  http.patch("/api" + apiSecret + "/checkouts/4", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -301,7 +334,7 @@ describe("Checkouts page", () => {
         langs: ["pl", "en"],
         default_lang: "pl",
         cache_enable: 1,
-        is_shop: 1
+        is_shop: 1,
       },
     };
 

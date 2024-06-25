@@ -174,7 +174,7 @@ import { ref, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 import { getCheckouts, putCheckout } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
@@ -316,7 +316,7 @@ const refreshCheckouts = async () => {
   return false;
 };
 
-onMounted(async () => {  
+onMounted(async () => {
   if (!auth.token) {
     router.push("/");
     return false;

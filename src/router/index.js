@@ -13,26 +13,26 @@ import CheckoutsPage from "../pages/CheckoutsPage.vue";
 
 const routesIn = [
   {
-    //path: "/admin"+ADMIN_URL_SECRET+"/:demo?",  
+    //path: "/admin"+ADMIN_URL_SECRET+"/:demo?",
     path: "/:demo?",
-    component: LoginPage,      
-    props: true,      
+    component: LoginPage,
+    props: true,
   },
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/pages/:id?",
-    path: "/pages/:id?",      
+    path: "/pages/:id?",
     component: MenuPagesPage,
   },
 
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/users",
-    path: "/users",      
+    path: "/users",
     name: "users",
     component: UsersPage,
   },
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/user/:mode/:id?",
-    path: "/user/:mode/:id?",      
+    path: "/user/:mode/:id?",
     component: UserEditPage,
     name: "user",
     props: true,
@@ -40,31 +40,31 @@ const routesIn = [
 
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/products",
-    path: "/products",      
+    path: "/products",
     name: "products",
     component: ProductsPage,
   },
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/product/:mode/:id?",
-    path: "/product/:mode/:id?",      
+    path: "/product/:mode/:id?",
     component: ProductEditPage,
     name: "product",
     props: true,
   },
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/contacts",
-    path: "/contacts",      
+    path: "/contacts",
     component: ContactsPage,
   },
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/settings",
-    path: "/settings",      
+    path: "/settings",
     component: SettingsPage,
   },
 
   {
     //path: "/admin"+ADMIN_URL_SECRET+"/checkouts",
-    path: "/checkouts",    
+    path: "/checkouts",
     component: CheckoutsPage,
   },
 
@@ -80,11 +80,10 @@ const routesIn = [
   // },
 ];
 
-
 const router = createRouter({
   //history:  is_test ?  createMemoryHistory(import.meta.env.BASE_URL)  : createWebHistory(import.meta.env.BASE_URL),
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: routesIn
+  routes: routesIn,
 });
 
 export default router;

@@ -99,7 +99,7 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 import { getClient, postClient, putClient } from "../api/apiCalls";
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";

@@ -1,92 +1,126 @@
 import axios from "axios";
 import { API_SECRET } from "../config.js";
 
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 export const login = (creds) => {
   return axios.post("/api/login", creds);
 };
 
 export const config = (token) => {
-  return axios.get("/api"+apiSecret+"/config?token=" + token);
+  return axios.get("/api" + apiSecret + "/config?token=" + token);
 };
 
 export const logout = (token) => {
-  return axios.get("/api"+apiSecret+"/logout?token=" + token);
+  return axios.get("/api" + apiSecret + "/logout?token=" + token);
 };
 
 export const postPage = (post, token) => {
-  const ret = axios.post("/api"+apiSecret+"/pages?token=" + token, post);
+  const ret = axios.post("/api" + apiSecret + "/pages?token=" + token, post);
   return ret;
 };
 
 export const putPage = (post, id, token) => {
-  return axios.put("/api"+apiSecret+"/pages/" + id + "?token=" + token, post);
+  return axios.put(
+    "/api" + apiSecret + "/pages/" + id + "?token=" + token,
+    post,
+  );
 };
 
 export const getPages = (token) => {
-  return axios.get("/api"+apiSecret+"/pages?token=" + token);
+  return axios.get("/api" + apiSecret + "/pages?token=" + token);
 };
 
 //it use in products, where type = 'shop'
 export const getPagesByType = (type, token) => {
-  return axios.get("/api"+apiSecret+"/pages/type/" + type + "?token=" + token);
+  return axios.get(
+    "/api" + apiSecret + "/pages/type/" + type + "?token=" + token,
+  );
 };
 
 //when click edit  page we get new data
 export const getPage = (id, token) => {
-  return axios.get("/api"+apiSecret+"/pages/" + id + "?token=" + token);
+  return axios.get("/api" + apiSecret + "/pages/" + id + "?token=" + token);
 };
 
 export const postMenu = (post, token) => {
-  return axios.post("/api"+apiSecret+"/menus?token=" + token, post);
+  return axios.post("/api" + apiSecret + "/menus?token=" + token, post);
 };
 
 export const putMenu = (post, token) => {
   const id = post["id"];
-  return axios.put("/api"+apiSecret+"/menus/" + id + "?token=" + token, post);
+  return axios.put(
+    "/api" + apiSecret + "/menus/" + id + "?token=" + token,
+    post,
+  );
 };
 
 export const getMenus = (token) => {
-  return axios.get("/api"+apiSecret+"/menus?token=" + token);
+  return axios.get("/api" + apiSecret + "/menus?token=" + token);
 };
 
 export const deleteMenu = (id, token) => {
-  return axios.delete("/api"+apiSecret+"/menus/" + id + "?token=" + token);
+  return axios.delete("/api" + apiSecret + "/menus/" + id + "?token=" + token);
 };
 
 export const setMenuPosition = (direction, id, token) => {
   return axios.patch(
-    "/api"+apiSecret+"/menus/position/" + direction + "/" + id + "?token=" + token,
+    "/api" +
+      apiSecret +
+      "/menus/position/" +
+      direction +
+      "/" +
+      id +
+      "?token=" +
+      token,
   );
 };
 
 export const setPagePosition = (direction, id, token) => {
   return axios.patch(
-    "/api"+apiSecret+"/pages/position/" + direction + "/" + id + "?token=" + token,
+    "/api" +
+      apiSecret +
+      "/pages/position/" +
+      direction +
+      "/" +
+      id +
+      "?token=" +
+      token,
   );
 };
 
 export const deletePage = (id, token) => {
-  return axios.delete("/api"+apiSecret+"/pages/" + id + "?token=" + token);
+  return axios.delete("/api" + apiSecret + "/pages/" + id + "?token=" + token);
 };
 
 export const uploadImage = (post, type, id, token) => {
-  return axios.post("/api"+apiSecret+"/image/" + type + "/" + id + "?token=" + token, post);
+  return axios.post(
+    "/api" + apiSecret + "/image/" + type + "/" + id + "?token=" + token,
+    post,
+  );
 };
 
 export const getImages = (type, id, token) => {
-  return axios.get("/api"+apiSecret+"/images/" + type + "/" + id + "?token=" + token);
+  return axios.get(
+    "/api" + apiSecret + "/images/" + type + "/" + id + "?token=" + token,
+  );
 };
 
 //we can also delete many images, see API docs
 export const deleteImage = (id, token) => {
-  return axios.delete("/api"+apiSecret+"/images/" + id + "?token=" + token);
+  return axios.delete("/api" + apiSecret + "/images/" + id + "?token=" + token);
 };
 
 export const setImagePosition = (direction, id, token) => {
   return axios.patch(
-    "/api"+apiSecret+"/images/position/" + direction + "/" + id + "?token=" + token,
+    "/api" +
+      apiSecret +
+      "/images/position/" +
+      direction +
+      "/" +
+      id +
+      "?token=" +
+      token,
   );
 };
 
@@ -98,7 +132,9 @@ export const getClients = (column, direction, token, page, search) => {
 
   const pageNumber = page ? page : "1";
   const url =
-    "/api"+apiSecret+"/clients/" +
+    "/api" +
+    apiSecret +
+    "/clients/" +
     column +
     "/" +
     direction +
@@ -119,7 +155,9 @@ export const getContacts = (column, direction, token, page, search) => {
 
   const pageNumber = page ? page : "1";
   const url =
-    "/api"+apiSecret+"/contacts/pagination/" +
+    "/api" +
+    apiSecret +
+    "/contacts/pagination/" +
     column +
     "/" +
     direction +
@@ -141,7 +179,9 @@ export const getProducts = (lang, column, direction, token, page, search) => {
   const pageNumber = page ? page : "1";
   // /api/products/pagination/en/product_name/desc
   const url =
-    "/api"+apiSecret+"/products/pagination/" +
+    "/api" +
+    apiSecret +
+    "/products/pagination/" +
     lang +
     "/" +
     column +
@@ -165,7 +205,9 @@ export const getCheckouts = (lang, column, direction, token, page, search) => {
   const pageNumber = page ? page : "1";
   // /api/products/pagination/en/product_name/desc
   const url =
-    "/api"+apiSecret+"/checkouts/pagination/" +
+    "/api" +
+    apiSecret +
+    "/checkouts/pagination/" +
     lang +
     "/" +
     column +
@@ -181,45 +223,60 @@ export const getCheckouts = (lang, column, direction, token, page, search) => {
 };
 
 export const putCheckout = (post, id, token) => {
-  return axios.patch("/api"+apiSecret+"/checkouts/" + id + "?token=" + token, post);
+  return axios.patch(
+    "/api" + apiSecret + "/checkouts/" + id + "?token=" + token,
+    post,
+  );
 };
 
 export const deleteProduct = (id, token) => {
-  return axios.delete("/api"+apiSecret+"/products/" + id + "?token=" + token);
+  return axios.delete(
+    "/api" + apiSecret + "/products/" + id + "?token=" + token,
+  );
 };
 
 export const deleteClient = (id, token) => {
-  return axios.delete("/api"+apiSecret+"/clients/" + id + "?token=" + token);
+  return axios.delete(
+    "/api" + apiSecret + "/clients/" + id + "?token=" + token,
+  );
 };
 
 export const deleteContact = (id, token) => {
-  return axios.delete("/api"+apiSecret+"/contacts/" + id + "?token=" + token);
+  return axios.delete(
+    "/api" + apiSecret + "/contacts/" + id + "?token=" + token,
+  );
 };
 
 export const getClient = (id, token) => {
-  return axios.get("/api"+apiSecret+"/clients/" + id + "?token=" + token);
+  return axios.get("/api" + apiSecret + "/clients/" + id + "?token=" + token);
 };
 
 export const postClient = (post, token) => {
-  return axios.post("/api"+apiSecret+"/clients?token=" + token, post);
+  return axios.post("/api" + apiSecret + "/clients?token=" + token, post);
 };
 
 export const putClient = (post, token) => {
   const id = post["id"];
-  return axios.put("/api"+apiSecret+"/clients/" + id + "?token=" + token, post);
+  return axios.put(
+    "/api" + apiSecret + "/clients/" + id + "?token=" + token,
+    post,
+  );
 };
 
 export const getProduct = (id, token) => {
-  return axios.get("/api"+apiSecret+"/products/" + id + "?token=" + token);
+  return axios.get("/api" + apiSecret + "/products/" + id + "?token=" + token);
 };
 
 export const postProduct = (post, token) => {
-  return axios.post("/api"+apiSecret+"/products?token=" + token, post);
+  return axios.post("/api" + apiSecret + "/products?token=" + token, post);
 };
 
 export const putProduct = (post, token) => {
   const id = post["id"];
-  return axios.put("/api"+apiSecret+"/products/" + id + "?token=" + token, post);
+  return axios.put(
+    "/api" + apiSecret + "/products/" + id + "?token=" + token,
+    post,
+  );
 };
 
 //export const checkCache = (token) => {
@@ -227,13 +284,16 @@ export const putProduct = (post, token) => {
 //};
 
 export const postToggleCacheEnableFile = (post, token) => {
-  return axios.post("/api"+apiSecret+"/config/toggle-cache-enable-file?token=" + token, post);
+  return axios.post(
+    "/api" + apiSecret + "/config/toggle-cache-enable-file?token=" + token,
+    post,
+  );
 };
 
 export const getClearCache = (token) => {
-  return axios.put("/api"+apiSecret+"/config/clearcache?token=" + token);
+  return axios.put("/api" + apiSecret + "/config/clearcache?token=" + token);
 };
 
 export const getCreateSitemap = (token) => {
-  return axios.put("/api"+apiSecret+"/config/createsitemap?token=" + token);
+  return axios.put("/api" + apiSecret + "/config/createsitemap?token=" + token);
 };

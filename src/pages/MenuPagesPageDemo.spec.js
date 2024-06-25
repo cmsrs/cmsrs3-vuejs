@@ -17,7 +17,7 @@ import storage from "../state/storage.js";
 import { afterAll, beforeAll, expect } from "vitest";
 //import { afterAll, beforeAll, describe, expect } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 const contentPl = "lorem ipsum pl";
 const contentEn = "lorem ipsum en";
@@ -54,7 +54,7 @@ let counter = 0;
 let counterEdit = 0;
 
 let server = setupServer(
-  http.get("/api"+apiSecret+"/pages", async () => {
+  http.get("/api" + apiSecret + "/pages", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -64,7 +64,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api"+apiSecret+"/pages/1", async () => {
+  http.get("/api" + apiSecret + "/pages/1", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -74,14 +74,14 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.put("/api"+apiSecret+"/pages/1", async () => {
+  http.put("/api" + apiSecret + "/pages/1", async () => {
     counterEdit += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 
-  http.get("/api"+apiSecret+"/menus", async () => {
+  http.get("/api" + apiSecret + "/menus", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -124,7 +124,7 @@ describe("Pages page", () => {
         langs: ["pl", "en"],
         default_lang: "pl",
         cache_enable: 1,
-        demo_status: 1 //!!!
+        demo_status: 1, //!!!
       },
     };
 
@@ -160,7 +160,6 @@ describe("Pages page", () => {
         const msg = trans.ttt("is_demo_true");
         expect(screen.queryByText(msg)).toBeInTheDocument();
       });
-
     });
   });
 });

@@ -124,7 +124,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import functions from "../helpers/functions.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 import { getContacts, deleteContact } from "../api/apiCalls.js";
 import Msg from "../components/Msg.vue";
 import TableSort from "../components/TableSort.vue";

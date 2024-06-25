@@ -12,11 +12,11 @@ import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import trans from "../helpers/trans.js";
-import storage from "../state/storage.js"
+import storage from "../state/storage.js";
 //import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -112,24 +112,24 @@ const responsePagesTypeShop = {
 };
 
 let server = setupServer(
-  http.get("/api"+apiSecret+"/pages/type/shop", () => {
+  http.get("/api" + apiSecret + "/pages/type/shop", () => {
     counter += 1;
     return HttpResponse.json(responsePagesTypeShop);
   }),
 
-  http.get("/api"+apiSecret+"/products/1", () => {
+  http.get("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json(responseGetProduct);
   }),
 
-  http.put("/api"+apiSecret+"/products/1", () => {
+  http.put("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.post("/api"+apiSecret+"/products", () => {
+  http.post("/api" + apiSecret + "/products", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -137,53 +137,53 @@ let server = setupServer(
   }),
 
   /**image */
-  http.post("/api"+apiSecret+"/image/product/1", async () => {
+  http.post("/api" + apiSecret + "/image/product/1", async () => {
     counterUpload += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 
-  http.get("/api"+apiSecret+"/images/product/1", async () => {
+  http.get("/api" + apiSecret + "/images/product/1", async () => {
     return HttpResponse.json({
       success: true,
       data: images,
     });
   }),
 
-  http.patch("/api"+apiSecret+"/images/position/down/1", async () => {
+  http.patch("/api" + apiSecret + "/images/position/down/1", async () => {
     counterImage += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 
-  http.patch("/api"+apiSecret+"/images/position/up/2", async () => {
+  http.patch("/api" + apiSecret + "/images/position/up/2", async () => {
     counterImage += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 
-  http.delete("/api"+apiSecret+"/images/1", async () => {
+  http.delete("/api" + apiSecret + "/images/1", async () => {
     counterImage += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 
-  http.delete("/api"+apiSecret+"/images/1,2", async () => {
+  http.delete("/api" + apiSecret + "/images/1,2", async () => {
     counterDeleteImages += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 
-  http.delete("/api"+apiSecret+"/images/2", async () => {
+  http.delete("/api" + apiSecret + "/images/2", async () => {
     counterDeleteOneImage += 1;
     return new HttpResponse(null, {
-      status: 403
-    })
+      status: 403,
+    });
   }),
 );
 
@@ -198,10 +198,9 @@ const jsonStore2 = {
     default_lang: "pl",
     cache_enable: 1,
     demo_status: 1, //!!!
-    is_shop: 1
+    is_shop: 1,
   },
 };
-
 
 const images = responseGetProduct.data.images;
 
@@ -223,8 +222,8 @@ beforeEach(() => {
   counterDeleteImages = 0;
   counterDeleteOneImage = 0;
 
-  storage.setItem('auth', jsonStore2.auth )
-  storage.setItem('config', jsonStore2.config )
+  storage.setItem("auth", jsonStore2.auth);
+  storage.setItem("config", jsonStore2.config);
 
   server.resetHandlers();
 });
@@ -385,7 +384,6 @@ describe("Product edit or add images", () => {
       await userEvent.click(deleteImages);
 
       await waitFor(() => {
-
         expect(counterDeleteOneImage).toBe(0);
         expect(counterDeleteImages).toBe(1);
 
@@ -438,7 +436,6 @@ describe("Product edit or add images", () => {
       await userEvent.click(deleteImages);
 
       await waitFor(() => {
-
         expect(counterDeleteOneImage).toBe(1);
         expect(counterDeleteImages).toBe(0);
 
@@ -447,7 +444,6 @@ describe("Product edit or add images", () => {
 
         const msg = trans.ttt("is_demo_true");
         expect(screen.queryByText(msg)).toBeInTheDocument();
-
       });
     });
 

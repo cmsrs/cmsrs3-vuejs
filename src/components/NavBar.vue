@@ -93,12 +93,11 @@ const signOut = async () => {
     }
     const isDemo = config.demo_status; //it must this variable, because logoutStore clean it
     logoutStore();
-    if(isDemo){
+    if (isDemo) {
       router.push("/demo");
-    }else{
+    } else {
       router.push("/");
     }
-    
   } catch (error) {
     console.log("_is_error_logout__", error);
   } finally {
@@ -107,7 +106,7 @@ const signOut = async () => {
 };
 
 const changeCacheEnableInNav = async () => {
-  if(config.demo_status){
+  if (config.demo_status) {
     const msg = trans.ttt("is_demo_true");
     alert(msg);
     return false;

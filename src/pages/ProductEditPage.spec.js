@@ -15,7 +15,7 @@ import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -111,24 +111,24 @@ const responsePagesTypeShop = {
 };
 
 let server = setupServer(
-  http.get("/api"+apiSecret+"/pages/type/shop", () => {
+  http.get("/api" + apiSecret + "/pages/type/shop", () => {
     counter += 1;
     return HttpResponse.json(responsePagesTypeShop);
   }),
 
-  http.get("/api"+apiSecret+"/products/1", () => {
+  http.get("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json(responseGetProduct);
   }),
 
-  http.put("/api"+apiSecret+"/products/1", () => {
+  http.put("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.post("/api"+apiSecret+"/products", () => {
+  http.post("/api" + apiSecret + "/products", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -339,7 +339,7 @@ describe("Product edit or add page", () => {
         langs: ["pl", "en"],
         default_lang: "pl",
         cache_enable: 1,
-        is_shop: 1
+        is_shop: 1,
       },
     };
 
@@ -418,11 +418,11 @@ describe("Product edit or add page", () => {
       };
 
       server.use(
-        http.post("/api"+apiSecret+"/products", () => {
+        http.post("/api" + apiSecret + "/products", () => {
           counter += 1;
           return HttpResponse.json(responseError);
         }),
-        http.get("/api"+apiSecret+"/pages/type/shop", () => {
+        http.get("/api" + apiSecret + "/pages/type/shop", () => {
           counter += 1;
           return HttpResponse.json(responsePagesTypeShop);
         }),

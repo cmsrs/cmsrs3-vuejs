@@ -65,7 +65,7 @@
       :alt="image['alt'][lang]"
     />
 
-    <div class="form-group" :class="props.type === 'page' ? 'col-4' : 'col-5'"  >
+    <div class="form-group" :class="props.type === 'page' ? 'col-4' : 'col-5'">
       <input
         class="form-control"
         v-model="internalImages[index]['alt'][lang]"
@@ -121,7 +121,7 @@ import imgs from "../helpers/imgs.js";
 import jsonStoreTest from "../../test/jsonStore.js";
 import functions from "../helpers/functions.js";
 import trans from "../helpers/trans.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 
 import {
   uploadImage,
@@ -149,10 +149,10 @@ const internalMsgGood = defineModel("internalMsgGood");
 const internalPreLoader = defineModel("internalPreLoader");
 
 async function handleUploadFile(event) {
-  if(config.demo_status){
+  if (config.demo_status) {
     internalMsgWrong.value = trans.ttt("is_demo_true");
     return false;
-  }  
+  }
 
   if (internalPreLoader.value) {
     return false;
@@ -175,7 +175,6 @@ async function handleUploadFile(event) {
   const newImages = await imgs.getImagesUpload(files);
 
   for (let i = 0; i < newImages.length; i++) {
-    
     //try{
     let ret = uploadImage(
       newImages[i],

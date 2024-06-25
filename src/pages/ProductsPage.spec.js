@@ -14,7 +14,7 @@ import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
 import { API_SECRET } from "../config.js";
-const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -283,27 +283,39 @@ const responseGetProductsPl = {
 };
 
 let server = setupServer(
-  http.get("/api"+apiSecret+"/products/pagination/en/created_at/desc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetProducts);
-  }),
+  http.get(
+    "/api" + apiSecret + "/products/pagination/en/created_at/desc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetProducts);
+    },
+  ),
 
-  http.get("/api"+apiSecret+"/products/pagination/pl/created_at/desc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetProductsPl);
-  }),
+  http.get(
+    "/api" + apiSecret + "/products/pagination/pl/created_at/desc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetProductsPl);
+    },
+  ),
 
-  http.get("/api"+apiSecret+"/products/pagination/en/product_name/asc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetProducts);
-  }),
+  http.get(
+    "/api" + apiSecret + "/products/pagination/en/product_name/asc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetProducts);
+    },
+  ),
 
-  http.get("/api"+apiSecret+"/products/pagination/en/product_name/desc", () => {
-    counter += 1;
-    return HttpResponse.json(responseGetProducts);
-  }),
+  http.get(
+    "/api" + apiSecret + "/products/pagination/en/product_name/desc",
+    () => {
+      counter += 1;
+      return HttpResponse.json(responseGetProducts);
+    },
+  ),
 
-  http.delete("/api"+apiSecret+"/products/1", () => {
+  http.delete("/api" + apiSecret + "/products/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -355,7 +367,7 @@ describe("Products page", () => {
         langs: ["pl", "en"],
         default_lang: "pl",
         cache_enable: 1,
-        is_shop: 1
+        is_shop: 1,
       },
     };
 

@@ -100,9 +100,8 @@ onMounted(async () => {
   }
 
   const demo = router.currentRoute.value.params.demo;
-  formData.email = (demo == "demo") ? ADM_EMAIL : "";
-  formData.password = (demo == "demo") ? ADM_PASS : "";
-
+  formData.email = demo == "demo" ? ADM_EMAIL : "";
+  formData.password = demo == "demo" ? ADM_PASS : "";
 });
 
 watch(

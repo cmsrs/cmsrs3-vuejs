@@ -60,7 +60,7 @@ import {
 import Msg from "../components/Msg.vue";
 import trans from "../helpers/trans.js";
 import functions from "../helpers/functions.js";
-import { handleError  } from "../helpers/common.js";
+import { handleError } from "../helpers/common.js";
 import { useAuthStore } from "../state/store.js";
 const { auth, config, setIsCacheEnable } = useAuthStore();
 
