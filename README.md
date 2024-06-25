@@ -2,7 +2,7 @@
 
 ## Prepare configuration
 ```
-cp config.js.example config.js
+cp ./src/config.js.example ./src/config.js
 ```
 
 ## Project setup
