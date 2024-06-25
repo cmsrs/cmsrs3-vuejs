@@ -15,6 +15,8 @@ import userEvent from "@testing-library/user-event";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 //import { afterAll, beforeAll, describe, expect } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
 
 const contentPl = "lorem ipsum pl";
 const contentEn = "lorem ipsum en";
@@ -50,7 +52,7 @@ const pages = [
 let counter = 0;
 
 let server = setupServer(
-  http.get("/api/pages", async () => {
+  http.get("/api"+apiSecret+"/pages", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -60,7 +62,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api/pages/1", async () => {
+  http.get("/api"+apiSecret+"/pages/1", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -70,7 +72,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api/menus", async () => {
+  http.get("/api"+apiSecret+"/menus", async () => {
     counter += 1;
     const jsonRes = {
       success: true,

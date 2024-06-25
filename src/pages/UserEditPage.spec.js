@@ -14,6 +14,8 @@ import userEvent from "@testing-library/user-event";
 import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
 
 const responseGetClient = {
   success: 1,
@@ -29,19 +31,19 @@ const responseGetClient = {
 };
 
 let server = setupServer(
-  http.get("/api/clients/1", () => {
+  http.get("/api"+apiSecret+"/clients/1", () => {
     counter += 1;
     return HttpResponse.json(responseGetClient);
   }),
 
-  http.put("/api/clients/1", () => {
+  http.put("/api"+apiSecret+"/clients/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.post("/api/clients", () => {
+  http.post("/api"+apiSecret+"/clients", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,
@@ -240,7 +242,7 @@ describe("User edit page", () => {
       };
 
       server.use(
-        http.post("/api/clients", () => {
+        http.post("/api"+apiSecret+"/clients", () => {
           counter += 1;
           return HttpResponse.json(responseError);
         }),

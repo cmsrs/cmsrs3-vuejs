@@ -12,6 +12,9 @@ import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -68,22 +71,22 @@ const responseGetContacts = {
 };
 
 let server = setupServer(
-  http.get("/api/contacts/pagination/created_at/desc", () => {
+  http.get("/api"+apiSecret+"/contacts/pagination/created_at/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetContacts);
   }),
 
-  http.get("/api/contacts/pagination/email/asc", () => {
+  http.get("/api"+apiSecret+"/contacts/pagination/email/asc", () => {
     counter += 1;
     return HttpResponse.json(responseGetContacts);
   }),
 
-  http.get("/api/contacts/pagination/email/desc", () => {
+  http.get("/api"+apiSecret+"/contacts/pagination/email/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetContacts);
   }),
 
-  http.delete("/api/contacts/2", () => {
+  http.delete("/api"+apiSecret+"/contacts/2", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,

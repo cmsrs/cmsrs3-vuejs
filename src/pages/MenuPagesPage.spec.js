@@ -16,6 +16,8 @@ import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
 //import { afterAll, beforeAll, describe, expect } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -239,7 +241,7 @@ let counter2 = 0;
 let counterMenu = 0;
 const newPageId = 8;
 let server = setupServer(
-  http.post("/api/pages", async () => {
+  http.post("/api"+apiSecret+"/pages", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -251,21 +253,21 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.put("/api/pages/3", async () => {
+  http.put("/api"+apiSecret+"/pages/3", async () => {
     counter2 += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.post("/api/menus", async () => {
+  http.post("/api"+apiSecret+"/menus", async () => {
     counterMenu += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.get("/api/pages/3", async () => {
+  http.get("/api"+apiSecret+"/pages/3", async () => {
     const jsonRes = {
       success: true,
       data: pages[2], //id = 3
@@ -274,7 +276,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api/pages", async () => {
+  http.get("/api"+apiSecret+"/pages", async () => {
     const jsonRes = {
       success: true,
       data: pages,
@@ -283,7 +285,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api/menus", async () => {
+  http.get("/api"+apiSecret+"/menus", async () => {
     const jsonRes = {
       success: true,
       data: menus,
@@ -292,44 +294,44 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.put("/api/menus/1", async () => {
+  http.put("/api"+apiSecret+"/menus/1", async () => {
     //counter2 += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.delete("/api/menus/1", async () => {
+  http.delete("/api"+apiSecret+"/menus/1", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.delete("/api/pages/3", async () => {
+  http.delete("/api"+apiSecret+"/pages/3", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.patch("/api/menus/position/down/1", async () => {
+  http.patch("/api"+apiSecret+"/menus/position/down/1", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.patch("/api/menus/position/up/2", async () => {
+  http.patch("/api"+apiSecret+"/menus/position/up/2", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.patch("/api/pages/position/down/3", async () => {
+  http.patch("/api"+apiSecret+"/pages/position/down/3", async () => {
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.patch("/api/pages/position/up/3", async () => {
+  http.patch("/api"+apiSecret+"/pages/position/up/3", async () => {
     return HttpResponse.json({
       success: true,
     });
@@ -471,7 +473,7 @@ describe("Pages page", () => {
       ];
 
       server.use(
-        http.get("/api/pages", async () => {
+        http.get("/api"+apiSecret+"/pages", async () => {
           const jsonRes = {
             success: true,
             data: pages,
@@ -1237,49 +1239,49 @@ describe("Pages page", () => {
       counterDeleteImages = 0;
       counterDeleteOneImage = 0;
       server.use(
-        http.post("/api/image/page/3", async () => {
+        http.post("/api"+apiSecret+"/image/page/3", async () => {
           counterUpload += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
 
-        http.get("/api/images/page/3", async () => {
+        http.get("/api"+apiSecret+"/images/page/3", async () => {
           return HttpResponse.json({
             success: true,
             data: images,
           });
         }),
 
-        http.patch("/api/images/position/down/1", async () => {
+        http.patch("/api"+apiSecret+"/images/position/down/1", async () => {
           counterImage += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
 
-        http.patch("/api/images/position/up/2", async () => {
+        http.patch("/api"+apiSecret+"/images/position/up/2", async () => {
           counterImage += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
 
-        http.delete("/api/images/1", async () => {
+        http.delete("/api"+apiSecret+"/images/1", async () => {
           counterImage += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
 
-        http.delete("/api/images/1,2", async () => {
+        http.delete("/api"+apiSecret+"/images/1,2", async () => {
           counterDeleteImages += 1;
           return HttpResponse.json({
             success: true,
           });
         }),
 
-        http.delete("/api/images/2", async () => {
+        http.delete("/api"+apiSecret+"/images/2", async () => {
           counterDeleteOneImage += 1;
           return HttpResponse.json({
             success: true,
@@ -1504,7 +1506,7 @@ describe("Pages page", () => {
       ];
 
       server.use(
-        http.get("/api/pages", async () => {
+        http.get("/api"+apiSecret+"/pages", async () => {
           const jsonRes = {
             success: true,
             data: pages,
@@ -1512,7 +1514,7 @@ describe("Pages page", () => {
 
           return HttpResponse.json(jsonRes);
         }),
-        http.get("/api/menus", async () => {
+        http.get("/api"+apiSecret+"/menus", async () => {
           const jsonRes = {
             success: true,
             data: menus2,

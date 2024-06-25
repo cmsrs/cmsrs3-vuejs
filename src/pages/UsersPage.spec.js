@@ -12,6 +12,9 @@ import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -70,22 +73,22 @@ const responseGetClients = {
 };
 
 let server = setupServer(
-  http.get("/api/clients/created_at/desc", () => {
+  http.get("/api"+apiSecret+"/clients/created_at/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetClients);
   }),
 
-  http.get("/api/clients/name/asc", () => {
+  http.get("/api"+apiSecret+"/clients/name/asc", () => {
     counter += 1;
     return HttpResponse.json(responseGetClients);
   }),
 
-  http.get("/api/clients/name/desc", () => {
+  http.get("/api"+apiSecret+"/clients/name/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetClients);
   }),
 
-  http.delete("/api/clients/1", () => {
+  http.delete("/api"+apiSecret+"/clients/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,

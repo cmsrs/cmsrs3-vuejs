@@ -8,6 +8,8 @@ import userEvent from "@testing-library/user-event";
 import trans from "../helpers/trans.js";
 import storage from "../state/storage.js";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
 
 let counterToggle = 0;
 let counterCacheClear = 0;
@@ -19,23 +21,25 @@ let responseToggle = {
   data: {
     value: 1,
     message: successMsgToggle,
-  },
+  },  
 };
 
+console.log("/api"+apiSecret+"/config/clearcache");
+
 let server = setupServer(
-  http.post("/api/config/toggle-cache-enable-file", () => {
+  http.post("/api"+apiSecret+"/config/toggle-cache-enable-file", () => {
     counterToggle += 1;
     return HttpResponse.json(responseToggle);
   }),
 
-  http.put("/api/config/clearcache", () => {
+  http.put("/api"+apiSecret+"/config/clearcache", () => {
     counterCacheClear += 1;
     return HttpResponse.json({
       success: true,
     });
   }),
 
-  http.put("/api/config/createsitemap", () => {
+  http.put("/api"+apiSecret+"/config/createsitemap", () => {
     counterCreateSitemap += 1;
     return HttpResponse.json({
       success: true,

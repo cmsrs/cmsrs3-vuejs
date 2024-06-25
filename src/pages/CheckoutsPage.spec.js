@@ -14,6 +14,9 @@ import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+
 
 //const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -226,27 +229,27 @@ const responseGetCheckoutsPl = {
 };
 
 let server = setupServer(
-  http.get("/api/checkouts/pagination/en/created_at/desc", () => {
+  http.get("/api"+apiSecret+"/checkouts/pagination/en/created_at/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetCheckouts);
   }),
 
-  http.get("/api/checkouts/pagination/pl/created_at/desc", () => {
+  http.get("/api"+apiSecret+"/checkouts/pagination/pl/created_at/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetCheckoutsPl);
   }),
 
-  http.get("/api/checkouts/pagination/en/price_total_add_deliver/asc", () => {
+  http.get("/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/asc", () => {
     counter += 1;
     return HttpResponse.json(responseGetCheckouts);
   }),
 
-  http.get("/api/checkouts/pagination/en/price_total_add_deliver/desc", () => {
+  http.get("/api"+apiSecret+"/checkouts/pagination/en/price_total_add_deliver/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetCheckouts);
   }),
 
-  http.patch("api/checkouts/4", () => {
+  http.patch("/api"+apiSecret+"/checkouts/4", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,

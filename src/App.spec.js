@@ -15,6 +15,8 @@ import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "./config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
 
 const successMsgToggle = "Cache enabled";
 let responseToggle = {
@@ -28,12 +30,12 @@ let responseToggle = {
 let counterToggle = 0;
 let counter = 0;
 let server = setupServer(
-  http.post("/api/config/toggle-cache-enable-file", () => {
+  http.post("/api"+apiSecret+"/config/toggle-cache-enable-file", () => {
     counterToggle += 1;
     return HttpResponse.json(responseToggle);
   }),
 
-  http.get("/api/logout", async () => {
+  http.get("/api"+apiSecret+"/logout", async () => {
     counter += 1;
     const jsonRes = {
       success: true,
@@ -43,7 +45,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api/pages", async () => {
+  http.get("/api"+apiSecret+"/pages", async () => {
     const jsonRes = {
       success: true,
       data: [],
@@ -52,7 +54,7 @@ let server = setupServer(
     return HttpResponse.json(jsonRes);
   }),
 
-  http.get("/api/menus", async () => {
+  http.get("/api"+apiSecret+"/menus", async () => {
     const jsonRes = {
       success: true,
       data: [],

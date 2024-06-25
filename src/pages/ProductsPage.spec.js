@@ -13,6 +13,8 @@ import { setupServer } from "msw/node";
 import { HttpResponse, http } from "msw";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll } from "vitest";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
 
 const confirmSpy = vi.spyOn(window, "confirm");
 
@@ -281,27 +283,27 @@ const responseGetProductsPl = {
 };
 
 let server = setupServer(
-  http.get("/api/products/pagination/en/created_at/desc", () => {
+  http.get("/api"+apiSecret+"/products/pagination/en/created_at/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetProducts);
   }),
 
-  http.get("/api/products/pagination/pl/created_at/desc", () => {
+  http.get("/api"+apiSecret+"/products/pagination/pl/created_at/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetProductsPl);
   }),
 
-  http.get("/api/products/pagination/en/product_name/asc", () => {
+  http.get("/api"+apiSecret+"/products/pagination/en/product_name/asc", () => {
     counter += 1;
     return HttpResponse.json(responseGetProducts);
   }),
 
-  http.get("/api/products/pagination/en/product_name/desc", () => {
+  http.get("/api"+apiSecret+"/products/pagination/en/product_name/desc", () => {
     counter += 1;
     return HttpResponse.json(responseGetProducts);
   }),
 
-  http.delete("/api/products/1", () => {
+  http.delete("/api"+apiSecret+"/products/1", () => {
     counter += 1;
     return HttpResponse.json({
       success: true,

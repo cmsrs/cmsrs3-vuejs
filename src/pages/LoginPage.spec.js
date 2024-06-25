@@ -20,11 +20,15 @@ import { afterAll, beforeAll } from "vitest";
 import jsonStoreModule from "../../test/jsonStore.js";
 const jsonStore = jsonStoreModule.getJsonStore();
 import { ADM_EMAIL, ADM_PASS } from "../config-demo.js";
+import { API_SECRET } from "../config.js";
+const apiSecret = API_SECRET ? '/'+API_SECRET : '';
+const apiSecretLogin = '';
+
 
 let requestBody;
 let counter = 0;
 const server = setupServer(
-  http.post("/api/login", async ({ request }) => {
+  http.post("/api"+apiSecretLogin+"/login", async ({ request }) => {
     requestBody = await request.json();
     counter += 1;
 
@@ -63,7 +67,7 @@ const setupDemo = async () => {
 
 
 const authJson = jsonStore.auth;
-const loginSuccess = http.post("/api/login", async ({ request }) => {
+const loginSuccess = http.post("/api"+apiSecretLogin+"/login", async ({ request }) => {
   counter += 1;
   requestBody = await request.json();
   const jsonRes = {
@@ -75,7 +79,7 @@ const loginSuccess = http.post("/api/login", async ({ request }) => {
 });
 
 const configJson = jsonStore.config;
-const configSuccess = http.get("/api/config", async () => {
+const configSuccess = http.get("/api"+apiSecret+"/config", async () => {
   const jsonRes = {
     success: true,
     data: configJson,
