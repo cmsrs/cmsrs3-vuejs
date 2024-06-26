@@ -48,6 +48,9 @@
       </div>
     </form>
     <!-- container -->
+    <div class="container mt-4">
+      <a href="/">Return to the front page</a>
+    </div>
   </div>
 </template>
 <script setup>
