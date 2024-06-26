@@ -56,6 +56,7 @@ import { ref, computed, reactive, watch, onMounted } from "vue";
 import { login, config } from "../api/apiCalls.js";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../state/store.js";
+import { DEMO_STATUS } from "../config.js";
 import { ADM_EMAIL, ADM_PASS } from "../config-demo.js";
 const { auth, setAuth, setConfig } = useAuthStore();
 
@@ -100,8 +101,8 @@ onMounted(async () => {
   }
 
   const demo = router.currentRoute.value.params.demo;
-  formData.email = demo == "demo" ? ADM_EMAIL : "";
-  formData.password = demo == "demo" ? ADM_PASS : "";
+  formData.email = ((demo == "demo") || DEMO_STATUS) ? ADM_EMAIL : "";
+  formData.password = ((demo == "demo") || DEMO_STATUS) ? ADM_PASS : "";
 });
 
 watch(

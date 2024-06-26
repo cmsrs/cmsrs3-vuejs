@@ -7,3 +7,5 @@ export const API_SECRET = '';
 //if this directive === '' the url will be /admin
 export const ADMIN_URL_SECRET = ''
 
+
+export const DEMO_STATUS=false
