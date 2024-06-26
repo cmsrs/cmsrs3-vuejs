@@ -91,13 +91,14 @@ const signOut = async () => {
     if (!responseLogout.data.success) {
       console.log("sth wrong with logout in server site");
     }
-    const isDemo = config.demo_status; //it must this variable, because logoutStore clean it
+    //const isDemo = config.demo_status; //it must this variable, because logoutStore clean it
     logoutStore();
-    if (isDemo) {
-      router.push("/demo");
-    } else {
-      router.push("/");
-    }
+    router.push("/");
+    // if (isDemo) {
+    //   router.push("/demo");
+    // } else {
+    //   router.push("/");
+    // }
   } catch (error) {
     console.log("_is_error_logout__", error);
   } finally {
