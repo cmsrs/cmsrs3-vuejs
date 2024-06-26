@@ -24,3 +24,5 @@ pnpm-debug.log*
 
 src/config.js
 coverage
+
+/admin*
