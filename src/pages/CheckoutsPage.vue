@@ -92,9 +92,8 @@
             <th scope="row">{{ index + 1 }}</th>
             <td>
               <a
-                :href="'/user/edit/' + p.user_id"
-                target="_blank"
-                rel="noopener noreferrer"
+                class="cursor-pointer text-primary"
+                @click="goToUser(p.user_id)"
               >
                 {{ p["email"] }}
               </a>
@@ -115,9 +114,8 @@
                   class="text-nowrap"
                 >
                   <a
-                    :href="'/product/edit/' + basket.product_id"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    class="cursor-pointer text-primary"
+                    @click="goToProduct(basket.product_id)"
                   >
                     {{ basket.product_name }}
                   </a>
@@ -200,6 +198,14 @@ const direction = ref("");
 const page = ref("");
 const search = ref(""); //after click button
 const searchValue = ref(""); // current value
+
+const goToUser = (id) => {
+  router.push({ name: "user", params: { mode: "edit", id: id } });
+};
+
+const goToProduct = (id) => {
+  router.push({ name: "product", params: { mode: "edit", id: id } });
+};
 
 const editCheckout = async (id) => {
   if (!startLoading()) {
