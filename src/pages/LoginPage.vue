@@ -104,8 +104,8 @@ onMounted(async () => {
   }
 
   const demo = router.currentRoute.value.params.demo;
-  formData.email = ((demo == "demo") || DEMO_STATUS) ? ADM_EMAIL : "";
-  formData.password = ((demo == "demo") || DEMO_STATUS) ? ADM_PASS : "";
+  formData.email = demo == "demo" || DEMO_STATUS ? ADM_EMAIL : "";
+  formData.password = demo == "demo" || DEMO_STATUS ? ADM_PASS : "";
 });
 
 watch(
