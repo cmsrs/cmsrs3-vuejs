@@ -1,6 +1,6 @@
 # cmsrs3-vuejs
 
-## Prepare configuration
+### Prepare configuration
 
 1. Copy the example configuration file:
     ```bash
@@ -27,22 +27,23 @@
     - `ADMIN_URL_SECRET`: An additional string to secure the admin URL. If left empty, the admin URL will be `/admin`.
     - `DEMO_STATUS`: Set to `true` only if running in demo mode.
 
-```
-cp ./src/config.js.example ./src/config.js
-```
-
-## Project setup
+### Install 
 ```
 npm install
 ```
 
-## Run tests
+### Run tests
 ```
 ./test.sh all
 ```
 or
 ```
 npm test a
+```
+
+### Start the development server
+```
+npm run dev
 ```
 
 ### Compiles and hot-reloads for development
@@ -64,10 +65,6 @@ npm run lint
 ```
 npm run format
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
 
 ### Server code 
 https://github.com/cmsrs/cmsrs3
