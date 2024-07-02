@@ -10,6 +10,7 @@
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "test:coverage": "vitest --coverage --watch=false   --testTimeout 10000",
+    "test:coverage-v2": "node --max-old-space-size=4096  ./node_modules/.bin/vitest --coverage --watch=false   --testTimeout 10000",
     "format": "prettier --write src/"
   },
   "dependencies": {
