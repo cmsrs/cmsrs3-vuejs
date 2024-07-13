@@ -48,7 +48,7 @@
             v-if="config.cache_enable && config.is_cache_enable"
             :onClick="changeCacheEnableInNav"
           >
-            <p class="text-primary">cache enable</p>
+            <p class="text-danger">cache enable</p>
           </li>
           <li
             role="toggle_cache_enable_in_nav_bar"
@@ -56,7 +56,7 @@
             v-if="config.cache_enable && !config.is_cache_enable"
             :onClick="changeCacheEnableInNav"
           >
-            <p class="text-info">cache disable</p>
+            <p class="text-primary">cache disable</p>
           </li>
           <li
             role="link_sign_out"
