@@ -174,37 +174,44 @@ async function handleUploadFile(event) {
   setModal(true);
   const newImages = await imgs.getImagesUpload(files);
 
+  let uploadStatus = false;
   for (let i = 0; i < newImages.length; i++) {
-    //try{
-    let ret = uploadImage(
-      newImages[i],
-      props.type,
-      props.currentId,
-      auth.token,
-    );
-    //}catch (error) {
-    //      console.log('wrong upload');
-    //handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
-    //}
+      let ret = await  uploadImage(
+        newImages[i],
+        props.type,
+        props.currentId,
+        auth.token,
+      );
 
-    if (auth.token !== jsonStoreTest.getTestToken()) {
-      //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
-      await functions.delay(6000); //in test we not execute this line//test token = 'abcde12345'
-    }
+      if (auth.token !== jsonStoreTest.getTestToken()) {
+        //console.log(jsonStoreTest.getTestToken()+'----------'+ auth.token );
+        await functions.delay(6000); //in test we not execute this line//test token = 'abcde12345'
+      }
 
-    if (ret) {
-      internalMsgGood.value =
-        "Please wait. Images have been uploaded " +
-        (i + 1) +
-        "/" +
-        newImages.length;
-    }
+      if (ret.data.success) {
+        uploadStatus = true;
+        internalMsgGood.value =
+          "Please wait. Images have been uploaded " +
+          (i + 1) +
+          "/" +
+          newImages.length;
+      }else{
+        internalMsgWrong.value = ret.data.error;
+      }
+
+    // }catch (error) {
+    //   console.log('wrong upload');
+    //   handleError(error, config.demo_status, internalMsgWrong, internalPreLoader);
+    // }
+    
   }
 
   const dbImages = await getImagesByCurrentId();
-  if (dbImages.data.success) {
+  if (dbImages.data.success ) {
     internalImages.value = dbImages.data.data;
-    internalMsgGood.value = trans.ttt("success_images_upload"); //  "Images have been uploaded";
+    if( uploadStatus ){
+      internalMsgGood.value = trans.ttt("success_images_upload"); //  "Images have been uploaded";
+    }
     internalPreLoader.value = false;
     setModal(false);
   }
