@@ -100,6 +100,10 @@ const signOut = async () => {
     //   router.push("/");
     // }
   } catch (error) {
+    //In case the token changes or sth else problem. It is an emergency situation.
+    logoutStore();
+    router.push("/");
+
     console.log("_is_error_logout__", error);
   } finally {
     pre_loader.value = false;
