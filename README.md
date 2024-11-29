@@ -4,7 +4,7 @@
 </p>
 </br>
 <p align="center">
-<a href="https://github.com/laravel/laravel"><img src="https://img.shields.io/badge/Vue.js-3-yellowgreen"></a>
+<a href="https://github.com/vuejs/"><img src="https://img.shields.io/badge/Vue.js-3-yellowgreen"></a>
 <a href="https://www.cmsrs.pl/en/cms/cmsrs/coverage-test"><img src="https://img.shields.io/badge/coverage-90%25-yellowgreen"></a>
 <a href="https://github.com/cmsrs/cmsrs3/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
