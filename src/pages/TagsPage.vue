@@ -4,17 +4,11 @@
     <div class="container">
       <div class="row mt-3 mb-3">
         <h3 class="col-10">CMS - tags and categories</h3>
-        <ChangeLang
-          :lang="lang"
-          @exec-change-lang="changeLang"
-        />
+        <ChangeLang :lang="lang" @exec-change-lang="changeLang" />
       </div>
     </div>
 
-    <Msg
-      :msgGood="msgGood"
-      :msgWrong="msgWrong"
-    />
+    <Msg :msgGood="msgGood" :msgWrong="msgWrong" />
 
     <div class="container">
       <div class="row">
@@ -45,18 +39,13 @@
                 <input
                   class="form-control"
                   :class="{
-                    'is-invalid':
-                      categoryErrors[category.id]?.includes('name'),
+                    'is-invalid': categoryErrors[category.id]?.includes('name'),
                   }"
                   :disabled="pre_loader"
                   :value="category.name?.[lang] ?? ''"
                   :placeholder="`Category name ${lang}`"
                   @input="
-                    updateCategoryName(
-                      category.id,
-                      lang,
-                      $event.target.value
-                    )
+                    updateCategoryName(category.id, lang, $event.target.value)
                   "
                 />
               </div>
@@ -107,44 +96,42 @@
               </div>
             </div>
 
+            <!-- Tags assigned to this category -->
+            <div class="ms-3 mt-2 mb-3">
+              <div
+                v-for="tag in getTagsByCategory(category.id)"
+                :key="tag.id"
+                class="row align-items-center mb-2 tag-item"
+                :class="{
+                  'selected-tag': currentTagId === tag.id,
+                }"
+                role="tag_item"
+                @click="editTag(tag)"
+              >
+                <div class="col-10">
+                  <span>{{ tag.name?.[lang] || "(empty)" }}</span>
+                </div>
 
-          </div>
-
-          <!-- Tags without a valid category -->
-          <div
-            v-if="unassignedTags.length"
-            class="container mt-4"
-          >
-            <h6>Tags without a category</h6>
-
-            <div
-              v-for="tag in unassignedTags"
-              :key="tag.id"
-              class="row align-items-center mb-2 tag-item"
-              :class="{
-                'selected-tag': currentTagId === tag.id,
-              }"
-              @click="editTag(tag)"
-            >
-              <div class="col-10">
-                {{ tag.name?.[lang] || '(empty)' }}
+                <div class="col-2 text-end">
+                  <i
+                    class="far fa-edit cursor-pointer"
+                    title="Edit tag"
+                    @click.stop="editTag(tag)"
+                  ></i>
+                </div>
               </div>
 
-              <div class="col-2 text-end">
-                <i
-                  class="far fa-edit cursor-pointer"
-                  title="Edit tag"
-                  @click.stop="editTag(tag)"
-                ></i>
+              <div
+                v-if="getTagsByCategory(category.id).length === 0"
+                class="text-secondary small mb-2"
+              >
+                No tags in this category
               </div>
             </div>
           </div>
 
           <!-- New category form -->
-          <div
-            v-if="isAddCategory"
-            class="container mt-3"
-          >
+          <div v-if="isAddCategory" class="container mt-3">
             <h6>New category</h6>
 
             <div class="row align-items-start">
@@ -223,12 +210,7 @@
           <form @submit.prevent="saveTag">
             <!-- Tag name -->
             <div class="form-group mt-3">
-              <label
-                for="tagName"
-                class="text-secondary"
-              >
-                Name:
-              </label>
+              <label for="tagName" class="text-secondary"> Name: </label>
 
               <input
                 id="tagName"
@@ -244,10 +226,7 @@
 
             <!-- Category -->
             <div class="form-group mt-3">
-              <label
-                for="tagCategory"
-                class="text-secondary"
-              >
+              <label for="tagCategory" class="text-secondary">
                 Category:
               </label>
 
@@ -267,7 +246,7 @@
                   :key="category.id"
                   :value="category.id"
                 >
-                  {{ category.name?.[lang] || '(empty)' }}
+                  {{ category.name?.[lang] || "(empty)" }}
                 </option>
               </select>
             </div>
@@ -281,9 +260,7 @@
             >
               <i
                 v-if="!pre_loader"
-                :class="
-                  currentTagId ? 'far fa-save' : 'fas fa-plus'
-                "
+                :class="currentTagId ? 'far fa-save' : 'fas fa-plus'"
               ></i>
 
               <span
@@ -291,7 +268,7 @@
                 class="spinner-grow spinner-grow-sm"
               ></span>
 
-              {{ currentTagId ? 'Save tag' : 'Add tag' }}
+              {{ currentTagId ? "Save tag" : "Add tag" }}
             </button>
 
             <!-- Delete tag -->
@@ -381,8 +358,7 @@ const tagEntityTypes = computed(() => {
 const unassignedTags = computed(() => {
   return tags.value.filter((tag) => {
     return !categories.value.some(
-      (category) =>
-        Number(category.id) === Number(tag.tag_category_id),
+      (category) => Number(category.id) === Number(tag.tag_category_id),
     );
   });
 });
@@ -416,8 +392,7 @@ function finishLoading() {
 
 function getTagsByCategory(categoryId) {
   return tags.value.filter(
-    (tag) =>
-      Number(tag.tag_category_id) === Number(categoryId),
+    (tag) => Number(tag.tag_category_id) === Number(categoryId),
   );
 }
 
@@ -476,10 +451,7 @@ async function refreshTags() {
 
 async function refreshData() {
   try {
-    await Promise.all([
-      refreshCategories(),
-      refreshTags(),
-    ]);
+    await Promise.all([refreshCategories(), refreshTags()]);
 
     return true;
   } catch (error) {
@@ -529,9 +501,7 @@ function validateCategory(category) {
 
   for (const currentLang of langs) {
     if (!category.name?.[currentLang]?.trim()) {
-      msgWrong.value =
-        "Add category name" +
-        cmsLangPrefix(currentLang);
+      msgWrong.value = "Add category name" + cmsLangPrefix(currentLang);
 
       errors.push("name");
       break;
@@ -555,9 +525,7 @@ async function saveCategory(categoryOrNew) {
 
   const isNew = categoryOrNew === "new";
 
-  const category = isNew
-    ? newCategory.value
-    : categoryOrNew;
+  const category = isNew ? newCategory.value : categoryOrNew;
 
   const errors = validateCategory(category);
 
@@ -594,16 +562,10 @@ async function saveCategory(categoryOrNew) {
         ? "Category has been added"
         : "Category has been changed";
     } else {
-      msgWrong.value =
-        await functions.parseError(response.data.error);
+      msgWrong.value = await functions.parseError(response.data.error);
     }
   } catch (error) {
-    handleError(
-      error,
-      config.demo_status,
-      msgWrong,
-      pre_loader,
-    );
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   } finally {
     finishLoading();
   }
@@ -620,11 +582,7 @@ async function deleteCategory(category) {
     return;
   }
 
-  if (
-    !window.confirm(
-      "Are you sure you wish to delete this category?",
-    )
-  ) {
+  if (!window.confirm("Are you sure you wish to delete this category?")) {
     return;
   }
 
@@ -633,10 +591,7 @@ async function deleteCategory(category) {
   }
 
   try {
-    const response = await deleteTagCategory(
-      category.id,
-      token,
-    );
+    const response = await deleteTagCategory(category.id, token);
 
     if (response.data.success) {
       await refreshCategories();
@@ -646,23 +601,16 @@ async function deleteCategory(category) {
       if (
         currentTagId.value &&
         !categories.value.some(
-          (item) =>
-            Number(item.id) === Number(tagCategoryId.value),
+          (item) => Number(item.id) === Number(tagCategoryId.value),
         )
       ) {
         clearTagData();
       }
     } else {
-      msgWrong.value =
-        await functions.parseError(response.data.error);
+      msgWrong.value = await functions.parseError(response.data.error);
     }
   } catch (error) {
-    handleError(
-      error,
-      config.demo_status,
-      msgWrong,
-      pre_loader,
-    );
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   } finally {
     finishLoading();
   }
@@ -691,9 +639,7 @@ function editTag(tag) {
   };
 
   tagCategoryId.value =
-    tag.tag_category_id == null
-      ? ""
-      : String(tag.tag_category_id);
+    tag.tag_category_id == null ? "" : String(tag.tag_category_id);
 }
 
 function validateTag() {
@@ -701,8 +647,7 @@ function validateTag() {
 
   for (const currentLang of langs) {
     if (!tagName.value[currentLang]?.trim()) {
-      msgWrong.value =
-        "Add tag name" + cmsLangPrefix(currentLang);
+      msgWrong.value = "Add tag name" + cmsLangPrefix(currentLang);
 
       tagErrors.value.push("name");
       return false;
@@ -717,8 +662,7 @@ function validateTag() {
   }
 
   const selectedCategoryExists = categories.value.some(
-    (category) =>
-      Number(category.id) === Number(tagCategoryId.value),
+    (category) => Number(category.id) === Number(tagCategoryId.value),
   );
 
   if (!selectedCategoryExists) {
@@ -761,20 +705,12 @@ async function saveTag() {
         clearTagData();
       }
 
-      msgGood.value = wasNew
-        ? "Tag has been added"
-        : "Tag has been changed";
+      msgGood.value = wasNew ? "Tag has been added" : "Tag has been changed";
     } else {
-      msgWrong.value =
-        await functions.parseError(response.data.error);
+      msgWrong.value = await functions.parseError(response.data.error);
     }
   } catch (error) {
-    handleError(
-      error,
-      config.demo_status,
-      msgWrong,
-      pre_loader,
-    );
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   } finally {
     finishLoading();
   }
@@ -787,11 +723,7 @@ async function deleteTag() {
     return false;
   }
 
-  if (
-    !window.confirm(
-      "Are you sure you wish to delete this tag?",
-    )
-  ) {
+  if (!window.confirm("Are you sure you wish to delete this tag?")) {
     return;
   }
 
@@ -800,10 +732,7 @@ async function deleteTag() {
   }
 
   try {
-    const response = await deleteTagRequest(
-      currentTagId.value,
-      token,
-    );
+    const response = await deleteTagRequest(currentTagId.value, token);
 
     if (response.data.success) {
       await refreshTags();
@@ -812,16 +741,10 @@ async function deleteTag() {
 
       msgGood.value = "Tag has been deleted";
     } else {
-      msgWrong.value =
-        await functions.parseError(response.data.error);
+      msgWrong.value = await functions.parseError(response.data.error);
     }
   } catch (error) {
-    handleError(
-      error,
-      config.demo_status,
-      msgWrong,
-      pre_loader,
-    );
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   } finally {
     finishLoading();
   }
@@ -844,17 +767,9 @@ onMounted(async () => {
   pre_loader.value = true;
 
   try {
-    await Promise.all([
-      refreshCategories(),
-      refreshTags(),
-    ]);
+    await Promise.all([refreshCategories(), refreshTags()]);
   } catch (error) {
-    handleError(
-      error,
-      config.demo_status,
-      msgWrong,
-      pre_loader,
-    );
+    handleError(error, config.demo_status, msgWrong, pre_loader);
   } finally {
     finishLoading();
   }
