@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="container">
       <div class="row mt-3 mb-3">
-        <h3 class="col-10">CMS - tags and categories</h3>
+        <h3 class="col-10">Tags</h3>
         <ChangeLang :lang="lang" @exec-change-lang="changeLang" />
       </div>
     </div>
@@ -13,9 +13,7 @@
     <div class="container">
       <div class="row">
         <!-- LEFT COLUMN: Categories and tags -->
-        <div class="col-6">
-          <h5 class="mt-2">Categories and tags</h5>
-
+        <div class="col-7">
           <button
             role="button_add_tag_category"
             class="btn btn-primary mt-2 mb-2"
@@ -30,10 +28,11 @@
           <div
             v-for="category in categories"
             :key="category.id"
-            class="container mt-3 tag-category"
+            class="container mt-3"
             :data-category-id="category.id"
+            style="margin-left: 0px; padding-left: 0px"
           >
-            <div class="row align-items-start">
+            <div class="row">
               <!-- Category name -->
               <div class="form-group col-6">
                 <input
@@ -101,23 +100,34 @@
               <div
                 v-for="tag in getTagsByCategory(category.id)"
                 :key="tag.id"
-                class="row align-items-center mb-2 tag-item"
+                class="row mb-2"
                 :class="{
                   'selected-tag': currentTagId === tag.id,
                 }"
                 role="tag_item"
                 @click="editTag(tag)"
               >
-                <div class="col-10">
-                  <span>{{ tag.name?.[lang] || "(empty)" }}</span>
+                <!-- Delete tag -->
+                <div class="col-1 trash">
+                  <i
+                    class="fas fa-trash cursor-pointer"
+                    :class="{ 'disabled-if-loader': pre_loader }"
+                    title="Delete tag"
+                    role="button_delete_tag"
+                    @click.prevent="deleteTag"
+                  ></i>
                 </div>
 
-                <div class="col-2 text-end">
+                <div class="col-1">
                   <i
                     class="far fa-edit cursor-pointer"
                     title="Edit tag"
                     @click.stop="editTag(tag)"
                   ></i>
+                </div>
+
+                <div class="col-10">
+                  <span>{{ tag.name?.[lang] || "(empty)" }}</span>
                 </div>
               </div>
 
@@ -185,9 +195,7 @@
         </div>
 
         <!-- RIGHT COLUMN: Tag form -->
-        <div class="col-6">
-          <h5 class="mt-2">Tag</h5>
-
+        <div class="col-5">
           <button
             role="button_add_tag"
             class="btn btn-primary mt-2 mb-2 me-2"
@@ -270,19 +278,6 @@
 
               {{ currentTagId ? "Save tag" : "Add tag" }}
             </button>
-
-            <!-- Delete tag -->
-            <button
-              v-if="currentTagId"
-              role="button_delete_tag"
-              type="button"
-              class="btn btn-danger mt-3"
-              :disabled="pre_loader"
-              @click.prevent="deleteTag"
-            >
-              <i class="fas fa-trash"></i>
-              Delete tag
-            </button>
           </form>
         </div>
       </div>
@@ -355,13 +350,13 @@ const tagEntityTypes = computed(() => {
 });
 
 // Tags which do not belong to any existing category.
-const unassignedTags = computed(() => {
-  return tags.value.filter((tag) => {
-    return !categories.value.some(
-      (category) => Number(category.id) === Number(tag.tag_category_id),
-    );
-  });
-});
+//const unassignedTags = computed(() => {
+//  return tags.value.filter((tag) => {
+//    return !categories.value.some(
+//      (category) => Number(category.id) === Number(tag.tag_category_id),
+//    );
+//  });
+//});
 
 // --------------------------------------------------
 // Common helpers
@@ -449,16 +444,16 @@ async function refreshTags() {
   throw new Error("Could not load tags");
 }
 
-async function refreshData() {
-  try {
-    await Promise.all([refreshCategories(), refreshTags()]);
+// async function refreshData() {
+//   try {
+//     await Promise.all([refreshCategories(), refreshTags()]);
 
-    return true;
-  } catch (error) {
-    msgWrong.value = await getApiErrorMessage(error);
-    return false;
-  }
-}
+//     return true;
+//   } catch (error) {
+//     msgWrong.value = await getApiErrorMessage(error);
+//     return false;
+//   }
+// }
 
 // --------------------------------------------------
 // Categories
@@ -775,38 +770,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-.tag-category {
-  padding: 10px;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-}
-
-.tag-item {
-  padding: 5px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.tag-item:hover {
-  background-color: #f1f3f5;
-}
-
-.selected-tag {
-  background-color: #e9ecef;
-}
-
-.disabled-if-loader {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.trash {
-  color: #dc3545;
-}
-</style>
