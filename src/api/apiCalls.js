@@ -297,3 +297,64 @@ export const getClearCache = (token) => {
 export const getCreateSitemap = (token) => {
   return axios.put("/api" + apiSecret + "/config/createsitemap?token=" + token);
 };
+
+///////////////
+//tag categories
+///////////////
+export const postTagCategory = (post, token) => {
+  const ret = axios.post(
+    "/api" + apiSecret + "/tag-categories?token=" + token,
+    post,
+  );
+  return ret;
+};
+
+export const getTagCategories = (token) => {
+  return axios.get("/api" + apiSecret + "/tag-categories?token=" + token);
+};
+
+export const getTagCategory = (id, token) => {
+  return axios.get(
+    "/api" + apiSecret + "/tag-categories/" + id + "?token=" + token,
+  );
+};
+
+export const putTagCategory = (post, id, token) => {
+  return axios.put(
+    "/api" + apiSecret + "/tag-categories/" + id + "?token=" + token,
+    post,
+  );
+};
+
+export const deleteTagCategory = (id, token) => {
+  return axios.delete(
+    "/api" + apiSecret + "/tag-categories/" + id + "?token=" + token,
+  );
+};
+
+///////////////
+//tag
+///////////////
+export const postTag = (post, token) => {
+  const ret = axios.post("/api" + apiSecret + "/tags?token=" + token, post);
+  return ret;
+};
+
+export const getTags = (token) => {
+  return axios.get("/api" + apiSecret + "/tags?token=" + token);
+};
+
+export const getTag = (id, token) => {
+  return axios.get("/api" + apiSecret + "/tags/" + id + "?token=" + token);
+};
+
+export const putTag = (post, id, token) => {
+  return axios.put(
+    "/api" + apiSecret + "/tags/" + id + "?token=" + token,
+    post,
+  );
+};
+
+export const deleteTag = (id, token) => {
+  return axios.delete("/api" + apiSecret + "/tags/" + id + "?token=" + token);
+};

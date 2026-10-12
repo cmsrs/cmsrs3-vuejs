@@ -62,6 +62,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.is_cache_enable = data.is_cache_enable;
     config.demo_status = data.demo_status;
     config.is_shop = data.is_shop;
+    config.tag_entity_types = data.tag_entity_types;
   }
 
   function setDefaultLang(lang) {
@@ -77,6 +78,7 @@ export const useAuthStore = defineStore("auth", () => {
     config.default_lang = "";
     config.demo_status = 0;
     config.is_shop = 1;
+    config.tag_entity_types = [];
 
     //auth.id = 0
     //delete auth.username
