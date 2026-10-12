@@ -9,6 +9,8 @@ import ContactsPage from "../pages/ContactsPage.vue";
 import SettingsPage from "../pages/SettingsPage.vue";
 import ProductEditPage from "../pages/ProductEditPage.vue";
 import CheckoutsPage from "../pages/CheckoutsPage.vue";
+import TagsPage from "../pages/TagsPage.vue";
+
 //import { ADMIN_URL_SECRET } from '../config.js';
 
 const routesIn = [
@@ -66,6 +68,11 @@ const routesIn = [
     //path: "/admin"+ADMIN_URL_SECRET+"/checkouts",
     path: "/checkouts",
     component: CheckoutsPage,
+  },
+
+  {
+    path: "/tags",
+    component: TagsPage,
   },
 
   // {
