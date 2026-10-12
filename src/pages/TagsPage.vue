@@ -1,942 +1,897 @@
 <template>
-  <div class="mb-3" data-testid="pages-page">
-    <!-- change lang and h1 -->
+  <div class="mb-3" data-testid="tags-page">
+    <!-- Header -->
     <div class="container">
       <div class="row mt-3 mb-3">
-        <h3 class="col-10" role="head_menu_pages">CMS - menus and pages</h3>
-        <ChangeLang :lang="lang" @exec-change-lang="changeLang"></ChangeLang>
+        <h3 class="col-10">CMS - tags and categories</h3>
+        <ChangeLang
+          :lang="lang"
+          @exec-change-lang="changeLang"
+        />
       </div>
     </div>
 
-    <Msg :msgGood="msgGood" :msgWrong="msgWrong"></Msg>
+    <Msg
+      :msgGood="msgGood"
+      :msgWrong="msgWrong"
+    />
 
     <div class="container">
       <div class="row">
-        <!-- Menu  -->
-        <div class="col-5">
+        <!-- LEFT COLUMN: Categories and tags -->
+        <div class="col-6">
+          <h5 class="mt-2">Categories and tags</h5>
+
           <button
-            role="button_add_menu"
-            @click.prevent="addMenu"
+            role="button_add_tag_category"
             class="btn btn-primary mt-2 mb-2"
             :disabled="pre_loader"
+            @click.prevent="addCategory"
           >
-            <i v-if="!pre_loader" class="fas fa-plus"></i>
-            <span
-              role="pre_loader_add_menu"
-              v-if="pre_loader"
-              class="spinner-grow spinner-grow-sm"
-            ></span>
-            Add menu
+            <i class="fas fa-plus"></i>
+            Add category
           </button>
 
-          <div class="container" style="margin-left: 0px; padding-left: 0px">
-            <div class="row" v-for="(m, index) in menus" :key="m.id">
-              <div class="container mt-3">
-                <div class="row">
-                  <div class="form-group col-6">
-                    <input
-                      role="menu"
-                      class="form-control"
-                      v-model="menus[index]['name'][lang]"
-                    />
-                  </div>
-
-                  <div
-                    role="save_menu"
-                    class="ms-2 col-1"
-                    :class="{ 'disabled-if-loader': pre_loader }"
-                    @click="saveMenu(index)"
-                  >
-                    <i class="far fa-save cursor-pointer"></i>
-                  </div>
-                  <div
-                    role="del_menu"
-                    class="ms-2 trash col-1"
-                    :class="{ 'disabled-if-loader': pre_loader }"
-                    @click="delMenu(index)"
-                  >
-                    <i class="fas fa-trash cursor-pointer" aria-hidden="true" />
-                  </div>
-
-                  <div
-                    v-if="menus.length > 1"
-                    role="down_menu"
-                    :class="{ 'disabled-if-loader': pre_loader }"
-                    class="ms-2 col-1"
-                    @click="positionMenu('down', m.id)"
-                  >
-                    <i
-                      class="fas fa-arrow-down cursor-pointer"
-                      aria-hidden="true"
-                    ></i>
-                  </div>
-                  <div
-                    v-if="menus.length > 1"
-                    role="up_menu"
-                    :class="{ 'disabled-if-loader': pre_loader }"
-                    class="ms-2 col-1"
-                    @click="positionMenu('up', m.id)"
-                  >
-                    <i
-                      class="fas fa-arrow-up cursor-pointer"
-                      aria-hidden="true"
-                    ></i>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="container"
-                role="menu_pages"
-                :data-menu-id="m.id"
-                v-if="getPagesBelongsToMenu(m.id)"
-              >
-                <div
-                  class="row test-parent-page"
-                  v-for="p in getPagesBelongsToMenu(m.id)"
-                  :key="p.id"
-                >
-                  <PageTitle
-                    @exec-edit-page="editPage(p.id)"
-                    @exec-del-page="delPage(p.id)"
-                    @exec-position-page-up="positionPageUp(p.id)"
-                    @exec-position-page-down="positionPageDown(p.id)"
-                    :pre_loader="pre_loader"
-                    :p="p"
-                    :lang="lang"
-                    :allPages="allPages"
-                    :currentPageId="currentPageId"
-                  ></PageTitle>
-
-                  <div
-                    class="container ms-2"
-                    role="page_pages"
-                    :data-page-id="p.id"
-                    v-if="getPagesBelongsToPage(p.id)"
-                  >
-                    <div
-                      class="row"
-                      v-for="pp in getPagesBelongsToPage(p.id)"
-                      :key="pp.id"
-                    >
-                      <PageTitle
-                        @exec-edit-page="editPage(pp.id)"
-                        @exec-del-page="delPage(pp.id)"
-                        @exec-position-page-up="positionPageUp(pp.id)"
-                        @exec-position-page-down="positionPageDown(pp.id)"
-                        :pre_loader="pre_loader"
-                        :p="pp"
-                        :lang="lang"
-                        :allPages="allPages"
-                        :currentPageId="currentPageId"
-                      ></PageTitle>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="container" style="margin-left: 0px; padding-left: 0px">
-            <div class="row mt-3" v-if="isAddMenu">
+          <!-- Existing categories -->
+          <div
+            v-for="category in categories"
+            :key="category.id"
+            class="container mt-3 tag-category"
+            :data-category-id="category.id"
+          >
+            <div class="row align-items-start">
+              <!-- Category name -->
               <div class="form-group col-6">
                 <input
-                  role="new_menu"
                   class="form-control"
-                  :class="{ 'is-invalid': menus_error_new }"
-                  v-model="new_menu_name[lang]"
-                  :placeholder="`Menu name ${lang}`"
+                  :class="{
+                    'is-invalid':
+                      categoryErrors[category.id]?.includes('name'),
+                  }"
+                  :disabled="pre_loader"
+                  :value="category.name?.[lang] ?? ''"
+                  :placeholder="`Category name ${lang}`"
+                  @input="
+                    updateCategoryName(
+                      category.id,
+                      lang,
+                      $event.target.value
+                    )
+                  "
                 />
               </div>
 
-              <div
-                role="save_menu_0"
-                class="ms-2 col-1"
-                @click="saveMenu('new')"
-              >
-                <i class="far fa-save cursor-pointer"></i>
+              <!-- Entity type -->
+              <div class="form-group col-4">
+                <select
+                  class="form-control"
+                  :class="{
+                    'is-invalid':
+                      categoryErrors[category.id]?.includes('entity_type'),
+                  }"
+                  :disabled="pre_loader"
+                  v-model="category.entity_type"
+                >
+                  <option value="">Select type</option>
+
+                  <option
+                    v-for="entityType in tagEntityTypes"
+                    :key="entityType"
+                    :value="entityType"
+                  >
+                    {{ entityType }}
+                  </option>
+                </select>
               </div>
-              <div
-                role="del_menu_0"
-                class="ms-2 trash col-1"
-                @click="delMenu('new')"
-              >
-                <i class="fas fa-trash cursor-pointer" aria-hidden="true" />
+
+              <!-- Save category -->
+              <div class="col-1">
+                <i
+                  class="far fa-save cursor-pointer"
+                  :class="{ 'disabled-if-loader': pre_loader }"
+                  title="Save category"
+                  role="button_save_tag_category"
+                  @click="saveCategory(category)"
+                ></i>
+              </div>
+
+              <!-- Delete category -->
+              <div class="col-1 trash">
+                <i
+                  class="fas fa-trash cursor-pointer"
+                  :class="{ 'disabled-if-loader': pre_loader }"
+                  title="Delete category"
+                  role="button_delete_tag_category"
+                  @click="deleteCategory(category)"
+                ></i>
+              </div>
+            </div>
+
+
+          </div>
+
+          <!-- Tags without a valid category -->
+          <div
+            v-if="unassignedTags.length"
+            class="container mt-4"
+          >
+            <h6>Tags without a category</h6>
+
+            <div
+              v-for="tag in unassignedTags"
+              :key="tag.id"
+              class="row align-items-center mb-2 tag-item"
+              :class="{
+                'selected-tag': currentTagId === tag.id,
+              }"
+              @click="editTag(tag)"
+            >
+              <div class="col-10">
+                {{ tag.name?.[lang] || '(empty)' }}
+              </div>
+
+              <div class="col-2 text-end">
+                <i
+                  class="far fa-edit cursor-pointer"
+                  title="Edit tag"
+                  @click.stop="editTag(tag)"
+                ></i>
               </div>
             </div>
           </div>
 
-          <div class="container" style="margin-left: 0px; padding-left: 0px">
-            <div class="row" v-if="notRelatedPages">
-              <h5 class="mt-4">Pages not related to menu</h5>
-              <div
-                class="row"
-                v-for="(p, index) in notRelatedPages"
-                :key="index"
-              >
-                <PageTitle
-                  @exec-edit-page="editPage(p.id)"
-                  @exec-del-page="delPage(p.id)"
-                  @exec-position-page-up="positionPageUp(p.id)"
-                  @exec-position-page-down="positionPageDown(p.id)"
-                  :pre_loader="pre_loader"
-                  :p="p"
-                  :lang="lang"
-                  :allPages="allPages"
-                  :currentPageId="currentPageId"
-                ></PageTitle>
+          <!-- New category form -->
+          <div
+            v-if="isAddCategory"
+            class="container mt-3"
+          >
+            <h6>New category</h6>
+
+            <div class="row align-items-start">
+              <div class="form-group col-6">
+                <input
+                  class="form-control"
+                  :class="{ 'is-invalid': newCategoryError }"
+                  v-model="newCategory.name[lang]"
+                  :placeholder="`Category name ${lang}`"
+                  :disabled="pre_loader"
+                />
               </div>
-            </div>
-            <div class="row" v-if="innerPages">
-              <h5 class="mt-4">Inner boxes</h5>
-              <div class="row" v-for="(p, index) in innerPages" :key="index">
-                <PageTitle
-                  @exec-edit-page="editPage(p.id)"
-                  @exec-del-page="delPage(p.id)"
-                  @exec-position-page-up="positionPageUp(p.id)"
-                  @exec-position-page-down="positionPageDown(p.id)"
-                  :pre_loader="pre_loader"
-                  :p="p"
-                  :lang="lang"
-                  :allPages="allPages"
-                  :showPageId="true"
-                  :currentPageId="currentPageId"
-                ></PageTitle>
+
+              <div class="form-group col-4">
+                <select
+                  class="form-control"
+                  v-model="newCategory.entity_type"
+                  :disabled="pre_loader"
+                >
+                  <option value="">Select type</option>
+
+                  <option
+                    v-for="entityType in tagEntityTypes"
+                    :key="entityType"
+                    :value="entityType"
+                  >
+                    {{ entityType }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-1">
+                <i
+                  class="far fa-save cursor-pointer"
+                  :class="{ 'disabled-if-loader': pre_loader }"
+                  title="Save category"
+                  @click="saveCategory('new')"
+                ></i>
+              </div>
+
+              <div class="col-1 trash">
+                <i
+                  class="fas fa-trash cursor-pointer"
+                  :class="{ 'disabled-if-loader': pre_loader }"
+                  title="Cancel"
+                  @click="cancelAddCategory"
+                ></i>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Pages  -->
-        <div class="col-7">
-          <!-- !it can be edit page too -->
+        <!-- RIGHT COLUMN: Tag form -->
+        <div class="col-6">
+          <h5 class="mt-2">Tag</h5>
+
           <button
-            role="button_save_edit_page"
-            @click.prevent="saveEditPage"
-            type="submit"
-            class="add-page-btn btn btn-primary mt-2 mb-2 me-2"
+            role="button_add_tag"
+            class="btn btn-primary mt-2 mb-2 me-2"
             :disabled="pre_loader"
+            @click.prevent="clearTagData"
           >
-            <i v-if="!pre_loader" class="fas fa-plus"></i>
-            <span
-              role="pre_loader_save_edit_page"
-              v-if="pre_loader"
-              class="spinner-grow spinner-grow-sm"
-            ></span>
-            <span v-if="!currentPageId">Add page</span>
-            <span v-if="currentPageId">Edit page</span>
+            <i class="fas fa-plus"></i>
+            Add tag
           </button>
+
           <button
-            role="button_clear_page_data"
-            @click.prevent="clearDataPage"
-            class="add-page-btn btn btn-info ms-2 mt-2 mb-2"
+            role="button_clear_tag"
+            class="btn btn-info mt-2 mb-2"
             :disabled="pre_loader"
+            @click.prevent="clearTagData"
           >
             Clear data
           </button>
 
-          <form>
+          <form @submit.prevent="saveTag">
+            <!-- Tag name -->
             <div class="form-group mt-3">
+              <label
+                for="tagName"
+                class="text-secondary"
+              >
+                Name:
+              </label>
+
               <input
+                id="tagName"
                 class="form-control"
-                :class="{ 'is-invalid': errFields.includes('title') }"
-                v-model="title[lang]"
-                :placeholder="`title ${lang}`"
+                :class="{
+                  'is-invalid': tagErrors.includes('name'),
+                }"
+                v-model="tagName[lang]"
+                :placeholder="`Tag name ${lang}`"
+                :disabled="pre_loader"
               />
             </div>
 
+            <!-- Category -->
             <div class="form-group mt-3">
-              <input
-                class="form-control"
-                :class="{ 'is-invalid': errFields.includes('short_title') }"
-                v-model="short_title[lang]"
-                :placeholder="`short title ${lang}`"
-              />
-            </div>
-
-            <div class="form-group mt-3">
-              <textarea
-                class="form-control"
-                rows="4"
-                cols="50"
-                v-model="description[lang]"
-                :placeholder="`description ${lang}`"
-              ></textarea>
-            </div>
-
-            <div class="form-check mt-2 row">
               <label
-                :class="{ 'disabled-if-loader': pre_loader }"
-                :disabled="pre_loader"
+                for="tagCategory"
+                class="text-secondary"
               >
-                <input
-                  class="col-1"
-                  name="published"
-                  type="checkbox"
-                  v-model="published"
-                  :true-value="1"
-                />
-                Published
+                Category:
               </label>
-            </div>
 
-            <div class="form-check mt-2 row">
-              <label
-                :class="{ 'disabled-if-loader': pre_loader }"
-                :disabled="pre_loader"
-              >
-                <input
-                  class="col-1"
-                  name="commented"
-                  type="checkbox"
-                  v-model="commented"
-                  :true-value="1"
-                />
-                Commented
-              </label>
-            </div>
-
-            <div class="form-check mt-2 row">
-              <label
-                :class="{ 'disabled-if-loader': pre_loader }"
-                :disabled="pre_loader"
-              >
-                <input
-                  class="col-1"
-                  name="after_login"
-                  type="checkbox"
-                  v-model="after_login"
-                  :true-value="1"
-                />
-                Available after log in
-              </label>
-            </div>
-
-            <div class="form-group mt-3">
-              <label for="pageType" class="text-secondary">Page type:</label>
               <select
-                :class="{ 'disabled-if-loader': pre_loader }"
+                id="tagCategory"
+                class="form-control"
+                :class="{
+                  'is-invalid': tagErrors.includes('tag_category_id'),
+                }"
+                v-model="tagCategoryId"
                 :disabled="pre_loader"
-                class="rs-select form-control"
-                id="pageType"
-                v-model="page_type"
               >
+                <option value="">Select category</option>
+
                 <option
-                  v-for="pageType in page_types"
-                  :key="pageType"
-                  :value="pageType"
+                  v-for="category in categories"
+                  :key="category.id"
+                  :value="category.id"
                 >
-                  {{ pageType }}
+                  {{ category.name?.[lang] || '(empty)' }}
                 </option>
               </select>
             </div>
 
-            <div class="mt-3" v-if="page_type !== 'main_page'">
-              <!--
-                  it is show 
-                  1. menus
-                  2. parent_page                  
-                  for page_type different then main_page
-                  -->
-
-              <div class="form-group mt-3">
-                <label for="menu_items" class="text-secondary">Menu:</label>
-                <select
-                  :class="{ 'disabled-if-loader': pre_loader }"
-                  :disabled="pre_loader"
-                  role="menu_items"
-                  class="rs-select form-control"
-                  v-model="menu_id"
-                  @change="handleMenuChange"
-                >
-                  <option value=""></option>
-                  <option v-for="menu in menus" :key="menu.id" :value="menu.id">
-                    {{ menu.name[lang] }}
-                  </option>
-                </select>
-              </div>
-
-              <div class="form-group mt-3">
-                <label for="page" class="text-secondary">Parent page:</label>
-                <select
-                  :class="{ 'disabled-if-loader': pre_loader }"
-                  :disabled="pre_loader"
-                  role="page_items"
-                  class="rs-select form-control"
-                  v-model="page_id"
-                >
-                  <option value=""></option>
-                  <option
-                    v-for="page in rootPagesBelongToMenu"
-                    :key="page.id"
-                    :value="page.id"
-                  >
-                    {{ page.short_title[lang] }}
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <div
-                class="form-group"
-                v-if="
-                  page_type === 'cms' ||
-                  page_type === 'inner' ||
-                  page_type === 'privacy_policy'
+            <!-- Save tag -->
+            <button
+              role="button_save_tag"
+              type="submit"
+              class="btn btn-primary mt-3 me-2"
+              :disabled="pre_loader"
+            >
+              <i
+                v-if="!pre_loader"
+                :class="
+                  currentTagId ? 'far fa-save' : 'fas fa-plus'
                 "
-              >
-                <br />
-                <ckeditor
-                  :editor="editor"
-                  v-model="content[lang]"
-                  :config="editorConfig"
-                ></ckeditor>
-                <!--
-                    we show contentCKE: CKEditor (for: 'cms', 'inner', 'privacy_policy' )
-                    -->
-              </div>
-              <div class="form-group" v-else>
-                <textarea
-                  class="form-control textarea-rs"
-                  rows="20"
-                  cols="50"
-                  v-model="content[lang]"
-                  :placeholder="`content ${lang}`"
-                ></textarea>
-              </div>
-            </div>
+              ></i>
 
-            <!-- manage image -->
-            <ManageImages
-              ref="childImageComponentRef"
-              v-model:internal-images="images"
-              v-model:internal-msg-wrong="msgWrong"
-              v-model:internal-msg-good="msgGood"
-              v-model:internal-pre-loader="pre_loader"
-              :lang="lang"
-              :startLoading="startLoading"
-              :clearMsg="clearMsg"
-              :currentId="currentPageId"
-              type="page"
-            ></ManageImages>
+              <span
+                v-if="pre_loader"
+                class="spinner-grow spinner-grow-sm"
+              ></span>
+
+              {{ currentTagId ? 'Save tag' : 'Add tag' }}
+            </button>
+
+            <!-- Delete tag -->
+            <button
+              v-if="currentTagId"
+              role="button_delete_tag"
+              type="button"
+              class="btn btn-danger mt-3"
+              :disabled="pre_loader"
+              @click.prevent="deleteTag"
+            >
+              <i class="fas fa-trash"></i>
+              Delete tag
+            </button>
           </form>
         </div>
       </div>
     </div>
-    <!-- container -->
   </div>
 </template>
+
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, watch } from "vue";
+
 import functions from "../helpers/functions.js";
-import cms from "../helpers/cms.js";
 import trans from "../helpers/trans.js";
 import { handleError } from "../helpers/common.js";
-import {
-  postPage,
-  putPage,
-  getPages,
-  getPage,
-  postMenu,
-  getMenus,
-  putMenu,
-  deleteMenu,
-  setMenuPosition,
-  deletePage,
-  setPagePosition,
-} from "../api/apiCalls.js";
-import CKEditor from "@ckeditor/ckeditor5-vue";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-import PageTitle from "../components/PageTitle.vue";
+import {
+  postTagCategory,
+  getTagCategories,
+  putTagCategory,
+  deleteTagCategory,
+  postTag,
+  getTags,
+  putTag,
+  deleteTag as deleteTagRequest,
+} from "../api/apiCalls.js";
+
 import Msg from "../components/Msg.vue";
 import ChangeLang from "../components/ChangeLang.vue";
-import ManageImages from "../components/ManageImages.vue";
 
 import { useAuthStore } from "../state/store.js";
 
-const router = useRouter();
 const { auth, config, setDefaultLang } = useAuthStore();
-
-const childImageComponentRef = ref(null);
 
 const {
   configLangs: langs,
   configDefaultLang,
-  pageTypes: page_types,
   token,
 } = functions.retrieveParamsFromStorage();
 
+// State
 const lang = ref(configDefaultLang);
+
 const msgWrong = ref("");
 const msgGood = ref("");
 const pre_loader = ref(false);
-const errFields = ref([]);
 
-const allPages = ref([]);
-const notRelatedPages = ref(false);
-const innerPages = ref(false);
-const pagesBelongsToMenus = ref([]);
-const pagesBelongsToPages = ref([]);
+const categories = ref([]);
+const tags = ref([]);
 
-const title = ref({});
-const short_title = ref({});
-const description = ref({});
-const content = ref({});
-const page_type = ref("cms");
-const published = ref(false);
-const commented = ref(false);
-const after_login = ref(false);
-const menu_id = ref("");
-const page_id = ref("");
-const images = ref([]);
+const isAddCategory = ref(false);
+const newCategoryError = ref(false);
 
-const rootPagesBelongToMenu = ref([]);
-const isAddMenu = ref(false);
-const new_menu_name = ref({});
-const menus = ref([]);
-const menus_error_new = ref(false);
-const currentPageId = ref(false);
+const newCategory = ref({
+  name: {},
+  entity_type: "",
+});
 
-const editor = ref(ClassicEditor);
-const editorConfig = ref({});
+const tagName = ref({});
+const tagCategoryId = ref("");
+const currentTagId = ref(false);
 
-editor.value = ClassicEditor;
-const ckeditor = CKEditor.component;
+const tagErrors = ref([]);
+const categoryErrors = ref({});
 
-// Computed
-//const SERVER_URL = computed(() => SERVER_URL);
+// Entity types from the application configuration.
+// Example: ["page", "product"]
+const tagEntityTypes = computed(() => {
+  const types = config.tag_entity_types;
 
-const saveEditPage = async () => {
+  return Array.isArray(types) ? types : [];
+});
+
+// Tags which do not belong to any existing category.
+const unassignedTags = computed(() => {
+  return tags.value.filter((tag) => {
+    return !categories.value.some(
+      (category) =>
+        Number(category.id) === Number(tag.tag_category_id),
+    );
+  });
+});
+
+// --------------------------------------------------
+// Common helpers
+// --------------------------------------------------
+
+function clearMsg() {
+  msgWrong.value = "";
+  msgGood.value = "";
+  tagErrors.value = [];
+  categoryErrors.value = {};
+  newCategoryError.value = false;
+}
+
+const startLoading = () => {
+  clearMsg();
+
+  if (pre_loader.value) {
+    return false;
+  }
+
+  pre_loader.value = true;
+  return true;
+};
+
+function finishLoading() {
+  pre_loader.value = false;
+}
+
+function getTagsByCategory(categoryId) {
+  return tags.value.filter(
+    (tag) =>
+      Number(tag.tag_category_id) === Number(categoryId),
+  );
+}
+
+function emptyTranslations() {
+  return functions.createEmptyObj(langs);
+}
+
+function getApiErrorMessage(error) {
+  const apiError = error?.response?.data?.error;
+
+  if (apiError) {
+    return functions.parseError(apiError);
+  }
+
+  return error?.message || "Something went wrong";
+}
+
+// --------------------------------------------------
+// Language
+// --------------------------------------------------
+
+function changeLang(inLang) {
+  lang.value = inLang;
+  setDefaultLang(inLang);
+}
+
+watch(lang, () => {
+  clearMsg();
+});
+
+// --------------------------------------------------
+// Refresh data
+// --------------------------------------------------
+
+async function refreshCategories() {
+  const response = await getTagCategories(token);
+
+  if (response.data.success) {
+    categories.value = response.data.data || [];
+    return true;
+  }
+
+  throw new Error("Could not load tag categories");
+}
+
+async function refreshTags() {
+  const response = await getTags(token);
+
+  if (response.data.success) {
+    tags.value = response.data.data || [];
+    return true;
+  }
+
+  throw new Error("Could not load tags");
+}
+
+async function refreshData() {
+  try {
+    await Promise.all([
+      refreshCategories(),
+      refreshTags(),
+    ]);
+
+    return true;
+  } catch (error) {
+    msgWrong.value = await getApiErrorMessage(error);
+    return false;
+  }
+}
+
+// --------------------------------------------------
+// Categories
+// --------------------------------------------------
+
+function addCategory() {
+  clearMsg();
+
+  isAddCategory.value = true;
+
+  newCategory.value = {
+    name: emptyTranslations(),
+    entity_type: tagEntityTypes.value[0] || "",
+  };
+}
+
+function cancelAddCategory() {
+  isAddCategory.value = false;
+  newCategoryError.value = false;
+}
+
+function updateCategoryName(categoryId, selectedLang, value) {
+  const category = categories.value.find(
+    (item) => Number(item.id) === Number(categoryId),
+  );
+
+  if (!category) {
+    return;
+  }
+
+  if (!category.name) {
+    category.name = emptyTranslations();
+  }
+
+  category.name[selectedLang] = value;
+}
+
+function validateCategory(category) {
+  const errors = [];
+
+  for (const currentLang of langs) {
+    if (!category.name?.[currentLang]?.trim()) {
+      msgWrong.value =
+        "Add category name" +
+        cmsLangPrefix(currentLang);
+
+      errors.push("name");
+      break;
+    }
+  }
+
+  if (!category.entity_type) {
+    msgWrong.value = "Select category entity type";
+    errors.push("entity_type");
+  }
+
+  return errors;
+}
+
+function cmsLangPrefix(currentLang) {
+  return ` (${currentLang})`;
+}
+
+async function saveCategory(categoryOrNew) {
+  clearMsg();
+
+  const isNew = categoryOrNew === "new";
+
+  const category = isNew
+    ? newCategory.value
+    : categoryOrNew;
+
+  const errors = validateCategory(category);
+
+  if (isNew) {
+    newCategoryError.value = errors.includes("name");
+  } else {
+    categoryErrors.value[category.id] = errors;
+  }
+
+  if (errors.length) {
+    return false;
+  }
+
   if (!startLoading()) {
     return false;
   }
 
   try {
     const post = {
-      title: title.value,
-      short_title: short_title.value,
-      description: description.value,
-      type: page_type.value,
-      content: content.value,
-      published: published.value,
-      commented: commented.value,
-      after_login: after_login.value,
-      menu_id: menu_id.value,
-      page_id: page_id.value,
-      images: images.value,
+      name: { ...category.name },
+      entity_type: category.entity_type,
     };
 
-    const retPage = currentPageId.value
-      ? await putPage(post, currentPageId.value, token)
-      : await postPage(post, token);
+    const response = isNew
+      ? await postTagCategory(post, token)
+      : await putTagCategory(post, category.id, token);
 
-    if (retPage.data.success) {
-      if (!currentPageId.value) {
-        const pageId = retPage.data.data.pageId;
-        currentPageId.value = pageId;
-        router.push("/pages/" + pageId);
-        msgGood.value = trans.ttt("success_page_add");
-      } else {
-        await getPageById(currentPageId.value); //refresh fields especially images.position
-        msgGood.value = trans.ttt("success_page_edit");
-      }
-    } else if (retPage.data.success === false) {
-      msgWrong.value = await functions.parseError(retPage.data.error);
-      errFields.value = await functions.getErrorFields(retPage.data.error);
+    if (response.data.success) {
+      await refreshCategories();
+
+      isAddCategory.value = false;
+
+      msgGood.value = isNew
+        ? "Category has been added"
+        : "Category has been changed";
     } else {
-      msgWrong.value = "Something wrong";
-    }
-
-    const ret = await refreshPages();
-    if (ret) {
-      pre_loader.value = false;
+      msgWrong.value =
+        await functions.parseError(response.data.error);
     }
   } catch (error) {
-    handleError(error, config.demo_status, msgWrong, pre_loader);
+    handleError(
+      error,
+      config.demo_status,
+      msgWrong,
+      pre_loader,
+    );
+  } finally {
+    finishLoading();
   }
-  pre_loader.value = false;
-};
+}
 
-const clearDataPage = () => {
+async function deleteCategory(category) {
+  clearMsg();
+
+  const assignedTags = getTagsByCategory(category.id);
+
+  if (assignedTags.length > 0) {
+    msgWrong.value =
+      "This category contains tags. Move or delete its tags before deleting the category.";
+    return;
+  }
+
+  if (
+    !window.confirm(
+      "Are you sure you wish to delete this category?",
+    )
+  ) {
+    return;
+  }
+
   if (!startLoading()) {
     return false;
   }
-  router.push("/pages");
 
-  title.value = {};
-  short_title.value = {};
-  description.value = {};
-  content.value = {};
-  page_type.value = "cms";
-  published.value = false;
-  commented.value = false;
-  after_login.value = false;
-  menu_id.value = "";
-  page_id.value = "";
-  images.value = [];
+  try {
+    const response = await deleteTagCategory(
+      category.id,
+      token,
+    );
 
-  currentPageId.value = false;
+    if (response.data.success) {
+      await refreshCategories();
 
-  pre_loader.value = false;
-};
+      msgGood.value = "Category has been deleted";
 
-async function changeLang(inLang) {
-  lang.value = inLang;
-  setDefaultLang(inLang);
+      if (
+        currentTagId.value &&
+        !categories.value.some(
+          (item) =>
+            Number(item.id) === Number(tagCategoryId.value),
+        )
+      ) {
+        clearTagData();
+      }
+    } else {
+      msgWrong.value =
+        await functions.parseError(response.data.error);
+    }
+  } catch (error) {
+    handleError(
+      error,
+      config.demo_status,
+      msgWrong,
+      pre_loader,
+    );
+  } finally {
+    finishLoading();
+  }
 }
 
-function addMenu() {
+// --------------------------------------------------
+// Tags
+// --------------------------------------------------
+
+function clearTagData() {
   clearMsg();
-  isAddMenu.value = true;
-  menus_error_new.value = false;
-  new_menu_name.value = {};
+
+  currentTagId.value = false;
+  tagName.value = emptyTranslations();
+  tagCategoryId.value = "";
 }
 
-async function saveMenu(index) {
+function editTag(tag) {
   clearMsg();
 
-  if ("new" === index) {
-    menus_error_new.value = false;
-    for (let lang of langs) {
-      if (!new_menu_name.value[lang]) {
-        msgWrong.value =
-          "Add menu name" + cms.getInfoMsgPrefixByLang(langs, lang); // for lang = "+lang;
-        menus_error_new.value = true;
-        break;
-      }
-    }
+  currentTagId.value = tag.id;
 
-    if (!msgWrong.value) {
-      if (!startLoading()) {
-        return false;
-      }
+  tagName.value = {
+    ...emptyTranslations(),
+    ...tag.name,
+  };
 
-      try {
-        const post = {
-          name: new_menu_name.value,
-        };
-        const addMenu = await postMenu(post, token);
-        if (addMenu.data.success) {
-          const ret = await refreshMenus();
-          if (ret) {
-            isAddMenu.value = false;
-            msgGood.value = "Menu has been added";
-          }
-        }
-      } catch (error) {
-        handleError(error, config.demo_status, msgWrong, pre_loader);
-        //console.log("_is_error__", error);
-        //msgWrong.value = "Add menu problem = " + error;
-      }
-      pre_loader.value = false;
-    }
-  } else {
-    if (!menus.value[index]["name"]) {
-      console.log("sth wrong i cant find menu with index=" + index);
+  tagCategoryId.value =
+    tag.tag_category_id == null
+      ? ""
+      : String(tag.tag_category_id);
+}
+
+function validateTag() {
+  tagErrors.value = [];
+
+  for (const currentLang of langs) {
+    if (!tagName.value[currentLang]?.trim()) {
+      msgWrong.value =
+        "Add tag name" + cmsLangPrefix(currentLang);
+
+      tagErrors.value.push("name");
       return false;
     }
-    const menuByLangs = menus.value[index]["name"];
-
-    for (let lang of langs) {
-      if (!menuByLangs[lang]) {
-        msgWrong.value =
-          "Add menu name" + cms.getInfoMsgPrefixByLang(langs, lang); // for '+lang+' lang';
-        break;
-      }
-    }
-
-    if (!msgWrong.value) {
-      if (!startLoading()) {
-        return false;
-      }
-
-      try {
-        const post = {
-          id: menus.value[index]["id"],
-          name: menuByLangs,
-        };
-        const updateMenu = await putMenu(post, token);
-        if (updateMenu.data.success) {
-          msgGood.value = "Menu has been changed";
-        }
-      } catch (error) {
-        handleError(error, config.demo_status, msgWrong, pre_loader);
-        //console.log("_is_error__", error);
-        //msgWrong.value = "Add menu problem = " + error;
-      }
-      pre_loader.value = false;
-    }
   }
-}
 
-async function delMenu(index) {
-  clearMsg();
-  if ("new" === index) {
-    isAddMenu.value = false;
-  } else {
-    if (window.confirm("Are you sure you wish to delete this item?")) {
-      if (!startLoading()) {
-        return false;
-      }
+  if (!tagCategoryId.value) {
+    msgWrong.value = "Select tag category";
 
-      try {
-        const menuId = menus.value[index]["id"];
-        const objDeleteMenu = await deleteMenu(menuId, token);
-        if (objDeleteMenu.data.success) {
-          const ret = await refreshMenus();
-          if (ret) {
-            msgGood.value = "Menu has been deleted";
-            pre_loader.value = false;
-          }
-        }
-      } catch (error) {
-        handleError(error, config.demo_status, msgWrong, pre_loader);
-        //console.log("_is_error__", error);
-        //msgWrong.value = "Delete menu problem = " + error;
-      }
-    }
-  }
-}
-
-function clearMsg() {
-  msgWrong.value = "";
-  msgGood.value = "";
-  errFields.value = [];
-}
-
-const startLoading = async () => {
-  clearMsg();
-  if (pre_loader.value) {
-    return false;
-  }
-  pre_loader.value = true;
-  return true;
-};
-
-const positionMenu = async (direction, menuId) => {
-  if (!startLoading()) {
-    return false;
-  }
-  try {
-    const pos = await setMenuPosition(direction, menuId, token);
-
-    if (pos.data.success) {
-      const ret = await refreshMenus();
-      if (ret) {
-        msgGood.value = "Position menu has been changed";
-        pre_loader.value = false;
-      }
-    }
-  } catch (error) {
-    handleError(error, config.demo_status, msgWrong, pre_loader);
-    //console.log("_is_error__", error);
-    //msgWrong.value = "Position menu problem = " + error;
-  }
-};
-
-const getPageById = async (pageId) => {
-  try {
-    const dbPage = await getPage(pageId, token);
-    if (dbPage.data.success) {
-      const p = dbPage.data.data;
-
-      currentPageId.value = p.id;
-
-      rootPagesBelongToMenu.value = cms.getRootPages(
-        p.menu_id,
-        currentPageId.value,
-        allPages.value,
-      ); //p.menu_id ? getRootPages(p.menu_id) : [];
-      title.value = p.title;
-      short_title.value = p.short_title;
-      description.value = p.description;
-      page_type.value = p.type; //!
-      content.value = p.content[lang.value]
-        ? p.content
-        : functions.createEmptyObj(langs);
-      published.value = p.published;
-
-      commented.value = p.commented;
-      after_login.value = p.after_login;
-      menu_id.value = p.menu_id;
-      page_id.value = p.page_id;
-      images.value = p.images;
-
-      await childImageComponentRef.value.resetSelectedItems();
-
-      return true;
-    }
-  } catch (error) {
-    //handleError(error, config.demo_status, msgWrong, pre_loader);
-    console.log("_is_error_get_page_", error);
-    msgWrong.value = "Get page problem = " + error;
-    return false;
-  }
-};
-
-const editPage = async (pageId) => {
-  if (!startLoading()) {
+    tagErrors.value.push("tag_category_id");
     return false;
   }
 
-  const getSomePage = await getPageById(pageId);
-  if (getSomePage) {
-    router.push("/pages/" + pageId);
-    pre_loader.value = false;
-  } else {
-    msgWrong.value = "Get page problem = " + error;
-  }
-};
-
-const delPage = async (pageId) => {
-  clearMsg();
-  if (window.confirm("Are you sure you wish to delete this item?")) {
-    if (!startLoading()) {
-      return false;
-    }
-
-    try {
-      const objDeletePage = await deletePage(pageId, token);
-      if (objDeletePage.data.success) {
-        const ret = await refreshPages();
-        if (ret) {
-          msgGood.value = "Page has been deleted";
-          pre_loader.value = false;
-        }
-      }
-    } catch (error) {
-      handleError(error, config.demo_status, msgWrong, pre_loader);
-      //console.log("_is_error__", error);
-      //msgWrong.value = "Delete menu problem = " + error;
-    }
-  }
-};
-
-const positionPageUp = async (pageId) => {
-  positionPage("up", pageId);
-};
-const positionPageDown = async (pageId) => {
-  positionPage("down", pageId);
-};
-
-const positionPage = async (direction, pageId) => {
-  if (!startLoading()) {
-    return false;
-  }
-
-  try {
-    const pos = await setPagePosition(direction, pageId, token);
-    if (pos.data.success) {
-      const ret = await refreshPages();
-      if (ret) {
-        msgGood.value = "Position page has been changed";
-        pre_loader.value = false;
-      }
-    } else if (pos.data.success === false) {
-      //in case one page to sorting
-      pre_loader.value = false;
-    }
-  } catch (error) {
-    handleError(error, config.demo_status, msgWrong, pre_loader);
-    //console.log("_is_error__", error);
-    //msgWrong.value = "Position page problem = " + error;
-  }
-};
-
-const refreshMenus = async () => {
-  try {
-    const responseM = await getMenus(token);
-    menus.value = responseM.data.data;
-    return true;
-  } catch (error) {
-    //handleError(error, config.demo_status, msgWrong, pre_loader);
-    console.log("error get menu=", error);
-  }
-  return false;
-};
-
-const refreshPages = async () => {
-  try {
-    const responseP = await getPages(token);
-    allPages.value = responseP.data.data;
-    pagesBelongsToMenus.value = cms.getPagesBelongsToMenus(responseP.data.data);
-    pagesBelongsToPages.value = cms.getPagesBelongsToPages(responseP.data.data);
-
-    notRelatedPages.value = cms.getNotRelatedPages(responseP.data.data);
-    innerPages.value = cms.getInnerPages(responseP.data.data);
-    return true;
-  } catch (error) {
-    //handleError(error, config.demo_status, msgWrong, pre_loader);
-    console.log("error get pages=", error);
-  }
-  return false;
-};
-
-const handleMenuChange = () => {
-  rootPagesBelongToMenu.value = cms.getRootPages(
-    menu_id.value,
-    currentPageId.value,
-    allPages.value,
-  ); //menu_id.value ? getRootPages(menu_id.value) : [];
-};
-
-function getPagesBelongsToMenu(menuId) {
-  return functions.getItemFromArrayOrFalse(pagesBelongsToMenus.value, menuId);
-}
-
-function getPagesBelongsToPage(parentPageId) {
-  return functions.getItemFromArrayOrFalse(
-    pagesBelongsToPages.value,
-    parentPageId,
+  const selectedCategoryExists = categories.value.some(
+    (category) =>
+      Number(category.id) === Number(tagCategoryId.value),
   );
+
+  if (!selectedCategoryExists) {
+    msgWrong.value = "Selected category does not exist";
+
+    tagErrors.value.push("tag_category_id");
+    return false;
+  }
+
+  return true;
 }
+
+async function saveTag() {
+  clearMsg();
+
+  if (!validateTag()) {
+    return false;
+  }
+
+  if (!startLoading()) {
+    return false;
+  }
+
+  try {
+    const post = {
+      name: { ...tagName.value },
+      tag_category_id: Number(tagCategoryId.value),
+    };
+
+    const response = currentTagId.value
+      ? await putTag(post, currentTagId.value, token)
+      : await postTag(post, token);
+
+    if (response.data.success) {
+      const wasNew = !currentTagId.value;
+
+      await refreshTags();
+
+      if (wasNew) {
+        clearTagData();
+      }
+
+      msgGood.value = wasNew
+        ? "Tag has been added"
+        : "Tag has been changed";
+    } else {
+      msgWrong.value =
+        await functions.parseError(response.data.error);
+    }
+  } catch (error) {
+    handleError(
+      error,
+      config.demo_status,
+      msgWrong,
+      pre_loader,
+    );
+  } finally {
+    finishLoading();
+  }
+}
+
+async function deleteTag() {
+  clearMsg();
+
+  if (!currentTagId.value) {
+    return false;
+  }
+
+  if (
+    !window.confirm(
+      "Are you sure you wish to delete this tag?",
+    )
+  ) {
+    return;
+  }
+
+  if (!startLoading()) {
+    return false;
+  }
+
+  try {
+    const response = await deleteTagRequest(
+      currentTagId.value,
+      token,
+    );
+
+    if (response.data.success) {
+      await refreshTags();
+
+      clearTagData();
+
+      msgGood.value = "Tag has been deleted";
+    } else {
+      msgWrong.value =
+        await functions.parseError(response.data.error);
+    }
+  } catch (error) {
+    handleError(
+      error,
+      config.demo_status,
+      msgWrong,
+      pre_loader,
+    );
+  } finally {
+    finishLoading();
+  }
+}
+
+// Alias prevents naming conflict with deleteTag().
+// async function deleteTagApi(id, authToken) {
+//   return deleteTagRequest(id, authToken);
+// }
+
+// --------------------------------------------------
+// Initialization
+// --------------------------------------------------
 
 onMounted(async () => {
   if (!auth.token) {
-    router.push("/");
-    return false;
+    return;
   }
 
   pre_loader.value = true;
-  const refreshM = await refreshMenus();
-  const refreshP = await refreshPages();
 
-  const pageId = router.currentRoute.value.params.id;
-  if (pageId) {
-    currentPageId.value = parseInt(pageId);
-    await childImageComponentRef.value.resetSelectedItems();
-
-    const getSomePage = await getPageById(pageId);
-    if (refreshM && refreshP && getSomePage) {
-      pre_loader.value = false;
-    }
-  } else {
-    if (refreshM && refreshP) {
-      pre_loader.value = false;
-    }
+  try {
+    await Promise.all([
+      refreshCategories(),
+      refreshTags(),
+    ]);
+  } catch (error) {
+    handleError(
+      error,
+      config.demo_status,
+      msgWrong,
+      pre_loader,
+    );
+  } finally {
+    finishLoading();
   }
 });
-
-watch(
-  new_menu_name,
-  () => {
-    clearMsg();
-  },
-  { deep: true },
-);
-
-watch(
-  menus,
-  () => {
-    clearMsg();
-  },
-  { deep: true },
-);
-
-watch(lang, () => {
-  clearMsg();
-});
 </script>
+
+<style scoped>
+.tag-category {
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.tag-item {
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tag-item:hover {
+  background-color: #f1f3f5;
+}
+
+.selected-tag {
+  background-color: #e9ecef;
+}
+
+.disabled-if-loader {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.trash {
+  color: #dc3545;
+}
+</style>
