@@ -1,5 +1,21 @@
 import axios from "axios";
 import { API_SECRET } from "../config.js";
+import { useAuthStore } from "../state/store.js";
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const authStore = useAuthStore();
+
+      authStore.logout();
+
+      window.location.assign("/admin/login");
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 const apiSecret = API_SECRET ? "/" + API_SECRET : "";
 
