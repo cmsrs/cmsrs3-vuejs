@@ -196,14 +196,22 @@
 
         <!-- RIGHT COLUMN: Tag form -->
         <div class="col-5">
+          <!-- Save tag -->
           <button
             role="button_add_tag"
+            type="submit"
             class="btn btn-primary mt-2 mb-2 me-2"
             :disabled="pre_loader"
-            @click.prevent="clearTagData"
+            @click.prevent="saveTag"
           >
-            <i class="fas fa-plus"></i>
-            Add tag
+            <i
+              v-if="!pre_loader"
+              :class="currentTagId ? 'far fa-save' : 'fas fa-plus'"
+            ></i>
+
+            <span v-if="pre_loader" class="spinner-grow spinner-grow-sm"></span>
+
+            {{ currentTagId ? "Save tag" : "Add tag" }}
           </button>
 
           <button
@@ -215,7 +223,7 @@
             Clear data
           </button>
 
-          <form @submit.prevent="saveTag">
+          <form class="mt-3">
             <!-- Tag name -->
             <div class="form-group mt-3">
               <label for="tagName" class="text-secondary"> Name: </label>
@@ -258,26 +266,6 @@
                 </option>
               </select>
             </div>
-
-            <!-- Save tag -->
-            <button
-              role="button_save_tag"
-              type="submit"
-              class="btn btn-primary mt-3 me-2"
-              :disabled="pre_loader"
-            >
-              <i
-                v-if="!pre_loader"
-                :class="currentTagId ? 'far fa-save' : 'fas fa-plus'"
-              ></i>
-
-              <span
-                v-if="pre_loader"
-                class="spinner-grow spinner-grow-sm"
-              ></span>
-
-              {{ currentTagId ? "Save tag" : "Add tag" }}
-            </button>
           </form>
         </div>
       </div>
@@ -569,15 +557,19 @@ async function saveCategory(categoryOrNew) {
 async function deleteCategory(category) {
   clearMsg();
 
-  const assignedTags = getTagsByCategory(category.id);
+  // const assignedTags = getTagsByCategory(category.id);
 
-  if (assignedTags.length > 0) {
-    msgWrong.value =
-      "This category contains tags. Move or delete its tags before deleting the category.";
-    return;
-  }
+  // if (assignedTags.length > 0) {
+  //   msgWrong.value =
+  //     "This category contains tags. Move or delete its tags before deleting the category.";
+  //   return;
+  // }
 
-  if (!window.confirm("Are you sure you wish to delete this category?")) {
+  if (
+    !window.confirm(
+      "Are you sure you want to delete this category and all its tags?",
+    )
+  ) {
     return;
   }
 
@@ -614,7 +606,6 @@ async function deleteCategory(category) {
 // --------------------------------------------------
 // Tags
 // --------------------------------------------------
-
 function clearTagData() {
   clearMsg();
 
@@ -745,15 +736,9 @@ async function deleteTag() {
   }
 }
 
-// Alias prevents naming conflict with deleteTag().
-// async function deleteTagApi(id, authToken) {
-//   return deleteTagRequest(id, authToken);
-// }
-
 // --------------------------------------------------
 // Initialization
 // --------------------------------------------------
-
 onMounted(async () => {
   if (!auth.token) {
     return;
