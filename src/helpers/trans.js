@@ -25,6 +25,18 @@ const ttt = (key) => {
     is_demo_true:
       "We're sorry, but this action is not available in the demo version.",
     internal_problem: "internal problem, see logs",
+
+    confirm_tag_delete: "Are you sure you wish to delete this tag?",
+    confirm_tag_category_delete:
+      "Are you sure you want to delete this category and all its tags?",
+    success_tag_added: "Tag has been added",
+    success_tag_changed: "Tag has been changed",
+    success_tag_category_deleted: "Category has been deleted",
+    success_tag_category_added: "Category has been added",
+    success_tag_category_changed: "Category has been changed",
+    error_tag_category_not_found: "Selected category does not exist",
+    select_category_entity_type: "Select category entity type",
+    error_loading_tag_categories: "Could not load tag categories",
   };
 
   return d[key] ? d[key] : key;

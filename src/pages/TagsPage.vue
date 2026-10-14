@@ -337,15 +337,6 @@ const tagEntityTypes = computed(() => {
   return Array.isArray(types) ? types : [];
 });
 
-// Tags which do not belong to any existing category.
-//const unassignedTags = computed(() => {
-//  return tags.value.filter((tag) => {
-//    return !categories.value.some(
-//      (category) => Number(category.id) === Number(tag.tag_category_id),
-//    );
-//  });
-//});
-
 // --------------------------------------------------
 // Common helpers
 // --------------------------------------------------
@@ -408,7 +399,7 @@ async function refreshCategories() {
     return true;
   }
 
-  throw new Error("Could not load tag categories");
+  throw new Error(trans.ttt("error_loading_tag_categories"));
 }
 
 async function refreshTags() {
@@ -421,7 +412,6 @@ async function refreshTags() {
 
   throw new Error("Could not load tags");
 }
-
 
 // --------------------------------------------------
 // Categories
@@ -472,7 +462,7 @@ function validateCategory(category) {
   }
 
   if (!category.entity_type) {
-    msgWrong.value = "Select category entity type";
+    msgWrong.value = trans.ttt("select_category_entity_type");
     errors.push("entity_type");
   }
 
@@ -522,8 +512,8 @@ async function saveCategory(categoryOrNew) {
       isAddCategory.value = false;
 
       msgGood.value = isNew
-        ? "Category has been added"
-        : "Category has been changed";
+        ? trans.ttt("success_tag_category_added")
+        : trans.ttt("success_tag_category_changed");
     } else {
       msgWrong.value = await functions.parseError(response.data.error);
     }
@@ -538,18 +528,13 @@ async function deleteCategory(category) {
   clearMsg();
 
   // const assignedTags = getTagsByCategory(category.id);
-
   // if (assignedTags.length > 0) {
   //   msgWrong.value =
   //     "This category contains tags. Move or delete its tags before deleting the category.";
   //   return;
   // }
 
-  if (
-    !window.confirm(
-      "Are you sure you want to delete this category and all its tags?",
-    )
-  ) {
+  if (!window.confirm(trans.ttt("confirm_tag_category_delete"))) {
     return;
   }
 
@@ -563,7 +548,7 @@ async function deleteCategory(category) {
     if (response.data.success) {
       await refreshCategories();
 
-      msgGood.value = "Category has been deleted";
+      msgGood.value = trans.ttt("success_tag_category_deleted");
 
       if (
         currentTagId.value &&
@@ -632,7 +617,7 @@ function validateTag() {
   );
 
   if (!selectedCategoryExists) {
-    msgWrong.value = "Selected category does not exist";
+    msgWrong.value = trans.ttt("error_tag_category_not_found");
 
     tagErrors.value.push("tag_category_id");
     return false;
@@ -671,7 +656,9 @@ async function saveTag() {
         clearTagData();
       }
 
-      msgGood.value = wasNew ? "Tag has been added" : "Tag has been changed";
+      msgGood.value = wasNew
+        ? trans.ttt("success_tag_added")
+        : trans.ttt("success_tag_changed");
     } else {
       msgWrong.value = await functions.parseError(response.data.error);
     }
@@ -689,7 +676,7 @@ async function deleteTag() {
     return false;
   }
 
-  if (!window.confirm("Are you sure you wish to delete this tag?")) {
+  if (!window.confirm(trans.ttt("confirm_tag_delete"))) {
     return;
   }
 
@@ -705,7 +692,7 @@ async function deleteTag() {
 
       clearTagData();
 
-      msgGood.value = "Tag has been deleted";
+      msgGood.value = trans.ttt("success_tag_deleted");
     } else {
       msgWrong.value = await functions.parseError(response.data.error);
     }

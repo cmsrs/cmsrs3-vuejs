@@ -9,10 +9,7 @@ import "../api/apiCalls.js";
 
 const server = setupServer(
   http.get("/api/test-expired-token", () => {
-    return HttpResponse.json(
-      { message: "Token has expired" },
-      { status: 401 },
-    );
+    return HttpResponse.json({ message: "Token has expired" }, { status: 401 });
   }),
 );
 
@@ -44,9 +41,7 @@ describe("JWT expiration", () => {
     expect(authStore.auth.token).toBe("expired-test-token");
 
     // Wywołujemy API, które symuluje wygaśnięcie tokenu.
-    await expect(
-      axios.get("/api/test-expired-token"),
-    ).rejects.toMatchObject({
+    await expect(axios.get("/api/test-expired-token")).rejects.toMatchObject({
       response: { status: 401 },
     });
 
@@ -63,13 +58,10 @@ describe("JWT expiration", () => {
       .spyOn(window.location, "assign")
       .mockImplementation(() => {});
 
-    await expect(
-      axios.get("/api/test-expired-token"),
-    ).rejects.toMatchObject({
+    await expect(axios.get("/api/test-expired-token")).rejects.toMatchObject({
       response: { status: 401 },
     });
 
     expect(redirectSpy).toHaveBeenCalledWith("/admin/login");
-  });  
-
+  });
 });
