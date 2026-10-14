@@ -410,7 +410,7 @@ async function refreshTags() {
     return true;
   }
 
-  throw new Error("Could not load tags");
+  throw new Error(trans.ttt("error_loading_tags"));
 }
 
 // --------------------------------------------------
@@ -454,7 +454,8 @@ function validateCategory(category) {
 
   for (const currentLang of langs) {
     if (!category.name?.[currentLang]?.trim()) {
-      msgWrong.value = "Add category name" + cmsLangPrefix(currentLang);
+      msgWrong.value =
+        trans.ttt("msg_add_category_name") + cmsLangPrefix(currentLang);
 
       errors.push("name");
       break;
@@ -462,7 +463,7 @@ function validateCategory(category) {
   }
 
   if (!category.entity_type) {
-    msgWrong.value = trans.ttt("select_category_entity_type");
+    msgWrong.value = trans.ttt("msg_select_category_entity_type");
     errors.push("entity_type");
   }
 
@@ -598,7 +599,8 @@ function validateTag() {
 
   for (const currentLang of langs) {
     if (!tagName.value[currentLang]?.trim()) {
-      msgWrong.value = "Add tag name" + cmsLangPrefix(currentLang);
+      msgWrong.value =
+        trans.ttt("msg_add_tag_name") + cmsLangPrefix(currentLang);
 
       tagErrors.value.push("name");
       return false;
@@ -606,7 +608,7 @@ function validateTag() {
   }
 
   if (!tagCategoryId.value) {
-    msgWrong.value = "Select tag category";
+    msgWrong.value = trans.ttt("msg_select_tag_category");
 
     tagErrors.value.push("tag_category_id");
     return false;

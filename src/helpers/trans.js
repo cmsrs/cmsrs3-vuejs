@@ -35,8 +35,12 @@ const ttt = (key) => {
     success_tag_category_added: "Category has been added",
     success_tag_category_changed: "Category has been changed",
     error_tag_category_not_found: "Selected category does not exist",
-    select_category_entity_type: "Select category entity type",
     error_loading_tag_categories: "Could not load tag categories",
+    error_loading_tags: "Could not load tags",
+    msg_select_category_entity_type: "Select category entity type",
+    msg_add_category_name: "Add category name",
+    msg_add_tag_name: "Add tag name",
+    msg_select_tag_category: "Select tag category",
   };
 
   return d[key] ? d[key] : key;
