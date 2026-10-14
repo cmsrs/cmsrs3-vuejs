@@ -383,16 +383,6 @@ function emptyTranslations() {
   return functions.createEmptyObj(langs);
 }
 
-function getApiErrorMessage(error) {
-  const apiError = error?.response?.data?.error;
-
-  if (apiError) {
-    return functions.parseError(apiError);
-  }
-
-  return error?.message || "Something went wrong";
-}
-
 // --------------------------------------------------
 // Language
 // --------------------------------------------------
@@ -432,16 +422,6 @@ async function refreshTags() {
   throw new Error("Could not load tags");
 }
 
-// async function refreshData() {
-//   try {
-//     await Promise.all([refreshCategories(), refreshTags()]);
-
-//     return true;
-//   } catch (error) {
-//     msgWrong.value = await getApiErrorMessage(error);
-//     return false;
-//   }
-// }
 
 // --------------------------------------------------
 // Categories
