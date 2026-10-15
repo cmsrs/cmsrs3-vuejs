@@ -505,7 +505,7 @@ describe("Products page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const productAdd = await screen.queryByRole("button_add_product");
+      const productAdd = screen.queryByRole("button_add_product");
       await userEvent.click(productAdd);
       //todo
     });
@@ -515,7 +515,7 @@ describe("Products page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const search = await screen.queryByRole("button_search_product");
+      const search = screen.queryByRole("button_search_product");
       await userEvent.click(search);
       await waitFor(() => {
         expect(counter).toBe(2);

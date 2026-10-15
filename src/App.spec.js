@@ -158,7 +158,7 @@ describe("change cache in nav bar", () => {
     expect(isCacheEnable0).toBe(0);
     expect(counterToggle).toBe(0);
 
-    const changeCacheEnable = await screen.queryByRole(
+    const changeCacheEnable = screen.queryByRole(
       "toggle_cache_enable_in_nav_bar",
     );
     await userEvent.click(changeCacheEnable);
@@ -204,7 +204,7 @@ describe("change cache in nav bar for demo version", () => {
     expect(isCacheEnable0).toBe(0);
     expect(counterToggle).toBe(0);
 
-    const changeCacheEnable = await screen.queryByRole(
+    const changeCacheEnable = screen.queryByRole(
       "toggle_cache_enable_in_nav_bar",
     );
 
