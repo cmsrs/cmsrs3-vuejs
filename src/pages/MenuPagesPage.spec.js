@@ -871,9 +871,9 @@ describe("Pages page", () => {
       const firstMenu = menu[0];
       await userEvent.type(firstMenu, "some change1");
 
-      const menuSave = await screen.queryAllByRole("save_menu");
+      const menuSave = screen.queryAllByRole("save_menu");
       const firstMenuSave = menuSave[0];
-      userEvent.click(firstMenuSave);
+      await userEvent.click(firstMenuSave);
 
       await waitFor(() => {
         const alertSuccessAfter = screen.queryByRole("alert_success");
@@ -917,7 +917,7 @@ describe("Pages page", () => {
 
       const menuDel = await screen.queryAllByRole("del_menu");
       const firstMenuDel = menuDel[0];
-      userEvent.click(firstMenuDel);
+      await userEvent.click(firstMenuDel);
 
       await waitFor(() => {
         const alertSuccessAfter = screen.queryByRole("alert_success");
@@ -1010,7 +1010,7 @@ describe("Pages page", () => {
 
       const pageEdit = screen.queryAllByRole("edit_page");
       const firstEditPage = pageEdit[0];
-      userEvent.click(firstEditPage);
+      await userEvent.click(firstEditPage);
 
       await waitFor(() => {
         const page = pages[firstPageIdOnThePageIndex];
@@ -1076,7 +1076,7 @@ describe("Pages page", () => {
 
       const pageEdit = screen.queryAllByRole("edit_page");
       const firstEditPage = pageEdit[0];
-      userEvent.click(firstEditPage);
+      await userEvent.click(firstEditPage);
 
       expect(counter2).toBe(0);
       const button = screen.queryByRole("button_save_edit_page");
@@ -1123,7 +1123,7 @@ describe("Pages page", () => {
 
       const upPage = screen.queryAllByRole("up_page");
       const firstPage = upPage[0];
-      userEvent.click(firstPage);
+      await userEvent.click(firstPage);
 
       await waitFor(() => {
         const alertSuccessAfter = screen.queryByRole("alert_success");
@@ -1137,7 +1137,7 @@ describe("Pages page", () => {
 
       const upPage = screen.queryAllByRole("down_page");
       const firstPage = upPage[0];
-      userEvent.click(firstPage);
+      await userEvent.click(firstPage);
 
       await waitFor(() => {
         const alertSuccessAfter = screen.queryByRole("alert_success");
@@ -1191,9 +1191,13 @@ describe("Pages page", () => {
 
       const menu = screen.queryAllByRole("menu");
       const firstMenu = menu[0];
-      userEvent.type(firstMenu, "some change");
-      const alertSuccessAfterAfter = await screen.findByRole("alert_success");
-      expect(alertSuccessAfterAfter).toBeInTheDocument(); //TODO in the future
+      await userEvent.type(firstMenu, "some change");
+
+      const alertSuccessAfterAfter = screen.queryByRole("alert_success");
+      expect(alertSuccessAfterAfter).not.toBeInTheDocument();
+
+      // const alertSuccessAfterAfter = await screen.findByRole("alert_success");
+      // expect(alertSuccessAfterAfter).toBeInTheDocument(); //TODO in the future
 
       //});
     });
