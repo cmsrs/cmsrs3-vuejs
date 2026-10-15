@@ -1,6 +1,6 @@
 import storage from "../state/storage";
 
-const parseError = async (errStrOrJson) => {
+const parseError = (errStrOrJson) => {
   if (typeof errStrOrJson === "object" && errStrOrJson !== null) {
     //const firstKey = Object.keys(errStrOrJson)[0];
     //return errStrOrJson[firstKey][0];
@@ -10,7 +10,7 @@ const parseError = async (errStrOrJson) => {
   }
 };
 
-const getErrorFields = async (errStrOrJson) => {
+const getErrorFields = (errStrOrJson) => {
   let result = [];
 
   if (typeof errStrOrJson === "object" && errStrOrJson !== null) {

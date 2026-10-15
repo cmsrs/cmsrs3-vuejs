@@ -238,8 +238,8 @@ const addEditProduct = async () => {
         currentProductId.value = retProduct.data.data.productId;
       }
     } else if (retProduct.data.success === false) {
-      msgWrong.value = await functions.parseError(retProduct.data.error);
-      errFields.value = await functions.getErrorFields(retProduct.data.error);
+      msgWrong.value = functions.parseError(retProduct.data.error);
+      errFields.value = functions.getErrorFields(retProduct.data.error);
     } else {
       msgWrong.value =
         "Something wrong with add or edit product - check response status";

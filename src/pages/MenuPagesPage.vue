@@ -544,8 +544,8 @@ const saveEditPage = async () => {
         msgGood.value = trans.ttt("success_page_edit");
       }
     } else if (retPage.data.success === false) {
-      msgWrong.value = await functions.parseError(retPage.data.error);
-      errFields.value = await functions.getErrorFields(retPage.data.error);
+      msgWrong.value = functions.parseError(retPage.data.error);
+      errFields.value = functions.getErrorFields(retPage.data.error);
     } else {
       msgWrong.value = "Something wrong";
     }

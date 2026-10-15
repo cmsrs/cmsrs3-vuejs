@@ -516,7 +516,7 @@ async function saveCategory(categoryOrNew) {
         ? trans.ttt("success_tag_category_added")
         : trans.ttt("success_tag_category_changed");
     } else {
-      msgWrong.value = await functions.parseError(response.data.error);
+      msgWrong.value = functions.parseError(response.data.error);
     }
   } catch (error) {
     handleError(error, config.demo_status, msgWrong, pre_loader);
@@ -560,7 +560,7 @@ async function deleteCategory(category) {
         clearTagData();
       }
     } else {
-      msgWrong.value = await functions.parseError(response.data.error);
+      msgWrong.value = functions.parseError(response.data.error);
     }
   } catch (error) {
     handleError(error, config.demo_status, msgWrong, pre_loader);
@@ -662,7 +662,7 @@ async function saveTag() {
         ? trans.ttt("success_tag_added")
         : trans.ttt("success_tag_changed");
     } else {
-      msgWrong.value = await functions.parseError(response.data.error);
+      msgWrong.value = functions.parseError(response.data.error);
     }
   } catch (error) {
     handleError(error, config.demo_status, msgWrong, pre_loader);
@@ -696,7 +696,7 @@ async function deleteTag() {
 
       msgGood.value = trans.ttt("success_tag_deleted");
     } else {
-      msgWrong.value = await functions.parseError(response.data.error);
+      msgWrong.value = functions.parseError(response.data.error);
     }
   } catch (error) {
     handleError(error, config.demo_status, msgWrong, pre_loader);

@@ -150,8 +150,8 @@ const addEditClient = async () => {
         ? trans.ttt("success_client_edit")
         : trans.ttt("success_client_add");
     } else if (retClient.data.success === false) {
-      msgWrong.value = await functions.parseError(retClient.data.error);
-      errFields.value = await functions.getErrorFields(retClient.data.error);
+      msgWrong.value = functions.parseError(retClient.data.error);
+      errFields.value = functions.getErrorFields(retClient.data.error);
     } else {
       msgWrong.value =
         "Something wrong with add or edit client - check response status";

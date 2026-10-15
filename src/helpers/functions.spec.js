@@ -13,28 +13,28 @@ describe("functions", () => {
   };
 
   describe("parseError", () => {
-    it("parseError return str", async () => {
+    it("parseError return str", () => {
       const input = "aaaaaaa";
-      const out = await functions.parseError(input);
+      const out = functions.parseError(input);
       expect(out).toEqual({ err: [input] });
     });
 
-    it("parseError input obj", async () => {
-      const out = await functions.parseError(errStrOrJsonTest1);
+    it("parseError input obj", () => {
+      const out = functions.parseError(errStrOrJsonTest1);
       expect(out).toBe(errStrOrJsonTest1);
     });
   });
 
   describe("getErrorFields", () => {
-    it("getErrorFields test1", async () => {
-      const out = await functions.getErrorFields(errStrOrJsonTest1);
+    it("getErrorFields test1", () => {
+      const out = functions.getErrorFields(errStrOrJsonTest1);
 
       expect(out).toEqual(["title", "short_title"]);
     });
   });
 
   describe("isNotEmptyObj", () => {
-    it("isNotEmptyObj out true", async () => {
+    it("isNotEmptyObj out true", () => {
       const keys = ["en", "pl"];
 
       const obj = {
@@ -58,7 +58,7 @@ describe("functions", () => {
       expect(out).toBe(false);
     });
 
-    it("isNotEmptyObj empty in out false", async () => {
+    it("isNotEmptyObj empty in out false", () => {
       const keys = ["en", "pl"];
 
       const obj = {};
@@ -67,7 +67,7 @@ describe("functions", () => {
       expect(out).toBe(false);
     });
 
-    it("isNotEmptyObj out false with keys", async () => {
+    it("isNotEmptyObj out false with keys", () => {
       const keys = ["en", "pl"];
 
       const obj = {
@@ -80,7 +80,7 @@ describe("functions", () => {
   });
 
   describe("createEmptyObj", () => {
-    it("createEmptyObj with two langs", async () => {
+    it("createEmptyObj with two langs", () => {
       const langs = ["en", "pl"];
 
       const outExpect = {
@@ -119,7 +119,7 @@ describe("retrieveParamsFromStorage", () => {
 });
 
 describe("retrieveParamsFromUrl", () => {
-  it("get page param from url", async () => {
+  it("get page param from url", () => {
     const url = "http://127.0.0.1:8000/api/clients/id/desc?page=1";
     const page = functions.retrieveParamsFromUrl(url, "page");
     expect(page).toBe("1");
