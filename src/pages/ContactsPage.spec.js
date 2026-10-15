@@ -198,7 +198,7 @@ describe("Contacts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const search = await screen.queryByRole("button_search_contact");
+      const search = screen.queryByRole("button_search_contact");
       userEvent.click(search);
       await waitFor(() => {
         expect(counter).toBe(2);

@@ -376,7 +376,7 @@ describe("Checkouts page", () => {
 
       await waitFor(() => {
         const name2 = responseGetCheckouts.data.data[0].price_total_add_deliver;
-        screen.findByText(name2);
+        expect(screen.getByText(name2)).toBeInTheDocument();
         //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa');
 
         const checkoutEn = screen.queryAllByRole("price_total_add_deliver_en");
@@ -497,7 +497,7 @@ describe("Checkouts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const checkoutDel = await screen.queryAllByRole("edit_checkout");
+      const checkoutDel = screen.queryAllByRole("edit_checkout");
       userEvent.click(checkoutDel[0]);
       //todo
     });
@@ -507,7 +507,7 @@ describe("Checkouts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const checkoutAdd = await screen.queryByRole("button_add_checkout");
+      const checkoutAdd = screen.queryByRole("button_add_checkout");
       userEvent.click(checkoutAdd);
       //todo
     });

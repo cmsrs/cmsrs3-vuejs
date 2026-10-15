@@ -412,10 +412,9 @@ describe("Product edit or add images", () => {
 
         const alertDangerAfter = screen.queryByRole("alert_danger");
         expect(alertDangerAfter).toBeInTheDocument();
-
-        const msg = trans.ttt("fail_delete_images_no_items");
-        screen.findByText(msg);
       });
+      const msg = trans.ttt("fail_delete_images_no_items");
+      expect(await screen.findByText(msg)).toBeInTheDocument();
     });
 
     it("delete one image danger", async () => {

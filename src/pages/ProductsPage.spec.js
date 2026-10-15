@@ -407,9 +407,10 @@ describe("Products page", () => {
       const langEn = screen.queryByRole("lang_en");
       await userEvent.click(langEn);
 
+      const name2 = responseGetProducts.data.data[0].product_name;
+      expect(await screen.findByText(name2)).toBeInTheDocument();
+
       await waitFor(() => {
-        const name2 = responseGetProducts.data.data[0].product_name;
-        screen.findByText(name2);
         //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa');
 
         const productEn = screen.queryAllByRole("product_name_en");

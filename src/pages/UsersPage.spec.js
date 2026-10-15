@@ -185,8 +185,8 @@ describe("Users page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const clientDel = await screen.queryAllByRole("del_client");
-      userEvent.click(clientDel[0]);
+      const clientDel = screen.queryAllByRole("del_client");
+      await userEvent.click(clientDel[0]);
 
       await waitFor(() => {
         expect(counter).toBe(3);
@@ -200,8 +200,8 @@ describe("Users page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const clientDel = await screen.queryAllByRole("edit_client");
-      userEvent.click(clientDel[0]);
+      const clientDel = screen.queryAllByRole("edit_client");
+      await userEvent.click(clientDel[0]);
       //todo
     });
 
@@ -210,8 +210,8 @@ describe("Users page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const clientAdd = await screen.queryByRole("button_add_client");
-      userEvent.click(clientAdd);
+      const clientAdd = screen.queryByRole("button_add_client");
+      await userEvent.click(clientAdd);
       //todo
     });
 
@@ -220,8 +220,8 @@ describe("Users page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const search = await screen.queryByRole("button_search_client");
-      userEvent.click(search);
+      const search = screen.queryByRole("button_search_client");
+      await userEvent.click(search);
       await waitFor(() => {
         expect(counter).toBe(2);
       });
