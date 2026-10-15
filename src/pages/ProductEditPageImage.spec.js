@@ -312,11 +312,11 @@ describe("Product edit or add images", () => {
       const delImage = screen.queryAllByRole("del_image");
       await userEvent.click(delImage[0]);
 
+      const successMsg = trans.ttt("success_image_delete");
+      await screen.findByText(successMsg);
+
       await waitFor(() => {
         expect(counterImage).toBe(1);
-
-        const successMsg = trans.ttt("success_image_delete");
-        screen.findByText(successMsg);
       });
     });
 
@@ -343,10 +343,10 @@ describe("Product edit or add images", () => {
 
         expect(counterDeleteOneImage).toBe(0);
         expect(counterDeleteImages).toBe(1);
-
-        const successMsg = trans.ttt("success_images_delete");
-        screen.findByText(successMsg);
       });
+
+      const successMsg = trans.ttt("success_images_delete");
+      await screen.findByText(successMsg);
     });
 
     it("successfully delete all images by selecting select all", async () => {
@@ -365,10 +365,10 @@ describe("Product edit or add images", () => {
 
         expect(counterDeleteOneImage).toBe(0);
         expect(counterDeleteImages).toBe(1);
-
-        const successMsg = trans.ttt("success_images_delete");
-        screen.findByText(successMsg);
       });
+
+      const successMsg = trans.ttt("success_images_delete");
+      await screen.findByText(successMsg);
     });
 
     it("click select all two times", async () => {
@@ -388,10 +388,9 @@ describe("Product edit or add images", () => {
 
         const alertDangerAfter = screen.queryByRole("alert_danger");
         expect(alertDangerAfter).toBeInTheDocument();
-
-        const msg = trans.ttt("fail_delete_images_no_items");
-        screen.findByText(msg);
       });
+      const msg = trans.ttt("fail_delete_images_no_items");
+      await screen.findByText(msg);
     });
 
     it("delete one image success", async () => {
@@ -417,10 +416,10 @@ describe("Product edit or add images", () => {
 
         expect(counterDeleteOneImage).toBe(1);
         expect(counterDeleteImages).toBe(0);
-
-        const successMsg = trans.ttt("success_images_delete");
-        screen.findByText(successMsg);
       });
+
+      const successMsg = trans.ttt("success_images_delete");
+      await screen.findByText(successMsg);
     });
 
     it("click icon delete many images without check any item", async () => {
@@ -445,10 +444,10 @@ describe("Product edit or add images", () => {
 
       await waitFor(() => {
         expect(counterImage).toBe(1);
-
-        const successMsg = trans.ttt("success_image_position");
-        screen.findByText(successMsg);
       });
+
+      const successMsg = trans.ttt("success_image_position");
+      await screen.findByText(successMsg);
     });
 
     it("image position up success", async () => {
@@ -460,10 +459,9 @@ describe("Product edit or add images", () => {
 
       await waitFor(() => {
         expect(counterImage).toBe(1);
-
-        const successMsg = trans.ttt("success_image_position");
-        screen.findByText(successMsg);
       });
+      const successMsg = trans.ttt("success_image_position");
+      await screen.findByText(successMsg);
     });
   });
 });
