@@ -190,7 +190,7 @@ const back = () => {
   router.push({ name: "products" });
 };
 
-const startLoading = async () => {
+const startLoading = () => {
   clearMsg();
   if (pre_loader.value) {
     return false;

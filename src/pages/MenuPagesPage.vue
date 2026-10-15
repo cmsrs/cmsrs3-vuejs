@@ -707,7 +707,7 @@ function clearMsg() {
   errFields.value = [];
 }
 
-const startLoading = async () => {
+const startLoading = () => {
   clearMsg();
   if (pre_loader.value) {
     return false;

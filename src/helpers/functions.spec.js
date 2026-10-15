@@ -100,7 +100,7 @@ describe("retrieveParamsFromStorage", () => {
     storage.setItem("config", jsonStore.config);
   });
 
-  it("get all params", async () => {
+  it("get all params", () => {
     const { configLangs, configDefaultLang, pageTypes, cacheEnable, token } =
       functions.retrieveParamsFromStorage();
 
@@ -112,7 +112,7 @@ describe("retrieveParamsFromStorage", () => {
     expect(token).toBe(jsonStore.auth.token);
   });
 
-  it("get one param", async () => {
+  it("get one param", () => {
     const { token } = functions.retrieveParamsFromStorage();
     expect(token).toBe(jsonStore.auth.token);
   });

@@ -289,7 +289,7 @@ const sorting = async (col, dir) => {
   }
 };
 
-const startLoading = async () => {
+const startLoading = () => {
   clearMsg();
   if (pre_loader.value) {
     return false;
