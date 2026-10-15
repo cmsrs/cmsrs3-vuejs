@@ -492,14 +492,11 @@ describe("Pages page", () => {
       const firstEditPage = pageEdit[0];
       await userEvent.click(firstEditPage);
 
-      screen.findByText("test p2 pl");
+      await screen.findByText("test p2 pl");
       //screen.findByText('aaaaaaaaaaaa111111111111111sssssssssssssssssssssssssssss');
       const langEn = screen.queryByRole("lang_en");
       await userEvent.click(langEn);
-
-      await waitFor(() => {
-        screen.findByText("test p2 en");
-      });
+      await screen.findByText("test p2 en");
 
       //});
     });
@@ -1345,10 +1342,9 @@ describe("Pages page", () => {
 
       await waitFor(() => {
         expect(counterImage).toBe(1);
-
-        const successMsg = trans.ttt("success_image_delete");
-        screen.findByText(successMsg);
       });
+      const successMsg = trans.ttt("success_image_delete");
+      await screen.findByText(successMsg);
     });
 
     it("delete many images success", async () => {
@@ -1372,10 +1368,9 @@ describe("Pages page", () => {
 
         expect(counterDeleteOneImage).toBe(0);
         expect(counterDeleteImages).toBe(1);
-
-        const successMsg = trans.ttt("success_images_delete");
-        screen.findByText(successMsg);
       });
+      const successMsg = trans.ttt("success_images_delete");
+      await screen.findByText(successMsg);
     });
 
     it("successfully delete all images by selecting select all", async () => {
@@ -1394,10 +1389,9 @@ describe("Pages page", () => {
 
         expect(counterDeleteOneImage).toBe(0);
         expect(counterDeleteImages).toBe(1);
-
-        const successMsg = trans.ttt("success_images_delete");
-        screen.findByText(successMsg);
       });
+      const successMsg = trans.ttt("success_images_delete");
+      await screen.findByText(successMsg);
     });
 
     it("click select all two times", async () => {
@@ -1417,10 +1411,9 @@ describe("Pages page", () => {
 
         const alertDangerAfter = screen.queryByRole("alert_danger");
         expect(alertDangerAfter).toBeInTheDocument();
-
-        const msg = trans.ttt("fail_delete_images_no_items");
-        screen.findByText(msg);
       });
+      const msg = trans.ttt("fail_delete_images_no_items");
+      await screen.findByText(msg);
     });
 
     it("delete one image success", async () => {
@@ -1445,10 +1438,9 @@ describe("Pages page", () => {
 
         expect(counterDeleteOneImage).toBe(1);
         expect(counterDeleteImages).toBe(0);
-
-        const successMsg = trans.ttt("success_images_delete");
-        screen.findByText(successMsg);
       });
+      const successMsg = trans.ttt("success_images_delete");
+      await screen.findByText(successMsg);
     });
 
     it("click icon delete many images without check any item", async () => {
@@ -1471,10 +1463,10 @@ describe("Pages page", () => {
 
       await waitFor(() => {
         expect(counterImage).toBe(1);
-
-        const successMsg = trans.ttt("success_image_position");
-        screen.findByText(successMsg);
       });
+
+      const successMsg = trans.ttt("success_image_position");
+      await screen.findByText(successMsg);
     });
 
     it("image position up success", async () => {
@@ -1486,10 +1478,10 @@ describe("Pages page", () => {
 
       await waitFor(() => {
         expect(counterImage).toBe(1);
-
-        const successMsg = trans.ttt("success_image_position");
-        screen.findByText(successMsg);
       });
+
+      const successMsg = trans.ttt("success_image_position");
+      await screen.findByText(successMsg);
     });
   });
 
