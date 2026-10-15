@@ -434,8 +434,8 @@ describe("Checkouts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const search = await screen.queryByRole("button_search_checkout");
-      userEvent.click(search);
+      const search = screen.queryByRole("button_search_checkout");
+      await userEvent.click(search);
       await waitFor(() => {
         expect(counter).toBe(2);
       });
@@ -446,8 +446,8 @@ describe("Checkouts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const editCheckouts = await screen.queryAllByRole("edit_checkout");
-      userEvent.click(editCheckouts[0]);
+      const editCheckouts = screen.queryAllByRole("edit_checkout");
+      await userEvent.click(editCheckouts[0]);
 
       await waitFor(() => {
         expect(counter).toBe(3); //update and refresh
@@ -482,8 +482,8 @@ describe("Checkouts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const checkoutDel = await screen.queryAllByRole("del_checkout");
-      userEvent.click(checkoutDel[0]);
+      const checkoutDel = screen.queryAllByRole("del_checkout");
+      await userEvent.click(checkoutDel[0]);
 
       await waitFor(() => {
         expect(counter).toBe(3);
@@ -498,7 +498,7 @@ describe("Checkouts page", () => {
 
       expect(counter).toBe(1); //mount
       const checkoutDel = screen.queryAllByRole("edit_checkout");
-      userEvent.click(checkoutDel[0]);
+      await userEvent.click(checkoutDel[0]);
       //todo
     });
 
@@ -508,7 +508,7 @@ describe("Checkouts page", () => {
 
       expect(counter).toBe(1); //mount
       const checkoutAdd = screen.queryByRole("button_add_checkout");
-      userEvent.click(checkoutAdd);
+      await userEvent.click(checkoutAdd);
       //todo
     });
   });

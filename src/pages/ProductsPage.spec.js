@@ -480,8 +480,8 @@ describe("Products page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const productDel = await screen.queryAllByRole("del_product");
-      userEvent.click(productDel[0]);
+      const productDel = screen.queryAllByRole("del_product");
+      await userEvent.click(productDel[0]);
 
       await waitFor(() => {
         expect(counter).toBe(3);
@@ -495,8 +495,8 @@ describe("Products page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const productDel = await screen.queryAllByRole("edit_product");
-      userEvent.click(productDel[0]);
+      const productDel = screen.queryAllByRole("edit_product");
+      await userEvent.click(productDel[0]);
       //todo
     });
 
@@ -506,7 +506,7 @@ describe("Products page", () => {
 
       expect(counter).toBe(1); //mount
       const productAdd = await screen.queryByRole("button_add_product");
-      userEvent.click(productAdd);
+      await userEvent.click(productAdd);
       //todo
     });
 
@@ -516,7 +516,7 @@ describe("Products page", () => {
 
       expect(counter).toBe(1); //mount
       const search = await screen.queryByRole("button_search_product");
-      userEvent.click(search);
+      await userEvent.click(search);
       await waitFor(() => {
         expect(counter).toBe(2);
       });

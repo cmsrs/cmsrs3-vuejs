@@ -150,7 +150,7 @@ describe("Pages page", () => {
 
       const pageEdit = screen.queryByRole("button_save_edit_page");
       expect(counterEdit).toBe(0);
-      userEvent.click(pageEdit);
+      await userEvent.click(pageEdit);
 
       await waitFor(() => {
         expect(counterEdit).toBe(1);

@@ -183,8 +183,8 @@ describe("Contacts page", () => {
       await waitForAjax();
 
       expect(counter).toBe(1); //mount
-      const contactDel = await screen.queryAllByRole("del_contact");
-      userEvent.click(contactDel[0]);
+      const contactDel = screen.queryAllByRole("del_contact");
+      await userEvent.click(contactDel[0]);
 
       await waitFor(() => {
         expect(counter).toBe(3);
@@ -199,7 +199,7 @@ describe("Contacts page", () => {
 
       expect(counter).toBe(1); //mount
       const search = screen.queryByRole("button_search_contact");
-      userEvent.click(search);
+      await userEvent.click(search);
       await waitFor(() => {
         expect(counter).toBe(2);
       });
