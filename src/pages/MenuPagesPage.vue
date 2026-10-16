@@ -785,10 +785,10 @@ const editPage = async (pageId) => {
   const getSomePage = await getPageById(pageId);
   if (getSomePage) {
     router.push("/pages/" + pageId);
-    pre_loader.value = false;
   } else {
-    msgWrong.value = "Get page problem = " + error;
+    msgWrong.value = "Get page problem = ";
   }
+  pre_loader.value = false;
 };
 
 const delPage = async (pageId) => {

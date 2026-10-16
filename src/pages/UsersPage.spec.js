@@ -106,6 +106,11 @@ beforeEach(() => {
   server.resetHandlers();
 });
 
+afterEach(() => {
+  vi.clearAllMocks();
+  localStorage.clear();
+});
+
 afterAll(() => server.close());
 
 const setup = async () => {
