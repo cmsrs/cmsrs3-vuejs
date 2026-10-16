@@ -178,8 +178,9 @@ describe("Login page", () => {
       expect(counter).toBe(0);
       await userEvent.click(button);
       expect(counter).toBe(1);
-      const spinner = screen.queryByRole("pre_loader_login");
+
       await waitFor(() => {
+        const spinner = screen.queryByRole("pre_loader_login");
         expect(spinner).not.toBeInTheDocument();
         expect(requestBody).toEqual({
           email: emailWrong,

@@ -411,8 +411,6 @@ describe("Products page", () => {
       expect(await screen.findByText(name2)).toBeInTheDocument();
 
       await waitFor(() => {
-        //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa');
-
         const productEn = screen.queryAllByRole("product_name_en");
         expect(productEn.length).toBe(2);
 

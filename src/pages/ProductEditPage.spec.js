@@ -391,8 +391,6 @@ describe("Product edit or add page", () => {
 
       await waitFor(() => {
         const product_name2 = responseGetProduct.data.product_name["en"];
-        //screen.findByText(product_name2);
-        //screen.findByText('aaaaaaaaaaaaaaaaaaaaaaaa'); //it works too. i don't  know why
 
         const productEn = screen.queryByRole("product_name_en");
         expect(productEn).toBeInTheDocument();
