@@ -14,6 +14,7 @@ export const useAuthStore = defineStore("auth", () => {
     default_lang: "",
     demo_status: 0,
     is_shop: 1,
+    tag_entity_types: [],
   };
 
   let initialModal = {

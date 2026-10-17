@@ -50,7 +50,7 @@
               </div>
 
               <!-- Entity type -->
-              <div class="form-group col-4">
+              <div v-if="tagEntityTypes.length > 1"  class="form-group col-4">
                 <select
                   class="form-control"
                   :class="{
@@ -155,7 +155,7 @@
                 />
               </div>
 
-              <div class="form-group col-4">
+              <div  v-if="tagEntityTypes.length > 1"   class="form-group col-4">
                 <select
                   class="form-control"
                   v-model="newCategory.entity_type"
@@ -329,13 +329,10 @@ const currentTagId = ref(false);
 const tagErrors = ref([]);
 const categoryErrors = ref({});
 
-// Entity types from the application configuration.
-// Example: ["page", "product"]
-const tagEntityTypes = computed(() => {
-  const types = config.tag_entity_types;
+const tagEntityTypes = Array.isArray(config.tag_entity_types)
+  ? config.tag_entity_types
+  : [];
 
-  return Array.isArray(types) ? types : [];
-});
 
 // --------------------------------------------------
 // Common helpers
@@ -424,7 +421,7 @@ function addCategory() {
 
   newCategory.value = {
     name: emptyTranslations(),
-    entity_type: tagEntityTypes.value[0] || "",
+    entity_type: tagEntityTypes[0] || "",
   };
 }
 
